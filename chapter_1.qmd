@@ -8,12 +8,6 @@ format:
     toc-title: "In this chapter:"
 ---
 
-<!-- things to change: -->
-
-<!-- mention that ~ in path means home -->
-
-<!-- adjust timing -->
-
 # Introduction to R {#sec-chapter01}
 
 In this chapter, we will get familiar with R.
