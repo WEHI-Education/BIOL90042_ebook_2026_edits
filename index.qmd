@@ -13,7 +13,7 @@ Designed for complete coding beginners, this book will introduce data wrangling,
 
 ## How to use this book
 
-This book is divided into 8 chapters sessions, focusing on the basics of R and the 'tidyverse' (Chapters 1-5), bioinformatics analysis of RNA sequencing data (Chapters 6-7) and machine learning (Chapter 8).
+This book is divided into 8 chapters, focusing on the basics of R and the 'tidyverse' (Chapters 1-5), bioinformatics analysis of RNA sequencing data (Chapters 6-7) and machine learning (Chapter 8).
 Each chapter is divided into sections containing a mix of text, code and exercises, which are designed to be completed in order.
 
 Throughout the book, R code is displayed in code blocks as per the output below it in grey below.
