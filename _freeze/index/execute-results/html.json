@@ -1,0 +1,17 @@
+{
+  "hash": "fe96ad74d4e0ae1e6b4d19e29b6ea51e",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntoc: false\n---\n\n# Preface {.unnumbered}\n\nCode-based analysis is an increasingly important skill for modern biomedical research. The R coding language enables user-friendly data tidying and transformation, and creation of publication-ready graphics. R is also core to bioinformatics research, supporting all types of ’omics data analysis, and general statistical analysis too.\n\nDesigned for complete coding beginners, this course will introduce data wrangling, data visualisation, and basic data analysis in R. We will start by covering the foundations of R, and the user-friendly ‘tidyverse’ software, which is applicable to many areas of medical and clinical research, and beyond. \n\n## How to use this book\nThis course is divided into 4 sessions. In the first 3 sessions, we will cover the basics of R and the tidyverse, and in the last session, we will apply these skills to an example analysis. Each session is divided into sections, which are designed to be completed in order. Each section contains a mix of text, code, and exercises.\n\nCode is shown in blue, with the output below it in grey, just like it would show up in the R console.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# This is an R code block\n# You can run this code by copying it into the R console\n1 + 1\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] 2\n```\n\n\n:::\n:::\n\n\nYou can run the code yourself by copying it (using the copy button in the top right of the code block) and pasting it into R on your computer.\n\nPractice exercises will appear in purple boxes:\n\n::: {.callout-important title=\"Practice exercises\"}\n\nMultiple choice questions will appear as below. Click on the circle next to your chosen answer to see whether it is correct or not\n\n::: question\n1\\. Which country was R invented in?\n\n::: choices\n::: choice\nUSA\n:::\n\n::: {.choice .correct-choice}\nNew Zealand\n:::\n\n::: choice\nAustralia\n:::\n\n::: choice\nFrance\n:::\n:::\n:::\n\nA detailed explanation of the solutions to practice questions can be found by clicking on the grey 'Solutions' text like so:\n\n<details>\n\n<summary>Solutions</summary>\n\nR was invented by Ross Ihaka and Robert Gentleman from the University of Auckland as a programming language to teach introductory statistics\n\n</details>\n\n:::\n\n## Acknowledgements\nWe would like to thank Kerry Ko, Brendan Ansell and the WEHI education office for their work in organising and facilitating this course. We would also like to thank all of our instructors and tutors for making this course possible.\n\nWe acknowledge that this course is prepared and delivered on the unceded land of the Wurundjeri people of the Kulin Nation. We pay our respects to their Elders past, present, and emerging. We also acknowledge that sovereignty was never ceded, and that this always was and always will be Aboriginal land.\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

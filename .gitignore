@@ -1,31 +1,6 @@
 /.quarto/
 .Rproj.user
 .DS_Store
-local_notes.Rmd
-resources.qmd
-*_files/*
-# Required when using GitHub Actions:
-# Not needed when using Terminal quarto publish gh-pages
-_freeze/
-#!_extensions/
-#!images/
+.claude/
 _book/
 .Rhistory
-.Rproj
-.DS_Store
-data_processed/*
-data_processed/tumor_data_log_wide.xlsx
-data/rnaseq/*
-databkup_local/
-output/
-live_teaching/
-# Ignore everything else in data/
-data/*
-!data/             # Re-include the folder so allowed files can be tracked
-# Allow specific files in data/
-!data/tumour_data.xlsx
-!data/rnaseq_counts.tsv
-!data/Ses3_geneAnnot.tsv
-BIOL90042_ebook_2026_edits.Rproj
-
-**/*.quarto_ipynb
