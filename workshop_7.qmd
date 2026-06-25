@@ -2,6 +2,6 @@
 title: "Workshop 7"
 ---
 
-# Workshop 7
+# Workshop 7: RNA-seq analysis {#sec-workshop07}
 
 rnaseq

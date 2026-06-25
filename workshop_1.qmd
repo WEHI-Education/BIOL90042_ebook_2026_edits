@@ -34,7 +34,7 @@ Welcome to the first R coding workshop! You've had a go at writing some basic R 
 
 The first thing we need to do is open the R project that we will use in these workshops. As covered in lecture 2, projects are a way we can organise our work in RStudio, so that we can resume where we left off and keep different analyses separate. Any time you start working on something new (like these workshops!) it is recommended that you start a new project. To make things easier, we have pre-made an R project with all of the data you will need for the workshops. If you haven't already, download it using the button below:
 
-{{< downloadthis data/r_course.zip dname="r_course" label="Download the R project for BIOL90042 workshops" icon="file-earmark-arrow-down" type="primary" class="data-button" id="rproj" >}}
+{{< downloadthis data/BIOL90042_workshops.zip dname="BIOL90042_workshops" label="Download the R project for this course" icon="file-earmark-arrow-down" type="primary" class="data-button" id="rproj" >}}
 
 Once downloaded, you can move this file to wherever you'd like on your computer, and **unzip it** (on mac: double-click, on windows: right-click, then 'extract all').
 
@@ -1130,40 +1130,9 @@ Try these practice questions to test your understanding
 </details>
 :::::::::::::::::::::
 
-### Matrices {#sec-matrices}
+### Matrices {#sec-matrixbrief}
 
-A matrix is the two-dimensional extension of the vector-- it stores a collection of values **of the same type** that are laid out in a grid with rows and columns. An example of this is a gene count matrices where each row represents a gene, each column represents a sample and therefore each cell represents the count for a particular gene in a particular sample.
-
-You can create a matrix using the `matrix()` function. The first argument is the vector of values to be put into the matrix, and the `nrow` and `ncol` arguments specify the number of rows and columns in the matrix:
-
-```{r}
-# create a 2x2 matrix and assign it to gene_counts
-gene_counts <- matrix(c(1, 2, 3, 4), nrow = 2, ncol = 2)
-
-# print the matrix
-gene_counts
-```
-
-Usually though you would read in a matrix from a file (e.g. the gene count matrix from a sequencing experiment).
-
-Matrices are their own type of object in R:
-
-```{r}
-class(gene_counts)
-```
-
-And they show up in the environment panel in RStudio under 'Data': ![Matrices show up in the environmen panel](images/S01F17_enrivonrment_panel_matrix.png){width="800"}
-
-The rows and columns are usually labelled with names, although these names are considered metadata rather than being a part of the matrix. You can set them by assigning vectors of names to the `rownames()` and `colnames()` functions:
-
-```{r}
-# set row and column names
-rownames(gene_counts) <- c("gene1", "gene2")
-colnames(gene_counts) <- c("sample1", "sample2")
-
-# print the matrix, now with names!
-gene_counts
-```
+A matrix is the two-dimensional extension of the vector-- it stores a collection of values **of the same type** that are laid out in a grid with rows and columns. In this subject, we will only really use matrices in the context of RNA-seq analysis, so we will cover them then, or you can consult the further reading @sec-matrices.
 
 ### Data frames {#sec-dataframes}
 
@@ -1266,6 +1235,7 @@ iris$sepal_length_cm <- iris$Sepal.Length * 2.54
 Be careful that, as we discussed above every column in a dataframe must have the same length. For example, if I tried to run the following:
 
 ```{r}
+#| error: true
 iris$test <- 1:100
 ```
 
@@ -1459,7 +1429,7 @@ Try the practice questions below to test your understanding!
     l.  `sum(c(1, 2, 3, 4))`
     m.  `head(iris)`
     n.  `mean(iris$Sepal.Width)`
-    o.  `read_tsv("gene_counts.csv")`
+    o.  `iris$Sepal.Width[1:5]`
 
 2.  Write some R code to complete the right-hand side of this comparison: `as.numeric("100") * 3 ==`
 
@@ -1476,7 +1446,7 @@ Try the practice questions below to test your understanding!
 
 4.  Load the `iris` data frame into your R session using `data(iris)`. What is the median petal length? Show the code you used to calculate this.
 
-5.  Imagine I have a file called `mouse_survival.tsv` located in a folder with the path `~/Downloads/experimental_data/latest`. Write a line of R code to read in this file and assign it to a variable called `mouse_survival`
+5.  I'm working with the `iris` data frame, but I feel like it needs to be more dramatic. I would like to create a new data frame called `IRIS` where the species in the `Species` column are all in capital letters. How can I do this? (hint: the function `toupper()` might help you out here)
 
 <details>
 
@@ -1498,7 +1468,7 @@ Try the practice questions below to test your understanding!
     l.  `sum(c(1, 2, 3, 4))` is `10`
     m.  `head(iris)` shows the first 6 rows of the `iris` data frame
     n.  `mean(iris$Sepal.Width)` is the average of the `Sepal.Width` column in the `iris` data frame
-    o.  `read_tsv("gene_counts.csv")` will try to read in `gene_counts.csv` as if it were tab-separated, which will result in all the data being in one column
+    o.  `iris$Sepal.Width[1:5]` will give the first 5 values of the `Sepal.Width` column from the `iris` dataset.
 
 2.  The right-hand side of the comparison `as.numeric("100") * 3 ==` can be anything that results in 300 e.g. `300` or `299 + 1`, for example
 
@@ -1514,6 +1484,18 @@ Try the practice questions below to test your understanding!
 
 4.  To calculate the median petal length in the `iris` data frame, you can use `median(iris$Petal.Length)`
 
-5.  To read in the `mouse_survival.tsv` file and assign it to a variable called `mouse_survival`, you could use `red_delim()`: `mouse_survival <- read_delim("~/Downloads/experimental_data/latest/mouse_survival.tsv")` or `read_tsv()`: `mouse_survival <- read_tsv("~/Downloads/experimental_data/latest/mouse_survival.tsv")`.
+5.  First, we would want to assign (i.e. copy) the contents of the `iris` data frame into our new `IRIS` data frame. Then, we can use the `toupper()` function on the `Species` column like so:
+
+```{r}
+# make a new variabled called IRIS that contains the 
+# same data as the original iris data frame
+IRIS <- iris
+
+# replace the existing Species column with the Species column in upper case
+IRIS$Species <- toupper(IRIS$Species)
+
+# verify that the species is now in upper case
+head(IRIS)
+```
 
 </details>

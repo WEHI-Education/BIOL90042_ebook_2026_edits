@@ -30,7 +30,7 @@ book:
       chapters:
         - workshop_1.qmd
     #     - tutorial_2.qmd
-    #     - wk2_fr.qmd
+        - wk2_fr.qmd
     # - part: Week 3
     #   chapters:
     #     - workshop_2.qmd
