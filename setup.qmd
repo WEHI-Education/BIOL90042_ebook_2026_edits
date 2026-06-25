@@ -4,147 +4,36 @@ toc: false
 
 # Setup {.unnumbered}
 
-## Installing Software
+You'll need to do two things to get yourself set up for this course: install R/RStudio and download the RProject used for the workshops. This page walks you through how to do that.
 
-### R and RStudio
+## Installing R and RStudio
 
-You can download and install R and RStudio through the [posit.co website](https://posit.co/download/rstudio-desktop/).
+You can download and install R/RStudio [from the posit website](https://posit.co/download/rstudio-desktop/):
 
-![Install both R and RStudio](images/install_posit.jpg)
+![Both R and RStudio can be downloaded from the posit website](images/setup_01.png){width="718"}
 
-The Posit website should automatically detect your operating system and link to the correct download file.
+If you're using a laptop provided by your department, R/RStudio is probably available through the software centre. For example, for University of Melbourne devices, [see here](https://studentsoftware.unimelb.edu.au/?q=RStudio).
 
-## Mac users
+It's also possible to access RStudio through your browser using [myUniApps](https://studentit.unimelb.edu.au/myuniapps) or [WebR](https://webr.r-wasm.org/latest/), but these are not recommended as they are likely to be slow/unstable/lack some of the features of RStudio on your own computer.
 
-On Mac iOS, the download file should be `.tar.gz` format
+## R project for BIOL90042 workshops
 
-## PC users
+For the workshops in this course, we will work within a pre-made R project, so that everyone has the same files and folders. Before the first workshop in week 2, please:
 
-On windows operating system, the downloaded file should be `.exe` format
+1.  Download it using the button below
+2.  Move it to wherever you like on your computer
+3.  Unzip it (on mac: double-click, on windows: right-click, then click extract all)
 
-### Lockdown Browser
+{{< downloadthis data/BIOL90042_workshops.zip dname="BIOL90042_workshops" label="Download the R project for this course" icon="file-earmark-arrow-down" type="primary" class="data-button" id="rproj" >}}
 
-For BIOL90042 Masters Students Only: Install Lockdown Browser using this link <https://download.respondus.com/lockdown/download.php?id=113132090>
+<details>
 
-# Files and Folders
+<summary>Individual data file downloads</summary>
 
-## New Desktop Folder
+If for whatever reason you need to download the data files separately, here they are. The paths used in this course assume they are named as-is and located in a folder called 'data' that exists in the current working directory.
 
-Create a new folder on your Desktop named `BIOL90042_workshops`
+{{< downloadthis data/mousezempic_dosage_data.csv dname=mousezempic_dosage_data label="Download mousezempic_dosage_data.csv" icon=file-earmark-arrow-down type=primary class=data-button id=main_data >}}
 
-## Download data files
+{{< downloadthis data/mousezempic_expression_data.tsv dname=mousezempic_expression_data label="Download mousezempic_expression_data.tsv" icon=file-earmark-arrow-down type=primary class=data-button id=expr_data >}}
 
-Download the .zip file via this link, and save inside `BIOL90042_workshops`
-
-{{< downloadthis data.zip dname=data label="Download workshop data" icon=file-earmark-arrow-down type=primary class=data-button id=workshop_data >}}
-
-## Unzip data files
-
-Unzip the data.zip directory.
-You should see 4 files.
-Do not unzip any other files at this stage.
-
-# RStudio Code
-
-## Open RStudio
-
-## Create new .R file
-
-File \> New File \> R Script
-
-### Copy & Paste
-
-Copy the code block below and paste into the new file:
-
-::: {.callout-tip title="Copy icon"}
-Hint - Click the clipboard icon at top right in the code block below!
-:::
-
-```{r}
-#| eval: false
-
-## Setting up R for workshops 
-
-## Install tidyverse 
-install.packages("tidyverse") 
-
-## Install conflicted
-install.packages("conflicted") 
-
-## Install readxl & writexl
-install.packages("readxl")
-install.packages("writexl")
-
-## Install ggrepel  
-install.packages("ggrepel") 
-
-## Install tidyrstats 
-install.packages("tidyrstats") 
-
-##Install patchwork
-install.packages("patchwork") 
-
-
-## Install and Load packages required for RNAseq 
-
-if (!requireNamespace("BiocManager", quietly = TRUE)) 
-
-  install.packages("BiocManager") 
-
-BiocManager::install("RNAseq123") 
-
-
-## Install tidyheatmaps 
-install.packages("tidyheatmaps") 
-
-## Install tidymodels
-install.packages("tidymodels") 
-
-## Install vip
-install.packages("vip") 
-
-## Install xgboost
-install.packages("xgboost") 
-
-## Install ggridges
-install.packages("ggridges")
-
-## Load all libraries
-
-library(tidyverse)
-library(conflicted)
-library(readxl)
-library(writexl)
-
-library(ggrepel) 
-library(tidyrstats) 
-library(patchwork) 
-
-library(edgeR) 
-library(limma) 
-
-library(tidyheatmaps) 
-
-library(tidymodels)
-library(vip)
-library(xgboost)
-
-library(ggridges)
-
-```
-
-## Save the new file
-
-File \> Save the new file inside your `BIOL90042_workshops` folder, with name `setup.R`
-
-## Run the code
-
-Select all the code with mouse click & drag, or `CMD A` (mac) / `CTRL A` (pc), and clicking ‘Run’.
-
-![](images/run.jpg)
-
-Note this will take some time and there may be errors. Masters students can request further help in the first tutorial.
-
-## Restart R
-
-Once the code has run and all libraries can be loaded without errors, restart R by selecting **Session \> Restart R**. This will reset your R session ready for Chapter 1!
+</details>

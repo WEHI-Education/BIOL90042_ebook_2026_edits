@@ -1,0 +1,350 @@
+---
+filters:
+  - naquiz
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "In this session:"
+---
+
+# Session 5: RNA-seq part 1
+
+```{r, include=FALSE}
+library(magrittr)
+library(knitr)
+library(kableExtra)
+options(readr.show_col_types = FALSE)
+```
+
+In this session we will run through the basic steps for analysing a simple RNA-seq experiment using the [limma-voom workflow](https://f1000research.com/articles/5-1408). This includes:
+
+- filtering out lowly expressed genes
+- normalisation
+- creating a multidimensional scaling (MDS) plot
+- creating a design matrix
+- fitting gene-wise linear models (with empirical Bayes moderation to more accurately estimate gene-wise variability)
+- performing statistical testing for differential expression
+
+The aim of this session is to give you experience with a real-world RNA-seq analysis, and making extensive use of an external library. We will not cover the statistics in any depth. Instead, the goal is to understand how to construct data structures required for specific packages and how to use the functions in those packages to perform the analysis.
+
+Much of the materials here are explained in greater detail in the limma user's guide. You can view this by typing `help("limma")` and following the links.
+
+::: {.callout-tip title="Learning Objectives"}
+- Constructing a `DGEList` object to use with the `edgeR` package
+- Performing filtering of lowly expressed genes
+- Normalising RNA-seq data to account for library size and RNA composition
+- Performing exploratory data analysis using MDS plots
+- Pulling data out of `edgeR` package objects and re-organising it into a tidy format for use with `ggplot2`.
+:::
+
+## Data files
+
+You can download and unzip the files using the following commands
+
+```{r}
+download.file("https://github.com/Shians/BaseR_Intro/raw/master/data/workshop_data.zip", "workshop_data.zip")
+unzip("workshop_data.zip", exdir = "data")
+unzip("data/Ses3_counts.zip", exdir = "data/counts")
+```
+
+# R Packages
+
+Extra packages are required for later sessions, these can be downloaded by the following commands
+
+```{r}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("RNAseq123")
+```
+
+## Loading in read count data and annotation
+
+The data we are looking at comes from three cell populations (basal, luminal progenitor (LP) and mature luminal (ML)) sorted from the mammary glands of female virgin mice, each profiled in triplicate. These samples have been sequenced using Illumina RNAseq platforms and we will be using the `edgeR` package to analyse the data.
+
+To use the `edgeR` package we first need to construct a `DGEList` object. This object contains 3 key pieces of data:
+
+- `counts`: the main data of this object, a matrix of count values with samples along the columns and features/genes along the rows.
+- `samples`: a data frame containing annotation for the samples. The rows in this table describe the corresponding column of the counts data.
+- `genes`: a data frame containing annotation for the genes in the counts matrix. The rows in this table describe the corresponding row in the counts matrix.
+
+::: {.callout-note title="Data objects"}
+
+Data objects in general are a way to store related pieces of information together. Often they provide features to maintain the relationships between the pieces of information. For example, in a `DGEList` object, the `counts` are stored as a matrix while `samples` and `genes` are stored as data frames. When you subset the `DGEList` object, the rows and columns of the `counts` matrix are subset along with the corresponding rows of the `samples` and `genes` data frames. This prevents errors that can occur if the user tries to manually subset all three pieces of information separately.
+
+:::
+
+```{r, warning=FALSE, message=FALSE}
+# load required packages
+library(tidyverse)
+library(edgeR)
+
+group <- parse_factor(
+  c("LP", "ML", "Basal", "Basal", "ML", "LP", "Basal", "ML", "LP"),
+  levels = c("Basal", "LP", "ML")
+)
+
+samplenames <- c(
+  "10_6_5_11", "9_6_5_11", "purep53", "JMS8-2", "JMS8-3",
+  "JMS8-4", "JMS8-5", "JMS9-P7c", "JMS9-P8c"
+)
+```
+
+## A brief detour to factors
+
+Not that when we declared the `group` variable, we used factors. Factors are a special data type that is used to encode categorical variables. They have multiple useful properties in comparison to regular character vectors:
+- They allow you to specify the order of the levels.
+- They are stored as integers but displayed as labels.
+- They encode all the valid levels of the factor, even if they are not present in the data.
+
+Specifying the order of the levels is useful because it allows you to re-arrange labels when used in plots. In this data we would have the "Basal" group first, followed by "LP" and then "ML". Using `parse_factor()` also allows you to check that the values are all valid levels, for example if one of the samples was labelled "Bassal" instead of "Basal", it would throw an error. You can read the R for Data Science [chapter on factors](https://r4ds.had.co.nz/factors.html) for more information, as well as the [forcats package](https://forcats.tidyverse.org) for many useful functions for working with factors.
+
+## Creating the DGEList object
+
+We will create a `DGEList` object following the `RNAseq123` workflow. We use the `readDGE()` function to read in count data from files, and provide sample information to the `readDGE()` function and adding in the gene annotation information afterwards.
+
+```{r, warning=FALSE, message=FALSE}
+# vector of file names
+files <- dir(path = "data/counts", pattern = "GSM*")
+
+# create DGEList object
+dge <- readDGE(
+  files,
+  path = "data/counts",
+  columns = c(1, 3),
+  group = group,
+  labels = samplenames
+)
+
+# add gene annotation information
+gene_anno <- read_tsv("data/Ses3_geneAnnot.tsv")
+dge$genes <- gene_anno
+```
+
+## Alternative construction of the DGEList object
+
+A more common way to create a `DGEList` object is to read in the count data as a matrix and then create the `DGEList` object using the `DGEList()` function. We can pull apart our existing `DGEList` object and recreate it using this method.
+
+::: .callout-info
+What you can do with data objects is determined by package that the object comes from. You will need to read the package documentation to find out how to access data from the object. Here `edgeR` informs us that the `DGEList` has data that can be accessed as if it was a list.
+:::
+
+```{r}
+counts <- dge$counts
+samples <- dge$samples
+genes <- dge$genes
+
+# create DGEList object
+dge <- DGEList(counts = counts, samples = samples, genes = genes)
+```
+
+Now we have a data object that can be used for downstream analysis.
+
+## Filtering
+
+The first step of our analysis is to filter out lowly expressed genes. There are two main problems with low abundant genes:
+
+- Technical variation is more problematic for low abundance genes. This variation is thought to be due to two factors; insufficient mixing and low sampling fraction [@mcintyre2011].
+  - Insufficient mixing of solutions during library preparation can result in uneven distribution of reads.
+  - RNA sequencing can be thought of as sampling. Measurement errors will occur simply due to the random nature of the sampling process. This problem affects lowly abundant RNA species more because the relative error for small count values is larger than it would be for more highly abundant RNA species.
+- Genes that are very lowly expressed do not produce sufficient information to be useful for biological interpretation. For example, it is very hard to believe the biological significance of genes that have counts ranging from 0 to 3 across samples even if come up as statistically significant.
+
+Removing these highly variable, lowly expressed genes increases your 'power' to detect differentially expressed genes [@bourgon2010], where 'power' is your ability to detect true positives. In testing for differential expression, a statistical test is conducted for each gene. When a high number of statistical tests are performed, a portion of them will be significant purely due to random chance. A common procedure to control for the number of false positive is to perform 'multiple testing correction' on the p-values. This adjusts the p-value in a way that reduces the number of false positives but comes at the cost of reduced power to detect true positives. If we filter out uninteresting, lowly expressed genes, we need to perform fewer statistical tests and reduce the impact that multiple testing adjustment has on detection power.
+
+The `edgeR` provides the `filterByExpr()` function to automate gene filtering. By default, it aims to keep genes with a count of 10 or more, in at least as many samples as the smallest experimental group. In our experiment, there are 3 phenotype groups each with 3 samples. Therefore we retain only genes that have 10 or more counts in 3 or more samples. The actual filtering is done on counts per million, prevent bias against samples with small library sizes. This complex procedure is the reason why the package provides a function to perform the filtering for you.
+
+The output of this function is a vector of logicals, indicating which genes (rows) should be kept and which filtered.
+
+```{r}
+keep <- filterByExpr(dge)
+table(keep)
+proportions(table(keep))
+
+dge <- dge[keep, , keep.lib.sizes = FALSE]
+dim(dge$counts)
+```
+
+We can see that we now have 16624 genes. We started with 27179 genes - meaning that ~40% of genes have been filtered out.
+
+## Library-size normalisation
+
+After filtering, our next step is to normalise the data. Normalisation refers to the process of adjusting the data to reduce or eliminate systematic bias. This allows the data to be meaningfully compared across samples or experimental groups.
+
+There are two main factors that need to be normalised for in RNA-seq:
+
+- Sequencing depth/library size - technically, sequencing a sample to half the depth will give, on average, half the number of reads mapping to each gene [@robinson2010].
+- RNA composition - if a large number of genes are unique to, or highly expressed in, only one experimental condition, the sequencing capacity available for the remaining genes in that sample is decreased. For example, if there are only five genes being studied in two experimental groups, if one gene is particularly high in group A, then with limited sequencing depth, that gene will reduce the counts of the remaining four genes. The effect of this is that the remaining four genes appear under-expressed in group A compared to group B when the true amount of gene product is actually equal for these 4 genes [@robinson2010].
+
+Sequencing depth is accounted for by calculating the counts per million (cpm). This metric is calculated by:
+
+1.  taking the library size (sum of all counts for a sample),
+2.  dividing this by 1,000,000 to get the 'per million' scaling factor,
+3.  then dividing all read counts for each gene in that sample by the 'per million' scaling factor
+
+RNA composition can be accounted for by using more sophisticated normalisation methodologies. We will use 'trimmed mean of M-values' (TMM), which estimates relative RNA levels from RNA-seq data [@robinson2010]. Under the assumption that most genes are not differentially expressed, TMM calculates a library size scaling factor for each library (sample). This is done using the following steps:
+
+1.  calculate the gene expression log fold changes and absolute expression values for pair-wise samples (selecting one sample from the experiment as a reference)
+2.  remove the genes with the highest and lowest fold changes and absolute expression values
+3.  take a weighted mean of the remaining genes (where the weight is the inverse of the approximate asymptotic variances). This gives the normalisation factor for each library (sample)
+
+Subsequent steps in this analysis will use log-cpm values, calculated using the normalisation factors, which scales each library size.
+
+We can calculate the normalisation factors, specifying that we want to use the `"TMM"` method:
+
+```{r}
+dge <- calcNormFactors(dge, method = "TMM")
+```
+
+This function calculates the normalisation factors for each library (sample) and puts this information in the `samples` data frame. Note that it takes dge (our `DGEList` object as input) and returns a `DGEList` object as well.
+
+Let's take a look at our normalisation factors:
+
+```{r}
+dge$samples
+```
+
+These normalisation factors are all close to 1 for all samples, suggesting minimal difference in RNA composition between samples.
+
+## Visualising the effect of normalisation
+
+To visualise the effect of TMM normalisation, we can plot the log-counts as a boxplot, and observe the effect of applying the normalisation. To create a boxplot of the log-counts, we can use `log(dge$counts + 0.5)` to create the log-count matrix. The addition of 0.5 is to avoid taking the log of zero. Then in order to use `ggplot2` for plotting, we must convert the matrix to a data frame. We can use the `as_tibble(rownames = "gene")` function to convert the matrix to a data frame where the rownames are converted to a column called "gene". We can then use the `pivot_longer()` function to convert the data frame from wide format to long format, where each row represents a single observation. This is necessary for `ggplot2` to plot the data correctly.
+
+```{r}
+as_tibble(log(dge$counts + 0.5), rownames = "gene") %>%
+  pivot_longer(
+    where(is.numeric),
+    names_to = "sample", values_to = "expression"
+  ) %>%
+  ggplot(aes(x = sample, y = expression)) +
+  geom_boxplot()
+```
+
+We can compare this to the cpm values which when calculated using the `cpm()` function, automatically applies normalisation factors if they are present.
+
+```{r}
+as_tibble(cpm(dge$counts, log = TRUE), rownames = "gene") %>%
+  pivot_longer(
+    where(is.numeric),
+    names_to = "sample", values_to = "expression"
+  ) %>%
+  ggplot(aes(x = sample, y = expression)) +
+  geom_boxplot()
+```
+
+We see that by performing normalisation on our data, the gene expression values of each sample now have similar medians and quantiles. This indicates that the relative expression values of each sample can be more meaningfully compared.
+
+## MDS plots
+
+Before we perform statistical tests, it's useful to perform some exploratory visual analysis to get an overall idea of how our data is behaving.
+
+MDS is a way to visualise distances between sets of data points (samples in our case). It is a dimensionality reduction technique, similar to principal components analysis (PCA). We treat gene expression in samples as if they were coordinates in a high-dimensional coordinate system, then we can find "distances" between samples as we do between points in space. Then the goal of the algorithm is to find a representation in lower dimensional space such that points that the distance of two objects from each other in high dimensional space is preserved in lower dimensions.
+
+The `plotMDS()` from `limma` creates an MDS plot from a `DGEList` object.
+
+```{r}
+plotMDS(dge)
+```
+
+Each point on the plot represents one sample and is 'labelled' using the sample name. The distances between each sample in the resulting plot can be interpreted as the typical log2-fold-change between the samples, for the most differentially expressed genes.
+
+We can change the labelling to use the name of the group the sample belongs to instead:
+
+```{r}
+plotMDS(dge, labels = group)
+```
+
+This shows us that the phenotype groups tend to cluster together, meaning that the gene expression profiles are similar for samples within a phenotype group. The 'Basal' type samples quite close together while the 'LP' (luminal progenitor) and 'ML' (mature luminal) type samples are further apart, signifying that their expression profiles are more variable.
+
+## MDS plot using ggplot2
+
+For more customisability and better consistency with the style of other plots, it'd be nice to be able to draw the MDS plot using `ggplot2`. In order to do this we would need the MDS coordinates calculated by `plotMDS()`. Luckily the documentation of `plotMDS()` shows that it returns multiple computed values.
+
+```{r}
+mds_result <- plotMDS(dge, plot = FALSE)
+mds_result
+```
+
+We see that there's are `x` and `y` values in the list returned by the `plotMDS()` function, we can put these into a table and see if they match up to the positions plotted by the function.
+
+```{r}
+mds_tibble <- tibble(
+  x = mds_result$x,
+  y = mds_result$y
+)
+
+ggplot(mds_tibble, aes(x = x, y = y)) +
+  geom_point()
+```
+
+The positions of the points and the range of the scales seem to match, so we want to add in more metadata to help use plot. We can try to recreate the MDS plot using just `ggplot2`.
+
+```{r}
+mds_tibble <- tibble(
+  x = mds_result$x,
+  y = mds_result$y,
+  sample = colnames(dge),
+  group = dge$samples$group
+)
+
+dim1_var_explained <- round(mds_result$var.explained[1] * 100)
+dim2_var_explained <- round(mds_result$var.explained[2] * 100)
+
+ggplot(mds_tibble, aes(x = x, y = y)) +
+  geom_text(aes(label = group)) +
+  labs(
+    x = paste0("Leading logFC dim 1 ", "(", dim1_var_explained, "%)"),
+    y = paste0("Leading logFC dim 2 ", "(", dim2_var_explained, "%)")
+  )
+```
+
+Now that we have our data in a nice tidy format we can use with ggplot, it's easy to create variations of the plot. For example we can draw points instead of group labels, and use colour to identify the groups.
+
+```{r}
+ggplot(mds_tibble, aes(x = x, y = y, col = group)) +
+  geom_point() +
+  labs(
+    x = paste0("Leading logFC dim 1 ", "(", dim1_var_explained, "%)"),
+    y = paste0("Leading logFC dim 2 ", "(", dim2_var_explained, "%)")
+  )
+```
+
+Alternatively we can also use the labels to identify the individual samples while colouring them by their group.
+
+```{r}
+ggplot(mds_tibble, aes(x = x, y = y, col = group)) +
+  geom_text(aes(label = sample)) +
+  labs(
+    x = paste0("Leading logFC dim 1 ", "(", dim1_var_explained, "%)"),
+    y = paste0("Leading logFC dim 2 ", "(", dim2_var_explained, "%)")
+  )
+```
+
+We see that some labels are very hard to read due to the overlapping, so we can use the `ggrepel` package to fix this. The `ggrepel` package creates labels that repel each other in order to avoid overlap. It's a good idea to use it in conjunction with `geom_point()` in order to keep track of exact coordinate of the data point.
+
+```{r}
+library(ggrepel)
+ggplot(mds_tibble, aes(x = x, y = y, col = group)) +
+  geom_point() +
+  geom_text_repel(aes(label = sample)) +
+  labs(
+    x = paste0("Leading logFC dim 1 ", "(", dim1_var_explained, "%)"),
+    y = paste0("Leading logFC dim 2 ", "(", dim2_var_explained, "%)")
+  )
+```
+
+# Summary
+
+Today we started on the early steps of the RNA-seq analysis workflow.
+
+- We learned how to create a `DGEList` object, demonstrating how to create data objects required by specific packages.
+- We learned how to use edgeR's `filterByExpr()` function to filter out lowly expressed genes.
+- We learned how to normalise the data using TMM normalisation.
+- We learned how to create MDS plots using both `plotMDS()` and `ggplot2`.
+- We learned how to use `ggrepel` to create non-overlapping labels in `ggplot2` plots.
+
+This provides a good foundation for organising data to satisfy the requirements of specific packages, and how to pull data out of the objects created by those packages. The data we pulled out can then be organised into a tidy format to leverage the power of all the `tidyverse` functions that we have learned so far.
+
+In the next session we will continue the RNA-seq analysis workflow and complete our differential expression analysis.
+
+## References

@@ -1,0 +1,29 @@
+---
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "Contents:"
+---
+
+# Course summary & concluding remarks {.unnumbered}
+
+Congratulations on completing the BIOL90042 workshops! Over this semester, we hope you have gained a solid foundation in data wrangling, visualisation, and analysis with R & the tidyverse. You can now read in, clean, transform, and explore data; create clear, publication-ready plots; and carry out a basic analysis from start to finish. You also have an idea of how to do some more specific data analyses in R like statistical tests, RNA-seq and machine learning.
+
+But this is just the beginning of what you can do with R! Keep experimenting with your own data, using the concepts covered in this course, and by exploring many different R packages that exist to tackle particular analysis problems and data types.
+
+Going forward, you can check out the links below which point to a variety of resources that can help you improve your R skills, and have a look at the 'further reading' sections of each week, if you haven't already.
+
+## Useful references {#sec-useful-references}
+
+-   [R for Data Science](https://r4ds.had.co.nz): this is a great online book that teaches you to do data science with R. Covering a wide range of topics using the `tidyverse` packages. It is also available in a range of different languages, like [Spanish](https://davidrsch.github.io/r4ds-es/), [Italian](https://it.r4ds.hadley.nz/), [Turkish](https://tr.r4ds.hadley.nz/), [Portuguese](https://pt.r4ds.hadley.nz/), Chinese ([unofficial 2e](https://books-zh-cn.github.io/r4ds-zh-cn/) and [official 1e](https://yun.weicheng.men/Book/R%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6.pdf) available) and [Korean](https://bookdown.org/sulgi/r4ds/index.html).
+
+-   [The R Gallery](https://r-graph-gallery.com): this shows a range of plots that can be created in R using `ggplot2` with associated code for each plot.
+
+-   [The paletteer gallery](https://pmassicotte.github.io/paletteer_gallery/): this is a visual showcase of the nice colour palettes contained in the `paletteer` package. Really helpful for making your plots look cute!
+
+-   [R-bloggers](https://www.r-bloggers.com): this is a blog that aggregates posts from a wide range of R bloggers. It is a great resource for finding out about new packages and techniques in R.
+
+-   [Datacamp R documentation](https://www.datacamp.com/doc/r): this provides a reference to a lot of programming and data analysis in R using base R functionality.
+
+-   [RLadies Melbourne events](https://r-ladiesmelbourne.github.io/): RLadies Melbourne is the Melbourne chapter of the global [RLadies](https://rladies.org/) organisation. They regularly run educational workshops using R, and events are open to everyone!

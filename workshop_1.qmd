@@ -5,88 +5,66 @@ format:
   html:
     toc: true
     toc-location: left
-    toc-title: "In this chapter:"
+    toc-title: "In this session:"
 ---
 
-# Introduction to R {#sec-chapter01}
+# Workshop 1: Introduction to R {#sec-workshop01}
 
-In this chapter, we will get familiar with R.
+In this first workshop, we will get familiar with R.
 
 ::: {.callout-tip title="Learning Objectives"}
-1.  Use RStudio to create an R project and R script
+At the end of this session, learners should be able to:
+
+1.  Use RStudio, R projects and R scripts
 
 2.  Perform basic mathematical operations, comparisons and function calls in R
 
-3.  Store the results of analysis in variables
+3.  Employ variables to store the results of analyses
 
 4.  Describe the different data types and data structures used in R
 
-5.  Recall how to use RStudio to find data files and read them in as data frames
+5.  Compose R code that uses subsetting to operate on vectors and data frames
 :::
 
-## Using RStudio {#sec-usingRstudio}
+## Getting started {#sec-starting}
 
-### What is R and RStudio? {#sec-whatIsR}
+Welcome to the first R coding workshop! You've had a go at writing some basic R code in tutorial 1 last week, and today we will build on that to develop a strong foundation in R.
 
-**R** is a free and popular statistical programming language, great for performing data analysis. **RStudio** is a free [integrated development environment (IDE)](https://en.wikipedia.org/wiki/Integrated_development_environment) that provides useful support features for writing code. During this course, we will learn how to use RStudio's handy features like projects (which help us to keep track of different analyses) and the environment panel (which shows us all of our data/variables in one place).
+### Opening our project {#sec-project}
 
-### Creating a project {#sec-creatingProject}
+The first thing we need to do is open the R project that we will use in these workshops. As covered in lecture 2, projects are a way we can organise our work in RStudio, so that we can resume where we left off and keep different analyses separate. Any time you start working on something new (like these workshops!) it is recommended that you start a new project. To make things easier, we have pre-made an R project with all of the data you will need for the workshops. If you haven't already, download it using the button below:
 
-Rstudio Projects are a way we can organise our work in RStudio, so that we can resume where we left off and keep different analyses separate. Any time you start working on something new (like this course!) it is recommended that you start a new project. You can see the current project you're working on, switch between projects or create a new project using the menu in the top right hand corner of RStudio:
+{{< downloadthis data/r_course.zip dname="r_course" label="Download the R project for BIOL90042 workshops" icon="file-earmark-arrow-down" type="primary" class="data-button" id="rproj" >}}
+
+Once downloaded, you can move this file to wherever you'd like on your computer, and **unzip it** (on mac: double-click, on windows: right-click, then 'extract all').
+
+Inside the 'BIOL90042_workshops' folder, you should see two things: a sub-folder called 'data' and an R project file:
+
+![The project folder contains a 'data' sub-folder and an R project file](images/S01F00_rproject.png){width="960"}
+
+Double-click on this `.Rproj` (R project) file, and it should open up in RStudio. You now have a new R session, where you are working inside of a project called 'r_course'.
+
+You can see the current project you're working on, switch between projects or create a new project using the menu in the top right hand corner of RStudio:
 
 ![In the top right hand corner of RStudio, you can see all of your projects](images/S01F01_make_project.png){width="960"}
 
-To begin this course, let's make a new project. We'll do this in a new directory (folder) so that everything stays organised:
-
-![We usually want to make a new project in its own directory (folder)](images/S01F02_make_project.png){width="960"}
-
-Next, we need to tell R that we want to make a 'New Project' and not any of the other fancy things we could create:
-
-![There are many types of projects we can make in R, but for now we'll stick with a regular project.](images/S01F03_make_project.png){width="960"}
-
-Finally, we need to give our project an informative name:
-
-![Choose a name that will help you remember what this project is about!](images/S01F04_make_project.png){width="960"}
-
 ::: {.callout-note title="Name with underscores, not spaces"}
-You'll notice I named my project using an underscore (R_course) rather than a space (R course). **In general, when coding we want to name things without spaces**, so that it is clear to the computer that we are talking about a single entity (the 'R_course') as opposed to multiple things ('R' and 'course'). We'll revisit this idea later in the chapter in @sec-variables
+You'll notice I named my project using an underscore (r_course) rather than a space (r course). **In general, when coding we want to name things without spaces**, so that it is clear to the computer that we are talking about a single entity (the 'r_course') as opposed to multiple things ('r' and 'course'). We'll revisit this idea later in the session in @sec-variables
 :::
 
 ### Creating an R script {#sec-createRScript}
 
-Now that our project is set up, we need to create a file to write our code in:
+Now that our project is set up, recall that we need to create a file to write our code in:
 
 ![How to create a new R Script](images/S01F05_new_script.png){width="960"}
 
-This file is called an **R Script**. Don't forget to save your R Script as you work so you don't lose your progress! You can do this through the file menu or by using the keyboard shortcut {{< kbd Cmd-S >}}.
-
-### Overview of the RStudio layout
-
-At this point, your RStudio window should look like this, with four different panels visible:
-
-![The four panels of RStudio](images/S01F06_panels.png){width="960"}
-
-This is what they're used for:
-
-1.  **The R Script panel.** This is a text document where you can write code, and run it by highlighting the code or putting your cursor on that line, then either clicking the 'Run' button in the top-right corner, or using the {{< kbd Cmd-Enter >}} keyboard shortcut.
-
-2.  **The console.** This is where the output (results) of your code will appear. You can also run code in the console, by typing it next to the `>` symbol and pressing {{< kbd Enter >}} but it's better to use the R Script, as the code you write there is saved and acts as a record of your work.
-
-3.  **The environment panel.** This is where the data and variables you use in your analysis will be listed. More on this later.
-
-4.  **The files/plot/help panel.**
-
-    -   Under the 'files' tab you can see the files in your current folder
-
-    -   Under the 'plots' tab you can view the plots you have created
-
-    -   Under the 'help' tab you can read manual pages to learn how to use functions
-
-Although there are other tabs for some of these panels, they are used for more niche things out of scope of this course. You can read more about it in the [RStudio documentation](https://docs.posit.co/ide/user/ide/guide/ui/ui-panes.html).
+Remember that this file is called an **R Script**. Don't forget to save your R Script as you work so you don't lose your progress! You can do this through the file menu or by using the keyboard shortcut {{< kbd Cmd-S >}}.
 
 ### Writing our first piece of code
 
-Now we are ready to write our bit of code! We'll start with one of the most important concepts in programming: comments. Comments are lines of our script that begin with `#` and they are ignored by the computer: they are just notes that we write to ourselves. It's really important to write 'well-commented' code, with plenty of comments that clearly explain what your code is doing, so that your script can easily be understood by whoever looks at it next (whether this is someone else or you revisiting an analysis many months later!)
+Now we are ready to write some code! You might like to start with some of what we learned last week, in section @sec-maths of the ebook.
+
+Before we get into writing code though, let's first learn about one of the most important concepts in programming: comments. Comments are lines of our script that begin with `#` and they are ignored by the computer: they are just notes that we write to ourselves. It's really important to write 'well-commented' code, with plenty of comments that clearly explain what your code is doing, so that your script can easily be understood by whoever looks at it next (whether this is someone else or you revisiting an analysis many months later!)
 
 ::: {.callout-warning title="Don't forget your #"}
 If you forget the `#` at the start of your comment, R will try to interpret your notes as actual code, and you'll get an error message:
@@ -107,46 +85,6 @@ During this course, we will practice writing well-commented code, but here is an
 
 Note that comments can be written on their own line or at the end of a line after the code. Crucially, you cannot write any code after a `#` on the same line, as R will ignore it. This is sometimes useful for 'commenting out' code that you don't want to run, but want to keep in your script for later use.
 
-## Practicing R code with maths {#sec-maths}
-
-To practice running R code, let's do some maths. Here's how to code some basic mathematical operations in R:
-
-+----------------------+----------------------+------------------------------------------------------------------+
-| Operation            | Code                 | Example                                                          |
-+======================+======================+==================================================================+
-| Addition             | `+`                  | one plus one: `1 + 1`                                            |
-+----------------------+----------------------+------------------------------------------------------------------+
-| Subtraction          | `-`                  | two minus ten: `2 - 10`                                          |
-+----------------------+----------------------+------------------------------------------------------------------+
-| Multiplication       | `*`                  | eight times 4: `8 * 4`                                           |
-+----------------------+----------------------+------------------------------------------------------------------+
-| Division             | `/`                  | ten divided by 3: `10 / 3`                                       |
-+----------------------+----------------------+------------------------------------------------------------------+
-| Exponents            | `^`                  | three squared: `3 ^ 2`                                           |
-+----------------------+----------------------+------------------------------------------------------------------+
-| Brackets             | `()`                 | sixteen divided by the result of three minus one: `16 / (3 - 1)` |
-+----------------------+----------------------+------------------------------------------------------------------+
-
-Like in regular maths, R follows the order of operations. Here, the `3 + 2` in the brackets will be evaluated first, and then result will be multiplied by 7.
-
-```{r}
-# brackets evaluate first
-(3 + 2) * 7
-```
-
-You might notice when running this code that before the output (result), there is a number one that looks like this: `[1]`. This relates to the length of our output, which here is just one single number (hence the `1`). Later in the chapter we will write code with longer output, and the purpose of this number will become clearer, but you can ignore it for now.
-
-::: {.callout-note title="Using whitespace in code"}
-Above we used spaces between the numbers and mathematical operators in our code. R understands code without spaces too, but this makes it easier to read. Note that this is different to when we are naming things, when spaces are bad!
-
-```{r}
-# spaces don't matter in code
-3 ^ 2
-# so both of these should give the same result
-3^2
-```
-:::
-
 ::::::::::::::: {.callout-important title="Practice exercises"}
 Try these practice questions to test your understanding
 
@@ -155,19 +93,19 @@ Try these practice questions to test your understanding
 
 ::::::: choices
 ::: {.choice .correct-choice}
-`(2 * 3) + (2 ^ 2)`
+`10 + 0 # + 60`
 :::
 
 ::: choice
-`(5 - 3) * 4`
+`1 + 2`
 :::
 
 ::: choice
-`1 + 1`
+`# 5 + 5`
 :::
 
 ::: choice
-`20 - 1`
+`100 - 50`
 :::
 :::::::
 ::::::::
@@ -200,7 +138,7 @@ Nothing
 
 <p>
 
-1.  `(2 * 3) + (2 ^ 2)` is equal to 10. If you're not sure, try copy-pasting this code into the console and running it! The best way to learn is by doing.
+1.  `10 + 0 # + 60` is equal to 10, because the + 60 is after the comment symbol `#`. If you're not sure, try copy-pasting this code into the console and running it! The best way to learn is by doing.
 
 2.  The code `# test 1+1` is a comment, because it starts with a `#`. This means R ignores it: if you run this code, you won't see any output in the console.
 
@@ -210,6 +148,8 @@ Nothing
 :::::::::::::::
 
 ## Comparisons {#sec-comparisons}
+
+Now, let's learn some new R code! We'll start with comparisons.
 
 R can perform comparisons, using the following notation:
 
@@ -247,7 +187,7 @@ You can also negate the result of a comparison or any TRUE/FALSE value by using 
 !(1 == 2)
 ```
 
-This is really useful for filtering data, which we will cover in [Chapter @sec-chapter02]
+This is really useful for filtering data, which we will cover in [Session @sec-workshop02]
 
 ::::::::::::::::::::: {.callout-important title="Practice exercises"}
 Try these practice questions to test your understanding
@@ -347,7 +287,7 @@ For example, let's say I use R to do some maths:
 
 R outputs simply the result. To use this value later, I would need to assign the output to a variable.
 
-Variables are assigned with the assignment operator `<-` (you can type this using the {{< kbd < >}} and {{< kbd - >}} keys, or use the shortcut {{< kbd alt- >}}).
+Variables are assigned with the assignment operator `<-` (you can type this using the {{< kbd < >}} and {{< kbd - >}} keys, or use the shortcut {{< kbd mac=Option- win=alt- >}}).
 
 ::: {.callout-note title="Assignment arrows"}
 You might be familiar with assigning values to variables using the equal sign `=`, which is used in other programming languages and in maths. Although this does also work in R, **it's preferred to use the arrow** `<-` as this makes it really clear that a variable is being assigned. In this course we'll be using `<-`.
@@ -698,11 +638,11 @@ Sometimes, the R help pages can be pretty tricky to understand, and they can't h
 
 -   **Package vignettes**. Many R packages have vignettes, which are short guides to using the package. Once you find the name of a package you might want to use, you should go through their vignettes to see what functions are available and how to use them.
 
--   **ChatGPT** (or similar). AI tools can be really useful in helping you write code, although make sure you double-check the results because it can make mistakes. Tips and advice on how to effectively use AI tools is available in the "Further reading" section.
+-   **ChatGPT/Claude/Gemini** (or similar). AI tools can be really useful in helping you write code, although make sure you double-check the results because it can make mistakes. Revisit lecture 1 for tips on how to best use these.
 
 -   **Ask others**! There are lots of R users, and working together is often the best way to solve problems. This could be through online forums, like [StackOverflow](http://stackoverflow.com/questions/tagged/r) or in-person
 
-No matter where you get your help, try to make sure you understand the code you find. Reading the help pages for new functions, or asking an AI like ChatGPT to explain what code is doing is a great way to expand your R knowledge. We also list some recommended additional resources in the "Useful references" section of "Further reading".
+No matter where you get your help, try to make sure you understand the code you find. Reading the help pages for new functions, or asking an AI to explain what code is doing is a great way to expand your R knowledge.
 
 ::::::::::::::::::::: {.callout-important title="Practice exercises"}
 Try these practice questions to test your understanding
@@ -859,7 +799,7 @@ Nor can you use the logical operator `!` on a character:
 
 You'll notice that the error messages for these two examples explain that R can't perform the operation you're asking it to do on that data type.
 
-If you want to change the type of a piece of data, you can use the `as.x()` functions like (e.g.`as.logical()`, `as.numeric()`, and `as.character()`):
+If you want to change the type of a piece of data, you can use the `as.x()` functions like (e.g. `as.logical()`, `as.numeric()`, and `as.character()`):
 
 ```{r}
 # convert a number to a character
@@ -1020,7 +960,7 @@ There are a few ways to see the contents of a vector. You can simply type the na
 letters
 ```
 
-You'll notice that, in addition to the `[1]` that we usually see printed next to the output, there is also a `[20]`. This number is telling us where we are up to in the vector (so `[1]` means that line of output starts with the first element, `"a"` and `[20]` means that line of output starts with the 20th element of the vector, `"t"`).
+You'll notice that, in addition to the `[1]` that we usually see printed next to the output, there is also a `[20]`. This number is telling us where we are up to in the vector (so `[1]` means that line of output starts with the first element, `"a"` and `[20]` means that line of output starts with the 20th element of the vector, `"t"`). We'll learn a bit more about what square brackets mean in R in @sec-vectorsubset.
 
 But what if we don't always want to print the whole thing? For long vectors, it's handy to use the `head()` and `tail()` functions to inspect just a few values. By default, these print the first and last 6 elements of a vector (you can change that by setting the `n` argument).
 
@@ -1062,7 +1002,7 @@ For example, `1:5` creates a vector of numbers from 1 to 5:
 ```
 :::
 
-R is a vectorised language, which means that many functions and operations (like `*`, `+` etc) work directly on vectors without you having to write extra code. For example, we can use the `mean()` function to calculate the average of a vector of numbers, or add a single number to each value in the vector:
+R is a **vectorised** language, which means that many functions and operations (like `*`, `+` etc) work directly on vectors without you having to write extra code. For example, we can use the `mean()` function to calculate the average of a vector of numbers:
 
 ```{r}
 # create a vector of numbers
@@ -1070,12 +1010,125 @@ numbers <- c(1, 2, 3, 4, 5)
 
 # calculate the mean
 mean(numbers)
-
-# add 5 to each value
-numbers + 5
 ```
 
 Because the other data structures we'll cover are built on vectors, this concept will be useful for them as well.
+
+#### Subsetting vectors {#sec-vectorsubset}
+
+Now that we're starting to work with vectors, you might have seen the square brackets `[]` appearing in the R console and environment panels. In R, square brackets are used for subsetting, which is where we extract just part of a data structure, like a vector.
+
+To subset, we first write the vector (usually it is stored within a variable, so this will just be the variable's name), then directly next to that with no spaces, write some square brackets with a number inside that defines the position (aka index) of the element(s) you want to extract. For example, let's say I want to get the 5th letter of the alphabet. I could subset the `letters` vector like so:
+
+```{r}
+# get the fifth letter of the alphabet
+# be careful that there is no space between 'letters' and the square bracket
+# also remember to close your brackets!
+letters[5]
+```
+
+This returns `"e"`, the fifth letter of the alphabet. Using the colon notation described above, we can also extract a range of positions from the vector, for example:
+
+```{r}
+# get the 10th to 15th letters of the alphabet
+letters[10:15]
+```
+
+It should be noted that, unlike some other programming languages R uses **1-based indexing**. So that means that the first letter of the alphabet, 'a' can be accessed using `letters[1]`. The indexing is also inclusive, so 10:15 includes the 15th position.
+
+You can also use negative numbers to remove elements. For example, to get the entire alphabet except for the first letter, we could use the index -1 like so:
+
+```{r}
+# remove the first letter 
+letters[-1]
+
+# equivalent to this
+letters[2:26]
+```
+
+The way negative number indexing works in R is a little different to other languages also! If in doubt, just play around with the indexing, worst case scenario you have to try a few different expressions before you land on the correct one.
+
+::::::::::::::::::::: {.callout-important title="Practice exercises"}
+Try these practice questions to test your understanding
+
+:::::::: question
+1\. Which of the following is NOT a valid vector in R?
+
+::::::: choices
+::: choice
+`c(TRUE, FALSE, FALSE)`
+:::
+
+::: {.choice .correct-choice}
+`(1, 2, 3, 4)`
+:::
+
+::: choice
+`1:10`
+:::
+
+::: choice
+`c("cat", "dog", "fish")`
+:::
+:::::::
+::::::::
+
+:::::::: question
+2\. What is the result of running this R code: `c(1, 2, 3) * 2`?
+
+::::::: choices
+::: choice
+`2(1, 2, 3)`
+:::
+
+::: choice
+`c(1, 2, 3, 1, 2, 3)`
+:::
+
+::: choice
+`c(1, 2, 3, 2)`
+:::
+
+::: {.choice .correct-choice}
+`c(2, 4, 6)`
+:::
+:::::::
+::::::::
+
+:::::::: question
+3\. Which of the following will NOT give me the first 5 letters of the alphabet?
+
+::::::: choices
+::: {.choice .correct-choice}
+`head(letters)`
+:::
+
+::: choice
+`letters[1:5]`
+:::
+
+::: choice
+`letters[-6:-26]`
+:::
+
+::: choice
+`c(letters[1], letters[2], letters[3], letters[4], letters[5])`
+:::
+:::::::
+::::::::
+
+<details>
+
+<summary>Solutions</summary>
+
+1\. The vector `(1, 2, 3, 4)` is not a valid vector: you need to use the `c()` function to create a vector in R. The exception is the colon `:` notation, which creates a sequence of numbers.
+
+2\. The result of running `c(1, 2, 3) * 2` would be `c(2, 4, 6)`. This is because R is a vectorised language, so the `*` operator multiplies each element of the vector by 2.
+
+3\. The code `head(letters)` will give the first **6** letters of the alphabet, because the default value of the n argument that controls the number of elements to print is 6 (check the help page by running `?head` in the console). You could get it to print the first 5 letters by writing `head(letters, n = 5)`. Of the other options, `letters[1:5]` uses the
+
+</details>
+:::::::::::::::::::::
 
 ### Matrices {#sec-matrices}
 
@@ -1178,7 +1231,7 @@ Another way to view the data frame is by clicking on its name in the environment
 
 ![Clicking on the data frame's name in the environment panel opens it in the viewer](images/S01F19_env_panel_data_frame.png){width="800"}
 
-This panel also shows you the names and types of the columns in the data frame. You might notice that the `Species` is described as a factor, which is a special type of data in R that we'll return to in @sec-chapter06.
+This panel also shows you the names and types of the columns in the data frame. You might notice that the `Species` is described as a factor, which is a special type of data in R that we'll cover in @sec-workshop03.
 
 Before the column names, you'll see the `$` symbol. The dollar sign `$` is a shortcut used in R to access columns of a data frame. For example, to access the `Petal.Width` column of the `iris` data frame, you can use `iris$Petal.Width`:
 
@@ -1202,55 +1255,27 @@ class(iris$Petal.Width)
 mean(iris$Petal.Width)
 ```
 
-::::::::::::::::::::::::::::::::::::::: {.callout-important title="Practice exercises"}
+Finally, data frames are **mutable**, meaning that you can add additional columns to them. You can do this by specifying your new column name with the `dataset$column_name` notation, and then assigning a vector into it, like `dataset$new_column_name <- new_column_contents`.
+
+For example, let's say I want to add a column to the `iris` dataset that contains the sepal length in cm (currently, they are in inches). Knowing that 1 inch is equal to 2.54 cm, I could create this column like so:
+
+```{r}
+iris$sepal_length_cm <- iris$Sepal.Length * 2.54
+```
+
+Be careful that, as we discussed above every column in a dataframe must have the same length. For example, if I tried to run the following:
+
+```{r}
+iris$test <- 1:100
+```
+
+I get an error, because iris has 150 rows (so each column is a vector of length 150), and I'm trying to add to it a column with length 100.
+
+::::::::::::::::::::::::::::::::: {.callout-important title="Practice exercises"}
 Try these practice questions to test your understanding
 
 :::::::: question
-1\. Which of the following is NOT a valid vector in R?
-
-::::::: choices
-::: choice
-`c(TRUE, FALSE, FALSE)`
-:::
-
-::: {.choice .correct-choice}
-`(1, 2, 3, 4)`
-:::
-
-::: choice
-`1:10`
-:::
-
-::: choice
-`c("cat", "dog", "fish")`
-:::
-:::::::
-::::::::
-
-:::::::: question
-2\. What is the result of running this R code: `c(1, 2, 3) * 2`?
-
-::::::: choices
-::: choice
-`2(1, 2, 3)`
-:::
-
-::: choice
-`c(1, 2, 3, 1, 2, 3)`
-:::
-
-::: choice
-`c(1, 2, 3, 2)`
-:::
-
-::: {.choice .correct-choice}
-`c(2, 4, 6)`
-:::
-:::::::
-::::::::
-
-:::::::: question
-3\. What is the difference between a matrix and a data frame?
+1\. What is the difference between a matrix and a data frame?
 
 ::::::: choices
 ::: {.choice .correct-choice}
@@ -1272,7 +1297,7 @@ A matrix is used for mathematical operations, while a data frame is used for dat
 ::::::::
 
 :::::::: question
-4\. I wrote this code to create a data frame, but it gave me an error. What is wrong with it?
+2\. I wrote this code to create a data frame, but it gave me an error. What is wrong with it?
 
 ```{r}
 #| eval: false
@@ -1297,13 +1322,13 @@ It's not allowed to have character columns and numeric columns in the same data 
 :::
 
 ::: choice
-You should use the `tibble()` function instead of `data.frame()`
+You should use the `data()` function instead of `data.frame()`
 :::
 :::::::
 ::::::::
 
 :::::::: question
-5\. What is NOT a way that I could view the contents of a data frame in R?
+3\. What is NOT a way that I could view the contents of a data frame in R?
 
 ::::::: choices
 ::: choice
@@ -1325,7 +1350,7 @@ Using the `view()` function
 ::::::::
 
 :::::::: question
-6\. I have created the `mouse_facts` data frame using the code below. How would I calculate the average age of the mice?
+4\. I have created the `mouse_facts` data frame using the code below. How would I calculate the average age of the mice?
 
 ```{r}
 #| eval: false
@@ -1355,287 +1380,24 @@ average(mouse_facts\$age)
 :::::::
 ::::::::
 
-<details>
-
-<summary>Solutions</summary>
-
-1\. The vector `(1, 2, 3, 4)` is not a valid vector: you need to use the `c()` function to create a vector in R. The exception is the colon `:` notation, which creates a sequence of numbers.
-
-2\. The result of running `c(1, 2, 3) * 2` would be `c(2, 4, 6)`. This is because R is a vectorised language, so the `*` operator multiplies each element of the vector by 2.
-
-3\. The difference between a matrix and a data frame is that a matrix has all elements of the same type (could be character, logical or numeric), while a data frame can have different types in each column.
-
-4\. The code to create the data frame `favourite_fruits` gave an error because the columns are not the same length: 'fruit' and 'colour' have 3 elements, but 'price' has 2. You can't create a data frame with columns of different lengths. As for the other options, you can have character and numeric columns in the same data frame, the column names don't need to be in quotation marks (although the code will work if they are), and the `tibble()` function is an alternative to `data.frame()` but either is fine.
-
-5\. Using the `view()` function is not a way to view the contents of a data frame in R. The correct function is `View()` (with a capital 'V'). All the other options are valid ways to view the contents of a data frame.
-
-6\. To calculate the average age of the mice, you would use `mean(mouse_facts$age)`. This is because the `age` column is part of the `mouse_facts` data frame, so you need to use the `$` symbol to access it, and the function for calculating the average in R is `mean()`.
-
-</details>
-:::::::::::::::::::::::::::::::::::::::
-
-## Reading in data {#sec-readingin}
-
-So far, we've explored the basics of R by creating our own data, or using built-in data objects like `letters` or `iris`. However, in real life analyses, we almost always need to read in data from files on our computers.
-
-In this section we will use the file named `mousezempic_dosage_data.csv`, which you downloaded from the Setup instructions at the start of this book.
-
-Check in the Files tab (bottom right panel) that this file is in the project directory you have made for this course (it's generally a good idea to keep all the data and code for a certain analysis together). It should be inside a folder named `data`.
-
-### Paths {#sec-paths}
-
-Paths tell R where to find the file you want to read in. They are strings of characters that first include the directory or series of directories in which a file is located, followed by the name of the file itself. For example, the path to a file called `my_data.csv` in a folder called `data` would be `data/my_data.csv`.
-
-In this course, we will use RStudio to help us find the paths to our files, without needing to type them out ourselves. If you're interested in learning more about paths, [codeacademy has a nice simple article on them](https://www.codecademy.com/resources/docs/general/file-paths).
-
-To find a file path easily in RStudio, you can use the file explorer panel. First, open it by clicking on the 'Files' tab in the bottom right panel of RStudio:
-
-![The file explorer panel in RStudio](images/S01F21_file_explorer.png){width="900"}
-
-By default, it will put you in your project directory. If you have data files in a different directory, you can navigate to that directory by clicking on the folders. Here, I have navigated to a folder on my desktop called 'data', which is inside the 'R_course' folder. Once you're in the right place, to get the path for that folder, click on `More > Copy Folder Path to Clipboard`:
-
-![Copying the folder path to the clipboard](images/S01F22_copy_folder_path.png){width="800"}
-
-This will copy the path to the folder to your clipboard, which you can then paste into your R script. Then, you just need to add a `/` followed by the name of the file to the end of the path.
-
-For example, the path to the folder in the above image is `~/Desktop/BIOL90042_workshops/data`, so the path to the `mousezempic_dosage_data.csv` file is `~/Desktop/BIOL90042_workshops/data/mousezempic_dosage_data.csv`.
-
-### Reading data with functions {#sec-readinFunctions}
-
-Now that we know how to find our data, we can read it in. We'll do this using a handy package called `readr`, that is part of the `tidyverse`.
-
-::: {.callout-note title="Packages in R"}
-Packages are collections of functions that other people have written to help us do specific tasks, beyond what is built-in to R itself. The [tidyverse](https://www.tidyverse.org/) is a collection of packages that help to streamline data analysis in R. Its a 'universe of functions for tidy data analysis.' To use the tidyverse, we first need to install it. This is done using the `install.packages()` function run in the Setup code. If you have run the Setup code, there is no need to run the code below again, but for reference:
-
-```{r}
-#| eval: false
-# install the tidyverse package
-# only do this once
-install.packages("tidyverse")
-```
-
-We only need to install a package once, but you must load it each time you open R. This is done using the `library()` function:
-
-```{r}
-# load the tidyverse package
-# do this every time you open R
-library(tidyverse)
-```
-
-You'll see some output from the `tidyverse` package when you load it, which is just telling you that some of the tidyverse functions have the same name as other functions in R.
-
-If you forget to load a package, R will give you an error when you try to use that package's functions, so it's usually a good idea to load all the packages you'll need at the start of your script to prevent you forgetting to load them the next time you open R. We'll do this at the start of each chapter in this course.
-:::
-
-To read in our data, we'll use the `read_delim()` function from the `readr` package. This function takes in the path to the file you want to read in (in quotation marks `""`, as this is a character string) and returns as output a tibble.
-
-```{r}
-#| eval: false
-read_delim("~/Desktop/BIOL90042_workshops/data/mousezempic_dosage_data.csv")
-```
-
-::: {.callout-note title="Delimiters"}
-The 'delim' in 'read_delim' stands for delimiter, and refers to the character used to separates columns of the data.
-
-The most common types of delimiter are comma-separated values (.csv files) and tab-separated values (.tsv files). Here's an example of what they look like:
-
-``` {filename="example.csv"}
-Name, Age
-Andy, 10
-Bob, 8
-```
-
-\
-
-``` {filename="example.tsv"}
-Name  Age
-Andy  10
-Bob   8
-```
-
-By default `read_delim()` will guess your delimiter, so it's easiest to use that to read files, no matter their format. However, if you read other people's code, you might also encounter the `read_tsv()` and `read_csv()` functions which are specifically for reading in tab-separated and comma-separated files, respectively. It's up to you which you use, just make sure to get the delimiter right! If you try to read in a file with the wrong delimiter, it'll look like a mess.
-
-<details>
-
-<summary>What happens if we use the wrong delimiter?</summary>
-
-As an example, let's try reading in our comma-separated file with `read_tsv()`, which is specifically for tab-separated files:
-
-```{r}
-#| eval: false
-read_tsv("~/Desktop/BIOL90042_workshops/data/mousezempic_dosage_data.csv")
-```
-
-```{r}
-#| echo: false
-# this is for rendering the book
-read_tsv("data/mousezempic_dosage_data.csv")
-```
-
-We can see that the data is all in one column, which is not what we want!
-
-</details>
-:::
-
-Depending on where you have put your data, your path to the `mousezempic_dosage_data.csv` file may be different. You should be able to find the path by following the instructions in the 'Paths' section above.
-
-::: {.callout-note title="Using RStudio to autocomplete paths"}
-Another conveninent way to get the path of your file (so long as you are working within an R project) is to use a feature called 'tab completion'. Within R projects, R can discover any files sitting in, or downstream of the project directory. So, assuming our `mousezempic_dosage_data.csv` file is located within a folder called 'data', if we start typing `read_delim("data/mouse` then press {{< kbd Tab >}}, R will auto-complete the full file path and close the quotes and bracket for us!
-
-Even better, we need only type `read_delim('mouse` and RStudio will find all files within the project beginning with that word, and automatically fill in the required file path!
-:::
-
-Now, let's take a look at the output of `read_delim()`:
-
-```{r}
-#| echo: false
-# this is for rendering the book, path is maybe different for learners so don't show this chunk
-read_delim("data/mousezempic_dosage_data.csv")
-```
-
-The first line tells us how many rows and columns are in the data. Then, the `Column specification` section tells you:
-
--   What delimiter was used to separate values.
-
--   Which columns belong to each type. `read_delim()` is quite clever and will guess this for us, but it's useful to check and make sure it's correct.
-
-Then, the data will be printed out as a tibble.
-
-::: {.callout-note title="Tibbles and data frames"}
-Tibbles are a more modern version of data frames introduced in the [tidyverse](https://www.tidyverse.org/). They are very similar to data frames, but have some additional features like printing more nicely in the console.
-
-Let's use `iris` to highlight the advantages of tibbles:
-
-```{r}
-#| message: false
-# need to load the tidyverse package to use tibbles
-# see below for more information on loading packages
-library(tidyverse)
-```
-
-When we print a data frame, it shows every single row and column, which can be overwhelming if the data frame is large:
-
-<details>
-
-<summary>Click here to print `iris` as a data frame!</summary>
-
-```{r}
-# print iris
-iris
-```
-
-</details>
-
-But when we print a tibble, only a small preview is shown, which is much easier to read:
-
-```{r}
-# print iris as a tibble
-as_tibble(iris)
-```
-
-It also tells us the number of rows (150) and columns (5) in the data, as well as the types of each column (`<dbl>` is short for `double`, which is a type of numeric data). Unlike data frames, tibbles can not include row names that sit 'outside' the cells.
-
-For the purpose of this course, we can treat tibbles and data frames as the same thing. However, if you're interested in learning more about tibbles, you can read about them [here](https://r4ds.had.co.nz/tibbles.html#tibbles-vs.-data.frame).
-:::
-
-No matter which function you use to read in your data, R simply prints the values out in the console. To actually work with data in R, we need assign our data frame to a variable:
-
-```{r}
-#| eval: false
-m_dose <- read_delim("~/Desktop/R_course/data/mousezempic_dosage_data.csv")
-```
-
-```{r}
-#| echo: false
-# this is for rendering the book, path is different for learners so don't show this chunk
-m_dose <- read_delim("data/mousezempic_dosage_data.csv")
-```
-
-### Reading data through RStudio's graphical interface {#sec-readinGUI}
-
-You can also read in data through RStudio's graphical interface. This is a good way to get the code to read in data if you're not sure how to do it yourself.
-
-To do this, click on the 'Import Dataset' button in the environment panel (for our data, we will use the 'from Text (readr)' option):
-
-![The import dataset button in the environment panel ](images/S01F23_import_dataset_button.png){width="800"}
-
-This will open a window where you can select the file you want to read in, like so:
-
-![The import dataset window in RStudio](images/S01F24_import_dataset_window.png){width="800"}
-
-R will then generate the code to read in the data for you, and you can use the preview to check that it has worked ok:
-
-![RStudio will then read in the data, and give you the code that it used](images/S01F25_import_dataset_code.png){width="800"}
-
-You can then copy this code and paste it into your script. This step is really important because not only does it helps you to learn how to read in data yourself, **it keeps a record in the script of how you read in the data so that you can reproduce your analysis later.**
-
-![Don't forget to paste the code into the script!!!](images/S01F26_paste_code.png){width="1000"}
-
-::::::::::::::::::::: {.callout-important title="Practice exercises"}
-Try these practice questions to test your understanding
-
 :::::::: question
-1\. What is a path?
+5\. How can I add a new column to the `mouse_facts` data frame above that contains the favourite food of each mouse? (Hint: it's cheese, because they are mice 🧀🐁)
 
 ::::::: choices
 ::: choice
-A type of data in R
+`mouse_facts + c("cheese", "cheese", "cheese")`
 :::
 
 ::: choice
-The data you want to analyse
+`mouse_facts$fave_food = cheese`
+:::
+
+::: choice
+`fave_food <- c("cheese", "cheese", "cheese")`
 :::
 
 ::: {.choice .correct-choice}
-A string of characters that tells R where to find a file
-:::
-
-::: choice
-A function in R
-:::
-:::::::
-::::::::
-
-:::::::: question
-2\. What is NOT a way to read in a file called `my_data.tsv` in R?
-
-::::::: choices
-::: choice
-Using the `read_delim()` function
-:::
-
-::: choice
-Using the 'Import Dataset' button in RStudio
-:::
-
-::: choice
-Using the `read_tsv()` function
-:::
-
-::: {.choice .correct-choice}
-Using the `read_csv()` function
-:::
-:::::::
-::::::::
-
-:::::::: question
-3\. What do we need to do before we can use functions from `readr` or any other R package?
-
-::::::: choices
-::: choice
-Install it
-:::
-
-::: {.choice .correct-choice}
-Install it, then load it into our R session using the `library()` function
-:::
-
-::: choice
-Download it
-:::
-
-::: choice
-Look at the help page for the functions we want to use
+`mouse_facts$fave_food <- c("cheese", "cheese", "cheese")`
 :::
 :::::::
 ::::::::
@@ -1644,22 +1406,24 @@ Look at the help page for the functions we want to use
 
 <summary>Solutions</summary>
 
-1\. A path is a string of characters that tells R where to find a file. Note that it isn't the data itself, but rather the location of the data.
+1\. The difference between a matrix and a data frame is that a matrix has all elements of the same type (could be character, logical or numeric), while a data frame can have different types in each column.
 
-2\. The `read_csv()` function is not a way to read in a file called `my_data.tsv`, because it is specifically for reading in comma-separated files, so it would not work for a tab-separated file like `my_data.tsv`.
+2\. The code to create the data frame `favourite_fruits` gave an error because the columns are not the same length: 'fruit' and 'colour' have 3 elements, but 'price' has 2. You can't create a data frame with columns of different lengths. As for the other options, you can have character and numeric columns in the same data frame, the column names don't need to be in quotation marks (although the code will work if they are), and the `data()` function is used to load R's pre-installed datasets, while `data.frame()` is used to create new data frames.
 
-3\. Before we can use functions from `readr` or any other R package, we need to install it, then load it into our R session using the `library()` function. Otherwise we will get an error message when we try to use the functions.
+3\. Using the `view()` function is not a way to view the contents of a data frame in R. The correct function is `View()` (with a capital 'V'). All the other options are valid ways to view the contents of a data frame.
+
+4\. To calculate the average age of the mice, you would use `mean(mouse_facts$age)`. This is because the `age` column is part of the `mouse_facts` data frame, so you need to use the `$` symbol to access it, and the function for calculating the average in R is `mean()`.
+
+5\. The correct answer is `mouse_facts$fave_food <- c("cheese", "cheese", "cheese")`, because this is accessing the `fave_food` column in the `mouse_facts` data frame, and giving it a vector of correct length (3). `mouse_facts$fave_food = cheese` is incorrect because cheese is a character, so needs to be in quotation marks,  `fave_food <- c("cheese", "cheese", "cheese")` creates a vector named `fave_food` but doesn't put this vector into the `mouse_facts` data frame and `mouse_facts + c("cheese", "cheese", "cheese")` is incorrect because we can't perform addition on a data frame in R.
 
 </details>
-:::::::::::::::::::::
+:::::::::::::::::::::::::::::::::
 
 ## Summary
 
-<!-- TO DO: make a nicely formatted PDF cheat sheet for printing -->
+Here's what we've learnt in this session:
 
-Here's what we've learnt in this chapter:
-
--   How to create an R project (to keep our files organised) and how to write and run code from an R script (so that the code is saved as a record of our work)
+-   How to use an R project (to keep our files organised) and how to write and run code from an R script (so that the code is saved as a record of our work)
 
 -   The operators for basic maths (`*`, `/`, `+` and `-`) and comparisons (`==`, `<`, `<=` and `!`)
 
@@ -1669,11 +1433,11 @@ Here's what we've learnt in this chapter:
 
 -   The three basic atomic data types in R (character, numeric and logical)
 
--   Three different data structures in R (vectors, matrices and data frames/tibbles)
+-   Three different data structures in R (vectors, matrices and data frames)
 
--   How to find file paths using RStudio
+-   How to use the square brackets `[]`, colons `:`  to subset vectors
 
--   How to load the `readr` package and use it to read in files
+-   How to use the `$` to access and create columns in a data frame
 
 Try the practice questions below to test your understanding!
 
@@ -1710,7 +1474,7 @@ Try the practice questions below to test your understanding!
     frog_counts / sum(Frog_counts)
     ```
 
-4.  Load the `iris` dataframe into your R session using `data(iris)`. What is the median petal length? Show the code you used to calculate this.
+4.  Load the `iris` data frame into your R session using `data(iris)`. What is the median petal length? Show the code you used to calculate this.
 
 5.  Imagine I have a file called `mouse_survival.tsv` located in a folder with the path `~/Downloads/experimental_data/latest`. Write a line of R code to read in this file and assign it to a variable called `mouse_survival`
 

@@ -9,33 +9,78 @@ filters:
   - naquiz
 
 book:
-  title: "BIOL90042 R Course"
-  author: "Shian Su & Kathleen Zeglinski"
+  title: "WEHI R Course"
+  author: "Kathleen Zeglinski"
   date: today
   favicon: "favicon.ico"
   sidebar:
     search: true
-    title: "BIOL90042 R Course Book"
+    title: "WEHI R Course Book"
     style: docked
     logo: "WEHI_RGB_logo.png"
   chapters:
     - index.qmd
-    - setup.qmd
-    - chapter_1.qmd
-    - chapter_2.qmd
-    - chapter_3.qmd
-    - chapter_4.qmd
-    - chapter_5.qmd
-    - stats_primer.qmd
-    - chapter_6.qmd
-    - chapter_7.qmd
-    - part: chapter_8.qmd
+    - part: Week 1
       chapters:
-      - ch8_section_1.qmd
-      - ch8_section_2.qmd
-      - ch8_section_3.qmd
-    - further_reading.qmd
-    #- advanced_topics.qmd
+        - setup.qmd
+        - workshop_0.qmd
+        - tutorial_1.qmd
+        - wk1_fr.qmd
+    - part: Week 2
+      chapters:
+        - workshop_1.qmd
+    #     - tutorial_2.qmd
+    #     - wk2_fr.qmd
+    # - part: Week 3
+    #   chapters:
+    #     - workshop_2.qmd
+    #     - tutorial_3.qmd
+    #     - wk3_fr.qmd
+    # - part: Week 4
+    #   chapters:
+    #     - workshop_3.qmd
+    #     - tutorial_4.qmd
+    #     - wk4_fr.qmd
+    # - part: Week 5
+    #   chapters:
+    #     - workshop_4.qmd
+    #     - tutorial_5.qmd
+    #     - wk5_fr.qmd
+    # - part: Week 6
+    #   chapters:
+    #     - workshop_5.qmd
+    #     - tutorial_6.qmd
+    #     - wk6_fr.qmd
+    # - part: Week 7
+    #   chapters:
+    #     - mst_revision.qmd
+    #     - tutorial_7.qmd
+    #     - wk7_fr.qmd
+    # - part: Week 8
+    #   chapters:
+    #     - workshop_6.qmd
+    #     - tutorial_8.qmd
+    #     - wk8_fr.qmd
+    # - part: Week 9
+    #   chapters:
+    #     - workshop_7.qmd
+    #     - tutorial_9.qmd
+    #     - wk9_fr.qmd
+    # - part: Weeks 10
+    #   chapters:
+    #     - tutorial_10.qmd
+    #     - wk10_fr.qmd
+    # - part: Week 11
+    #   chapters:
+    #     - workshop_8.qmd
+    #     - tutorial_11.qmd
+    #     - wk11_fr.qmd
+    - part: Wrap-up
+      chapters:
+        - summary.qmd
+    #     - intermediate_r.qmd
+  google-analytics:
+    tracking-id: "G-FN78SCFVJJ"
 
 bibliography: references.bib
 csl: vancouver_superscript.csl
@@ -58,3 +103,4 @@ format:
     code-overflow: wrap
     highlight-style: textmate.theme
     number-sections: true
+  

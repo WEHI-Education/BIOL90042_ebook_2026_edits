@@ -1,0 +1,36 @@
+---
+title: "Further Reading"
+toc: false
+---
+
+At the end of every weeks' content, there will be a 'further reading' page that will include extra explanations/resources that you might find helpful. This content will not be assessed, but is provided for your reference.
+
+## More about file paths
+
+What we covered about file paths in the previous section is enough for performing basic R analysis, but the following topics are worth being aware of, particularly if you also need to run programs through the terminal/command prompt.
+
+### Home directories
+
+Each account on a computer tends to have a home directory, which is a private directory each user is assigned. This directory is often located at `/home/my_username/` on Unix-based systems and `C:\Users\my_username\` on Windows systems. The home directory commonly acts as the starting point for many paths local to the user, and can be referred to using the shortcut `~` (tilde). For example, the path `~/analysis/data/file.txt` would be equivalent to `/home/my_username/analysis/data/file.txt` on a Unix-based system. The exact path that is referred to by `~` can be found by running the command `Sys.getenv("HOME")` in R, and is relative to the user running the R session.
+
+### What dots mean in a path
+
+When reading paths in other people's code, you might see dots being used, such as `./file.txt` or `../file.txt`. Dots are special characters in paths with the following meanings:
+
+-   Single dot: `.` means the current directory. For example, if I am in the folder `/home/my_username/analysis/data/`, then the `.` will point towards this folder. You will generally only see the single dot used when running software on the command line, and so in the context of data analysis with R it's not so important
+
+-   Double dot: `..` means the **previous** directory. So, if I am in `/home/my_username/analysis/data/`, then `..` refers to `/home/my_username/analysis/` (the directory before/that contains the folder called 'data'). This is quite useful because it allows you to easily navigate sub-directories. For example, let's say we have the following file structure: inside 'analysis' there are two subfolders called 'data' and 'scripts'. If I am in the 'data' directory, I can access the 'scripts' directory using the path `../scripts`.
+
+### The `here` package
+
+`here` is an R package that makes it easier to work with file paths within large, complex analysis projects.
+
+::: {.callout-note title="R packages"}
+R packages are like add-ons or extensions for the R language that contain additional functionality, like making plots or working with a specific data type. We'll explain R packages in more detail in workshop 2, where we will start using the Tidyverse packages to work with data (see @sec-readingin).
+:::
+
+`here` is useful when you want to organise scripts into different folders, but also want to run them from the root folder of the project so that they can easily access other scripts and data files. For example, if you have a script `~/analysis/scripts/plot.R` and inside you use the path `data/file.txt` to reference a file `~/analysis/data/file.txt`, if you run the script from `~/analysis/scripts/` it will not find the file, because the folder 'data' doesn't exist in the 'scripts' folder. The `here` package solves this problem by anchoring your paths relative to the root folder of the project. You can learn more [here](https://here.r-lib.org/articles/here.html) (pun not intended).
+
+### Paths on Windows
+
+You might notice that all of the file paths you've seen in this ebook so far are written in Unix-based style (for mac/linux, using `/`), and this is because Unix-based systems are by far the most commonly used by bioinformaticians. Windows paths are a little bit more complicated as they're not as standardised, which is why we recommend you use RStudio to help you find paths. If you're interested though, [this is a good overview](https://www.fileside.app/blog/2023-03-17_windows-file-paths/) of how paths work on Windows.

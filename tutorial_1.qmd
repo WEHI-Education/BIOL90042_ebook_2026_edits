@@ -1,0 +1,12 @@
+---
+title: "Tutorial 1"
+toc: false
+---
+
+Tutorial 1 introduced the subject and provided an opportunity to start practicing writing and running basic mathematical R code. The tutorial questions and answers are provided below; if you have any questions about these please post on the canvas discussion board or ask a member of staff in the next lesson.
+
+## Tutorial questions and answers
+
+{{< pdf "resources/assign/tutorial_1.pdf" >}}
+
+{{< pdf "resources/solution/tutorial_1.pdf" >}}

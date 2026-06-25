@@ -1,0 +1,26 @@
+---
+title: "Week 2: Further Reading"
+---
+
+
+## Creating your own R project {#sec-fr-project}
+To ensure everyone is working in a consistent environment for this course, we pre-made an R project for you to use. But what if you want to make your own project, for another analysis?
+
+Recall from session 1 that you can see all of your R projects and create a new one in the top right hand corner of RStudio:
+
+![In the top right hand corner of RStudio, you can see all of your projects](images/S01F01_make_project.png){width="960"}
+
+Usually, you want to create a new project in a new directory (folder) so that everything stays organised:
+
+![We usually want to make a new project in its own directory (folder)](images/S01F02_make_project.png){width="960"}
+
+Next, we need to tell R that we want to make a 'New Project' and not any of the other fancy things we could create:
+
+![There are many types of projects we can make in R, but for most analyses you can stick with a regular project.](images/S01F03_make_project.png){width="960"}
+
+Finally, we need to give our project an informative name:
+
+![Choose a name that will help you remember what this project is about!](images/S01F04_make_project.png){width="960"}
+
+Don't forget to name with underscores and not spaces!
+

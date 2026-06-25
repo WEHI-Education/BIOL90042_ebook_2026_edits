@@ -10,12 +10,12 @@ format:
 
 <!-- Here we could write some stuff about: -->
 
-<!-- -   control structures (for loops, if/else) -->
+<!-- control structures (for loops, if/else) -->
 
-<!-- -   functions -->
+<!-- functions -->
 
-<!-- -   quarto -->
+<!-- quarto -->
 
-<!-- -   inspectdf -->
+<!-- inspectdf -->
 
 <!-- Of course this is extra but would be nice to have, potentially for some sort of advanced course in the future -->
