@@ -1,6 +1,8 @@
 ---
 title: "Workshop 2"
 ---
+dplyr pt 1
+
 Recall how to use RStudio to find data files and read them in as data frames
 
 # Workshop 2

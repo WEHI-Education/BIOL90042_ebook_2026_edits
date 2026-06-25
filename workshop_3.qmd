@@ -3,3 +3,5 @@ title: "Workshop 3"
 ---
 
 # Workshop 3
+
+dplyr pt 2, tidy data, reshaping etc 

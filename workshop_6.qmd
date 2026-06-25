@@ -3,3 +3,5 @@ title: "Workshop 6"
 ---
 
 # Workshop 6
+
+stats
