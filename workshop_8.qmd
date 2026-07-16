@@ -36,18 +36,18 @@ At the end of this session, learners should be able to:
 
 ## Background 
 
-'Machine learning' (ML) is an umbrella term that encompasses classical statistical methods, linear models (both simple and generalized), and non-parametric techniques such as decision trees, support vector machines, autoencoders, and neural networks. Each of these methods are called machine learning 'engines' when used to train a model.
+**Machine learning** (ML) is an umbrella term that encompasses classical statistical methods, linear models (both simple and generalised), and non-parametric techniques such as decision trees, support vector machines, autoencoders, and neural networks. Each of these methods are called machine learning **engines** when used to train a model.
 
-ML forms the foundation of artificial intelligence. For instance, large language models such as chatGPT, are trained using deep neural networks.
+ML forms the foundation of **artificial intelligence**. For instance, large language models such as chatGPT, are trained using deep neural networks.
 
-Machine learning refers to the use of computers (machines) to identify statistical trends in data and store those trends/relationships in a 'model'. The process of identifying trends ('learning') and then predicting features of newly provided data ('predicting') is common to all ML workflows.
+Machine learning refers to the use of computers (machines) to identify statistical trends in data and store those trends/relationships in a **model**. The process of identifying trends (**learning**) and then predicting features of newly provided data (**predicting**) is common to all ML workflows.
 
 ::: {.callout-note title="Does your machine need supervision?"}
-ML to predict the status (label) of new samples, is termed 'supervised ML'.
+ML to predict the status (label) of new samples, is termed **supervised ML**.
 
-In '*unsupervised*' ML, the model is trained on data without labels. The model tries to find patterns, groupings, or structures in the data, often by performing pair-wise sample similarity tests. This is useful when we don’t know the categories in advance, such as clustering patients based on gene expression profiles, or identifying hidden patterns in imaging data.
+In **unsupervised** ML, the model is trained on data without labels. The model tries to find patterns, groupings, or structures in the data, often by performing pair-wise sample similarity tests. This is useful when we don’t know the categories in advance, such as clustering patients based on gene expression profiles, or identifying hidden patterns in imaging data.
 
-Comparing 'data-driven' groupings to existing category labels, can either confirm existing categories, or provide evidence for revising them. Principal components analysis, multidemsional scaling and tree-based clustering algorithms are examples of unsupervised ML.
+Comparing 'data-driven' groupings to existing category labels, can either confirm existing categories, or provide evidence for revising them. **Principal components analysis**, **multidemsional scaling** and **tree-based clustering** algorithms are examples of unsupervised ML.
 :::
 
 ## Biomedical Context 
@@ -70,7 +70,49 @@ In the past, each ML engine was siloed in its own package, with unique functions
 To learn more about machine learning in R, check out the excellent book [Tidy Modelling with R](tmwr.org)
 :::
 
+# Glossary
 
+**Machine learning**:
+**Supervised ML**: 
+**Unsupservised ML**: 
+**Engines**: 
+**Artificial intelligence**:
+**Model**:
+**Learning**: 
+**Predicting**: 
+**Principal components analysis**:
+**Multidemsional scaling**: 
+**Tree-based clustering**: 
+
+```{r}
+#| echo: false
+#| exec: false
+install.packages("palmerpenguins")
+library(palmerpenguins)
+library(tidyverse)
+
+penguins_df <- penguins_raw %>% 
+  # choose necessary df 
+  dplyr::select(
+    sample_id = `Individual ID`, 
+    island = Island, 
+    bill_length_mm = `Culmen Length (mm)`, 
+    bill_depth_mm = `Culmen Depth (mm)`, 
+    flipper_length_mm = `Flipper Length (mm)`, 
+    body_mass_g = `Body Mass (g)`
+  ) %>% 
+  # join 
+  left_join(
+    penguins, 
+    by = c("island", "bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g")
+  ) %>% 
+  # drop data with NA variables
+  drop_na()
+
+# k-means clustering 
+penguins_df %>% 
+  s
+```
 
 # Existing code -- baseline to then change!! 
 
