@@ -2,22 +2,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Kathleen Zeglinski">
-<meta name="dcterms.date" content="2026-07-16">
+<meta name="dcterms.date" content="2026-07-26">
 
-<title>WEHI R Course</title>
+<title>BIOL90042 ebook 2026</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -78,10 +81,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ce2bf2e5aecf8fcf0dda7e9cf247dff0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-92c53e80b54600beea65138b11edf377.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-5835f9a528b8b0a6cd86795f1d163a8d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-8aac7aca1f8698ed7a2624662e69e490.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/quarto-contrib/alpine-3.12/buttons.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
@@ -151,7 +154,7 @@ gtag('config', 'G-FN78SCFVJJ', { 'anonymize_ip': true});
       <img src="./WEHI_RGB_logo.png" alt="" class="sidebar-logo dark-content py-0 d-lg-inline d-none">
       </a>
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">WEHI R Course Book</a> 
+      <a href="./">BIOL90042 ebook 2026</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -202,46 +205,6 @@ gtag('config', 'G-FN78SCFVJJ', { 'anonymize_ip': true});
 </li>
       </ul>
   </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Week 2</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./workshop_1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Workshop 1: Introduction to R</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./wk2_fr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Further Reading</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Wrap-up</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Course summary &amp; concluding remarks</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
     </ul>
     </div>
 </nav>
@@ -253,7 +216,7 @@ gtag('config', 'G-FN78SCFVJJ', { 'anonymize_ip': true});
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title">WEHI R Course</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
+<div class="quarto-title-block"><div><h1 class="title">BIOL90042 ebook 2026</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
 
@@ -270,7 +233,7 @@ gtag('config', 'G-FN78SCFVJJ', { 'anonymize_ip': true});
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 16, 2026</p>
+      <p class="date">July 26, 2026</p>
     </div>
   </div>
   
@@ -284,11 +247,11 @@ gtag('config', 'G-FN78SCFVJJ', { 'anonymize_ip': true});
 
 <section id="preface" class="level1 unnumbered">
 <h1 class="unnumbered">Preface</h1>
-<p>Code-based analysis is an increasingly important skill for modern biomedical research. The R coding language enables user-friendly data tidying and transformation, and creation of publication-ready graphics. R is also core to bioinformatics research, supporting all types of ’omics data analysis, and general statistical analysis too.</p>
-<p>Designed for complete coding beginners, this course will introduce data wrangling, data visualisation, and basic data analysis in R. We will start by covering the foundations of R, and the user-friendly ‘tidyverse’ software, which is applicable to many areas of medical and clinical research, and beyond.</p>
+<p>Code-based analysis is an increasingly important skill for modern biomedical research. Designed for complete coding beginners, this course will introduce data wrangling, data visualisation, and basic data analysis in R. We will start by covering the foundations of R, and the user-friendly ‘tidyverse’ software, which is applicable to many areas of medical and clinical research, and beyond. We will then cover several more specialised examples in statistics, RNA-seq analysis and machine learning to see how these foundational skills can be extended to more advanced analyses.</p>
+<p><strong>Note: the course material has been updated for 2026.</strong> If you are looking for the 2025 version, you can access that <a href="https://wehi-education.github.io/BIOL90042_R_Course_2025/">here</a></p>
 <section id="how-to-use-this-book" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-use-this-book">How to use this book</h2>
-<p>This course is divided into 4 sessions. In the first 3 sessions, we will cover the basics of R and the tidyverse, and in the last session, we will apply these skills to an example analysis. Each session is divided into sections, which are designed to be completed in order. Each section contains a mix of text, code, and exercises.</p>
+<p>This book is divided by weeks, with pages for the different classes and any additional reading or activities. Each page is divided into sections, which are designed to be completed in order. Pages contain a mix of text, code, and exercises.</p>
 <p>Code is shown in blue, with the output below it in grey, just like it would show up in the R console.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is an R code block</span></span>
@@ -344,7 +307,7 @@ Solutions
 </section>
 <section id="acknowledgements" class="level2">
 <h2 class="anchored" data-anchor-id="acknowledgements">Acknowledgements</h2>
-<p>We would like to thank Kerry Ko, Brendan Ansell and the WEHI education office for their work in organising and facilitating this course. We would also like to thank all of our instructors and tutors for making this course possible.</p>
+<p>We would like to thank Dionne Argyropoulos for donating her time to teaching and content development, Professors Matthew Ritchie and Ivo Mueller for helping to subsidise this course, as well as the 2025 teaching team (Brendan Ansell, Kerry Ko and Meg Taylor) for their work in preparing the previous version of BIOL90042. We would also like to thank all of our lecturers, instructors and tutors for making this course possible.</p>
 <p>We acknowledge that this course is prepared and delivered on the unceded land of the Wurundjeri people of the Kulin Nation. We pay our respects to their Elders past, present, and emerging. We also acknowledge that sovereignty was never ceded, and that this always was and always will be Aboriginal land.</p>
 
 
@@ -446,16 +409,16 @@ Solutions
     }
     function toggleCodeHandler(show) {
       return function(e) {
-        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-        for (let i=0; i<detailsSrc.length; i++) {
-          const details = detailsSrc[i].parentElement;
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
           if (show) {
             details.open = true;
           } else {
             details.removeAttribute("open");
           }
         }
-        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
         const fromCls = show ? "hidden" : "unhidden";
         const toCls = show ? "unhidden" : "hidden";
         for (let i=0; i<cellCodeDivs.length; i++) {
@@ -820,12 +783,12 @@ Solutions
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu"># Preface {.unnumbered}</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>Code-based analysis is an increasingly important skill for modern biomedical research. The R coding language enables user-friendly data tidying and transformation, and creation of publication-ready graphics. R is also core to bioinformatics research, supporting all types of ’omics data analysis, and general statistical analysis too.</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>Code-based analysis is an increasingly important skill for modern biomedical research. Designed for complete coding beginners, this course will introduce data wrangling, data visualisation, and basic data analysis in R. We will start by covering the foundations of R, and the user-friendly ‘tidyverse’ software, which is applicable to many areas of medical and clinical research, and beyond. We will then cover several more specialised examples in statistics, RNA-seq analysis and machine learning to see how these foundational skills can be extended to more advanced analyses. </span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>Designed for complete coding beginners, this course will introduce data wrangling, data visualisation, and basic data analysis in R. We will start by covering the foundations of R, and the user-friendly ‘tidyverse’ software, which is applicable to many areas of medical and clinical research, and beyond. </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>**Note: the course material has been updated for 2026.** If you are looking for the 2025 version, you can access that <span class="co">[</span><span class="ot">here</span><span class="co">](https://wehi-education.github.io/BIOL90042_R_Course_2025/)</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## How to use this book</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>This course is divided into 4 sessions. In the first 3 sessions, we will cover the basics of R and the tidyverse, and in the last session, we will apply these skills to an example analysis. Each session is divided into sections, which are designed to be completed in order. Each section contains a mix of text, code, and exercises.</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>This book is divided by weeks, with pages for the different classes and any additional reading or activities. Each page is divided into sections, which are designed to be completed in order. Pages contain a mix of text, code, and exercises.</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>Code is shown in blue, with the output below it in grey, just like it would show up in the R console.</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
@@ -878,7 +841,7 @@ Solutions
 <span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## Acknowledgements</span></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>We would like to thank Kerry Ko, Brendan Ansell and the WEHI education office for their work in organising and facilitating this course. We would also like to thank all of our instructors and tutors for making this course possible.</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>We would like to thank Dionne Argyropoulos for donating her time to teaching and content development, Professors Matthew Ritchie and Ivo Mueller for helping to subsidise this course, as well as the 2025 teaching team (Brendan Ansell, Kerry Ko and Meg Taylor) for their work in preparing the previous version of BIOL90042. We would also like to thank all of our lecturers, instructors and tutors for making this course possible.</span>
 <span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>We acknowledge that this course is prepared and delivered on the unceded land of the Wurundjeri people of the Kulin Nation. We pay our respects to their Elders past, present, and emerging. We also acknowledge that sovereignty was never ceded, and that this always was and always will be Aboriginal land.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
