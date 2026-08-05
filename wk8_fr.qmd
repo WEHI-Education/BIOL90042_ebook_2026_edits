@@ -1,5 +1,74 @@
 ---
-title: "Week 8: Further Reading"
+filters:
+ - naquiz
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "In this session:"
 ---
 
-# Week 8: Further Reading
+# Further Reading
+
+Curious whether random forest is *really* your best option in [Part 2](workshop_8.qmd#sec-w8-part2)? 
+
+The tidymodels [tuning and comparing models tutorial](https://workflowsets.tidymodels.org/articles/tuning-and-comparing-models.html) shows how to compare it against several other classification algorithms. 
+
+If you'd like to explore these ideas further, see the tidymodels tutorials on [feature engineering](https://www.tidymodels.org/books/fes/), [cross-validation](https://www.tidymodels.org/start/resampling/), [hyperparameter tuning](https://www.tidymodels.org/start/tuning/), and [multi-model comparison](https://workflowsets.tidymodels.org/articles/tuning-and-comparing-models.html).
+
+## Glossary {#glossary}
+
+| Term | Definition |
+|------|------------|
+| <span id="artificial-intelligence">Artificial Intelligence</span> | The broad field of computer science focused on building systems that simulate human-like reasoning, learning, and decision-making. |
+| <span id="machine-learning">Machine Learning</span> | A subset of AI where systems learn patterns from data to make decisions or predictions without being explicitly programmed. |
+| <span id="unsupervised-ml">Unsupervised ML</span> | A type of ML where a model finds hidden patterns or groupings in unlabelled data. |
+| <span id="supervised-ml">Supervised ML</span> | A type of ML where a model is trained on labelled data, learning to map inputs to known outputs. |
+| <span id="engines">Engines</span> | A computational system or framework that executes a model or algorithm to process data and produce outputs. |
+| <span id="model">Model</span> | A mathematical representation learned from data that captures patterns and can be used to make predictions or decisions on new inputs. |
+| <span id="learning">Learning</span> | The process by which an algorithm iteratively adjusts its internal parameters based on data to improve its performance on a task. |
+| <span id="predicting">Predicting</span> | The application of a trained model to new, unseen data to produce an estimated output. |
+| <span id="pca">Principal Components Analysis</span> | A dimensionality reduction technique that transforms data into a smaller set of uncorrelated variables that capture the most variance. |
+| <span id="mds">Multidimensional Scaling</span> | A technique that visualises the similarity or dissimilarity between data points by mapping them into a lower-dimensional space. |
+| <span id="tree-clustering">Tree-based Clustering</span> | A hierarchical clustering approach that organises data into a tree structure, grouping similar observations at successive levels. |
+| <span id="k-means">K-means Clustering</span> | An unsupervised clustering algorithm that partitions observations into *k* groups by iteratively assigning each point to its nearest centroid and updating centroids until they stabilise. |
+| <span id="hierarchical-clustering">Hierarchical Clustering</span> | An unsupervised clustering approach that builds a dendrogram by repeatedly merging the two closest samples or clusters, without requiring the number of clusters to be fixed in advance. |
+| <span id="train-test-split">Train/Test Split</span> | Dividing a dataset into a training set (used to fit a model) and a held-out test set (used to evaluate performance on unseen data). |
+| <span id="confusion-matrix">Confusion Matrix</span> | A table comparing predicted class labels against true labels, with diagonal cells showing correct predictions and off-diagonal cells showing misclassifications. |
+| <span id="auroc-auprc">AUROC / AUPRC</span> | Area Under the ROC Curve / Area Under the Precision-Recall Curve — summary metrics of classification performance across all thresholds; AUPRC is more sensitive to class imbalance than AUROC. |
+| <span id="recipe">Recipe (tidymodels)</span> | A tidymodels object that specifies the preprocessing steps (e.g. normalisation, dummy encoding) applied to data before a model is fit. |
+| <span id="workflow">Workflow (tidymodels)</span> | A tidymodels object that bundles a preprocessing recipe and a model specification together so they are applied consistently during fitting and prediction. |
+| <span id="silhouette-score">Silhouette Score</span> | A per-observation metric ranging from -1 to +1 that measures how similar an observation is to its own cluster compared to the nearest neighbouring cluster; higher values indicate better-separated clusters. |
+| <span id="dendrogram">Dendrogram</span> | A tree diagram produced by hierarchical clustering that records the order in which samples or clusters are merged, allowing the number of clusters to be chosen by cutting the tree at a given height. |
+| <span id="hyperparameter">Hyperparameter</span> | A model setting (e.g. `mtry`, `k`) chosen before training that controls how a model learns, as distinct from parameters estimated from the data itself. |
+| <span id="cross-validation">Cross-validation</span> | A resampling technique that repeatedly splits data into folds, training on some and evaluating on the rest, to obtain a more robust estimate of model performance than a single split. |
+| <span id="random-forest">Random Forest</span> | An ensemble of many decision trees, each trained on a random bootstrap sample of the data and a random subset of predictors at each split; averaging their predictions reduces overfitting relative to a single tree. |
+
+
+## Tidymodels vs. Tidyclust {#tidymodelclust}
+
+Several tidymodels functions have tidyclust equivalents that are written differently; these should be used when working with clustering workflows: 
+
+| `tidymodels` Function   | `tidyclust` Equivalent          | Same |
+|-------------------------|---------------------------------|------|
+| `tune_grid()`	          | `tune_cluster()`                | ❌   |   
+| `finalise_workflow()`	  | `finalise_workflow_tidyclust()` | ❌   |   
+| `metric_set()`	        | `cluster_metric_set()`          | ❌   |   
+| `collect_metrics()`	    | `collect_metrics()`             | ✅   |
+| `select_best()`	        | `select_best()`                 | ✅   |
+| `fit()`	                | `fit()`                         | ✅   |
+| `predict()`	            | `predict()`                     | ✅   |
+
+# Tidymodels 
+
+package | step | functions | 
+--------|--------|--------|
+rsample | 1. split into test and train sets | `initial_split()`, `training()`, `testing()` | 
+recipes | 2. create recipe and assign variable rols | `recipe()`, `update_role()`| 
+parsnip | 3. specify model, engine and mode | e.g., `set_engine()`, `set_mode()`, `rand_forest()` | 
+workflows | 4. create workflow, add recipe, add model | `workflow()`, `add_recipe()`, `add_model()` |
+parsnip | 5. fit workflow | `fit()` | 
+parsnip | 6. get predictions | `predict()` |
+yardstick | 7. use predictions to get performance metrics | `rmse()`, `accuracy()`, `metrics()` | 
+
+Another tutorial that summarises these aspects can be found [here](https://chenxing.space/blog/tidymodels-ecosystem-tutorial/). 

@@ -10,951 +10,1031 @@ format:
 
 # Workshop 8: Machine Learning {#sec-workshop08}
 
-In  workshop, we will train, test and validate machine learning models. 
+In this workshop, we will train, test and validate machine learning models.
 
 ::: {.callout-tip title="Learning Objectives"}
-At the end of this session, learners should be able to:
+This workshop directly builds on today's lecture. At the end of this session, learners should be able to:
 
-1.  Explore the data and trialing sample statistical analyses
-
-2.  Apply a k-means clustering algorithm to identify discrete entities in unlabelled datasets 
-
-3.  Train a machine learning model using pre-defined hyperparameters
-
-4.  Assess model performance using key metrics in unsupervised and supervised models 
-
-5.  Apply v-fold cross-validation to improve model quality 
+1. Compare supervised and unsupervised ML domains, and explore their applications in biomedical research (Background; [Part 1](#sec-w8-part1) & [Part 2](#sec-w8-part2))
+2. Evaluate <a href="workshop_8_fr.html#k-means" class="tooltip-link" data-tooltip="An unsupervised clustering algorithm that partitions observations into k groups by iteratively assigning each point to its nearest centroid and updating centroids until they stabilise.">k-means clustering</a> (and, conceptually, <a href="workshop_8_fr.html#hierarchical-clustering" class="tooltip-link" data-tooltip="An unsupervised clustering approach that builds a dendrogram by repeatedly merging the two closest samples or clusters, without requiring the number of clusters to be fixed in advance.">hierarchical clustering</a>) for identifying discrete entities in unlabelled datasets ([Part 1](#sec-w8-part1))
+3. Explain the <a href="workshop_8_fr.html#train-test-split" class="tooltip-link" data-tooltip="Dividing a dataset into a training set (used to fit a model) and a held-out test set (used to evaluate performance on unseen data).">train/test</a> paradigm for supervised ML, and key metrics for assessing performance — <a href="workshop_8_fr.html#confusion-matrix" class="tooltip-link" data-tooltip="A table comparing predicted class labels against true labels, with diagonal cells showing correct predictions and off-diagonal cells showing misclassifications.">confusion matrix</a>, <a href="workshop_8_fr.html#auroc-auprc" class="tooltip-link" data-tooltip="Area Under the ROC Curve / Area Under the Precision-Recall Curve — summary metrics of classification performance across all thresholds; AUPRC is more sensitive to class imbalance than AUROC.">AUROC, AUPRC</a> ([Part 2](#sec-w8-part2))
 :::
 
-::: {.callout-tip title="Advanced Topics"}
-1.  Apply feature engineering techniques to minimise colinearity and redundancy 
+To explore additional concepts discussed in the lecture beyond this workshop, such as [hyperparameter tuning](https://www.tidymodels.org/start/tuning/) and [cross-validation](https://www.tidymodels.org/start/resampling/) for improving model quality, see the tidymodels tutorials linked throughout this page.
 
-2.  Optimise the model using a hyperparameter tuning process
+## Background {#sec-mlbackground .unnumbered}
 
-3.  Compare multiple machine learning models to evaluate best model for your data 
-:::
+<a href="workshop_8_fr.html#machine-learning" class="tooltip-link" data-tooltip="A subset of AI where systems learn patterns from data to make decisions or predictions without being explicitly programmed.">Machine learning</a> (ML) is an umbrella term that encompasses classical statistical methods, linear models (both simple and generalised), and non-parametric techniques such as decision trees, support vector machines, autoencoders, and neural networks. Each of these methods are called machine learning <a href="workshop_8_fr.html#engines" class="tooltip-link" data-tooltip="A computational system or framework that executes a model or algorithm to process data and produce outputs.">engines</a> when used to train a <a href="workshop_8_fr.html#model" class="tooltip-link" data-tooltip="A mathematical representation learned from data that captures patterns and can be used to make predictions or decisions on new inputs.">model</a>.
 
-## Background 
+ML forms the foundation of <a href="workshop_8_fr.html#artificial-intelligence" class="tooltip-link" data-tooltip="The broad field of computer science focused on building systems that simulate human-like reasoning, learning, and decision-making.">artificial intelligence</a>. For instance, large language models such as ChatGPT are trained using deep neural networks.
 
-**Machine learning** (ML) is an umbrella term that encompasses classical statistical methods, linear models (both simple and generalised), and non-parametric techniques such as decision trees, support vector machines, autoencoders, and neural networks. Each of these methods are called machine learning **engines** when used to train a model.
-
-ML forms the foundation of **artificial intelligence**. For instance, large language models such as chatGPT, are trained using deep neural networks.
-
-Machine learning refers to the use of computers (machines) to identify statistical trends in data and store those trends/relationships in a **model**. The process of identifying trends (**learning**) and then predicting features of newly provided data (**predicting**) is common to all ML workflows.
+Machine learning refers to the use of computers (machines) to identify statistical trends in data and store those trends/relationships in a model. The process of identifying trends (<a href="workshop_8_fr.html#learning" class="tooltip-link" data-tooltip="The process by which an algorithm iteratively adjusts its internal parameters based on data to improve its performance on a task.">learning</a>) and then predicting features of newly provided data (<a href="workshop_8_fr.html#predicting" class="tooltip-link" data-tooltip="The application of a trained model to new, unseen data to produce an estimated output.">predicting</a>) is common to all ML workflows.
 
 ::: {.callout-note title="Does your machine need supervision?"}
-ML to predict the status (label) of new samples, is termed **supervised ML**.
+ML used to predict the status (label) of new samples is termed <a href="workshop_8_fr.html#supervised-ml" class="tooltip-link" data-tooltip="A type of ML where a model is trained on labelled data, learning to map inputs to known outputs.">supervised ML</a>.
 
-In **unsupervised** ML, the model is trained on data without labels. The model tries to find patterns, groupings, or structures in the data, often by performing pair-wise sample similarity tests. This is useful when we don’t know the categories in advance, such as clustering patients based on gene expression profiles, or identifying hidden patterns in imaging data.
+In <a href="workshop_8_fr.html#unsupervised-ml" class="tooltip-link" data-tooltip="A type of ML where a model finds hidden patterns or groupings in unlabelled data (e.g. clustering, dimensionality reduction).">unsupervised ML</a>, the model is trained on data without labels. The model tries to find patterns, groupings, or structures in the data, often by performing pair-wise sample similarity tests. This is useful when we don't know the categories in advance, such as clustering patients based on gene expression profiles, or identifying hidden patterns in imaging data.
 
-Comparing 'data-driven' groupings to existing category labels, can either confirm existing categories, or provide evidence for revising them. **Principal components analysis**, **multidemsional scaling** and **tree-based clustering** algorithms are examples of unsupervised ML.
+Comparing 'data-driven' groupings to existing category labels can either confirm existing categories or provide evidence for revising them. <a href="workshop_8_fr.html#pca" class="tooltip-link" data-tooltip="A dimensionality reduction technique that transforms data into a smaller set of uncorrelated variables that capture the most variance.">Principal components analysis</a>, <a href="workshop_8_fr.html#mds" class="tooltip-link" data-tooltip="A technique that visualises the similarity or dissimilarity between data points by mapping them into a lower-dimensional space.">multidimensional scaling</a> and <a href="workshop_8_fr.html#tree-clustering" class="tooltip-link" data-tooltip="A hierarchical clustering approach that organises data into a tree structure, grouping similar observations at successive levels of granularity.">tree-based clustering</a> algorithms are examples of unsupervised ML.
 :::
 
-## Biomedical Context 
+## Biomedical Context {#sec-mlcontext .unnumbered}
 
-ML has many exciting applications in biomedical research. In this workshop we will run a supervised ML workflow on data including histological (imaging) features of tissue slices, with matched labels indicating whether the tissue is healthy/benign or malignant (cancerous).
+ML has many exciting applications in biomedical research. As you saw in the ML lecture, unsupervised and supervised ML workflows can be used on histological (imaging) features of tissue slices, with matched labels indicating whether the tissue is healthy/benign or malignant (cancerous) @Zhu2016. Another example of how ML can be used in this context is to identify whether patients infected with malaria are seropositive/seronegative based on specific anti-malaria IgG antibody levels @longley2020.
 
-## Terminology
+## Terminology {#sec-mlterms .unnumbered}
 
-In training ML models, the machine 'learns from the training data set' and 'predicts the validation data set'. The accuracy of the predictions on the validation data is used to update the model (known as 'reinforcement learning').
+In training ML models, the machine 'learns from the training dataset' and 'predicts the validation dataset'. The accuracy of the predictions on the validation data is used to update the model (known as 'reinforcement learning').
 
-Once the model has been trained, it is tested on a 'hold-out' or 'test' dataset, which has not been used at any point in training or validation. The accuracy of performance on the test set is the ultimate test of the 'predictive value' of a model, that is, how valuable it is for informing real-world decisions.
+Once the model has been trained, it is tested on a 'hold-out' or 'test' dataset, which has not been used at any point in training or validation. The accuracy of performance on the test set is the ultimate test of the 'predictive value' of a model — that is, how valuable it is for informing real-world decisions.
 
-## Tidymodels package
+## Tidymodels and tidyclust packages {#sec-mlpackages .unnumbered}
 
-[tidymodels](https://www.tidymodels.org/) is an R package that encompasses multiple sub-packages, all of which work together with tidy data.
+[tidymodels](https://www.tidymodels.org/) is an R package that encompasses multiple sub-packages, all of which work together with tidy data. [tidyclust](https://tidyclust.tidymodels.org/) is an R package built upon the success of `tidymodels` that aims to provide a tidy, unified interface to unsupervised machine learning models.
 
-In the past, each ML engine was siloed in its own package, with unique functions and arguments. tidymodels provides a consistent user experience for data pre-processing, training, validation, model tuning and prediction, and allows us to switch between ML engines quickly and easily!
+In the past, each ML engine was siloed in its own package, with unique functions and arguments. `tidymodels` and `tidyclust` provide a consistent user experience for data pre-processing, training, validation, model tuning and prediction, and allow us to switch between ML engines quickly and easily!
 
 ::: {.callout-tip title="Further reading"}
-To learn more about machine learning in R, check out the excellent book [Tidy Modelling with R](tmwr.org)
+To learn more about machine learning in R, check out the excellent book [Tidy Modelling with R](https://www.tmwr.org)
 :::
 
-# Glossary
-
-**Machine learning**:
-**Supervised ML**: 
-**Unsupservised ML**: 
-**Engines**: 
-**Artificial intelligence**:
-**Model**:
-**Learning**: 
-**Predicting**: 
-**Principal components analysis**:
-**Multidemsional scaling**: 
-**Tree-based clustering**: 
+# Setup {#sec-mlsetup}
 
 ```{r}
-#| echo: false
-#| exec: false
-install.packages("palmerpenguins")
-library(palmerpenguins)
-library(tidyverse)
+#| label: setup-w8-part1
+#| include: false
+#| echo: false 
+#| fig-width: 12
 
-penguins_df <- penguins_raw %>% 
-  # choose necessary df 
-  dplyr::select(
-    sample_id = `Individual ID`, 
-    island = Island, 
-    bill_length_mm = `Culmen Length (mm)`, 
-    bill_depth_mm = `Culmen Depth (mm)`, 
-    flipper_length_mm = `Flipper Length (mm)`, 
-    body_mass_g = `Body Mass (g)`
-  ) %>% 
-  # join 
-  left_join(
-    penguins, 
-    by = c("island", "bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g")
-  ) %>% 
-  # drop data with NA variables
-  drop_na()
-
-# k-means clustering 
-penguins_df %>% 
-  s
+rm(list = ls())
+gc()
+knitr::opts_chunk$set(fig.width = 10, fig.height = 7)
 ```
 
-# Existing code -- baseline to then change!! 
+```{r}
+#| label: setup-w8-part2
+#| output: false
+#| message: false
 
-<!-- # Aim -->
+# Install packages if not already installed
+# install.packages(c("tidyverse", "tidymodels",
+#                    "tidyclust", "cluster", "factoextra",
+#                    "ranger", "vip"))
 
-<!-- Train a supervised machine learning model (classifier) to predict tumour status based on histological features. -->
+library(tidyverse) # Data manipulation and visualisation
+library(tidymodels) # Modelling framework
+library(tidyclust) # Clustering extension for tidymodels
+library(cluster) # Silhouette computation
+library(factoextra) # Silhouette visualisation
+library(ranger) # Random forest engine
+library(vip) # Variable importance plots
 
-<!-- # Methods -->
+theme_set(theme_bw())
+```
 
-<!-- This work will proceed in 3 parts: -->
+## Download data & Quarto files
 
-<!-- 1.  exploring the data and trialing simple statistical analyses -->
+{{< downloadthis data/tumour_data.xlsx dname=tumour_data label="Download data for this session" icon=file-earmark-arrow-down type=primary class=data-button id=workshop_data >}}
 
-<!-- 2.  training a machine learning model using pre-defined hyperparameters -->
+Save into your `data/` directory.
 
-<!-- 3.  optimizing the model using a 'hyperparameter tuning' process -->
+To run this workshop in quarto on your local machine:
 
-<!-- # Part 1 {#sec-mlpart01 .unnumbered} -->
+{{< downloadthis chapter8_quarto.zip dname=chapter8_quarto label="Download chapter 8 quarto files" icon=file-earmark-arrow-down type=primary class=data-button id=workshop_data >}}
 
-<!-- ## Setup -->
+then unzip, and copy the files into your R project home directory e.g. `BIOL90042_R_Course`.
 
-<!-- ```{r setup} -->
-<!-- #| include: false -->
-<!-- #| fig-width: 12 -->
+## Read data
 
-<!-- rm(list=ls());gc() -->
+```{r}
+mice_data <- read_csv(here::here("data/mousezempic_dosage_data.csv"))
 
-<!-- knitr::opts_chunk$set(fig.width = 10, fig.height=7) -->
-<!-- ``` -->
+mice_data
+```
 
-<!-- ```{r} -->
-<!-- #| output: false -->
-<!-- #| message: false -->
+# Part 1: K-Means Clustering with tidyclust {#sec-w8-part1}
 
+::: {.callout-tip title="Learning Objectives"}
+**Aim:** Apply an unsupervised machine learning model to cluster mouse strains based on physiological and dosage features only.
 
-<!-- library(tidyverse) -->
-<!-- library(readxl) -->
-<!-- library(broom) -->
-<!-- library(ggridges) -->
+**Methods:**
 
-<!-- library(tidyrstats) -->
+1. Exploring the data and consolidating our biological prior knowledge
+2. Identify the number of k-clusters, specify a k-means algorithm and evaluate model predictions
+3. Apply the k-means clustering algorithm on new data to predict strain
+:::
 
-<!-- theme_set(theme_minimal()) -->
+## Prepare the Data
 
-<!-- ``` -->
+In this workshop we explore two fundamental machine learning techniques using the `mousezempic_dosage_data` dataset:
 
-<!-- ## Download data & Quarto files -->
+- **[Part 1: Unsupervised Learning](#sec-w8-part1):** K-means clustering with silhouette analysis using the `tidyclust` extension for `tidymodels`
+- **[Part 2: Supervised Learning](#sec-w8-part2):** Random forest classification using the `tidymodels` framework
 
-<!-- {{< downloadthis data/tumour_data.xlsx dname=tumour_data label="Download data for this session" icon=file-earmark-arrow-down type=primary class=data-button id=workshop_data >}} -->
+The `mousezempic_dosage_data` dataset contains measurements for **344 mice** across three strains (CD1, BALBc, and Black6) housed across three cages in a mouse husbandry facility.
+<!-- as referenced in this chapter [OTHER CHAPTER](OTHER QMD FILE.qmd). -->
 
-<!-- Save into your `data/` directory. -->
+```{r}
+#| label: mice-df
 
-<!-- To run this workshop in quarto on your local machine: -->
+mice_data <- mice_data %>%
+  mutate(
+    mouse_strain = case_when(
+      mouse_strain == "CD-1" ~ "CD1",
+      mouse_strain == "Black 6" ~ "Black6",
+      mouse_strain == "BALB C" ~ "BALBc"
+    ),
+    mouse_strain = as.factor(mouse_strain)
+  )
 
-<!-- {{< downloadthis chapter8_quarto.zip dname=chapter8_quarto label="Download chapter 8 quarto files" icon=file-earmark-arrow-down type=primary class=data-button id=workshop_data >}} -->
+glimpse(mice_data)
+```
 
-<!-- then unzip, and copy the files into your R project home directory e.g. `BIOL90042_R_Course`. -->
+::: {.callout-note title="Biological Prior: How Many Clusters Should We Expect?"}
+The best results will be obtained with prior knowledge of the optimal cluster number.
 
-<!-- ## Read data -->
+For the mousezempic dataset, we have a clear **biological prior**: there are **3 known strains** — CD1, BALBc, and Black6. This gives us a strong reason to expect `k = 3` to be the most biologically meaningful solution. We will use the silhouette analysis to **confirm or challenge** this prior, rather than selecting `k` blindly.
+:::
 
-<!-- ```{r} -->
-<!-- tumour_data <- readxl::read_xlsx('data/tumour_data.xlsx') -->
+We are going to explicitly keep only the numeric physiological features of our dataset and remove any missing values. Strain labels are deliberately **excluded** as we are aiming to use **unsupervised learning** - we do not want to inform the algorithm about strain identity.
 
-<!-- tumour_data -->
+```{r}
+#| label: prepare-clustering-data
 
+mouse_clust <- mice_data %>%
+  drop_na() %>%
+  select(initial_weight_g, tail_length_mm, drug_dose_g, weight_lost_g)
 
+glimpse(mouse_clust)
+```
 
-<!-- ``` -->
+## Explore the Data
 
-<!-- The data contains `r nrow(tumour_data)` tissue samples which have been imaged in a histology lab, as referenced in this chapter [Background](chapter_8.qmd). -->
-<!-- Each sample has the anonymized donor id and malignancy status determined by a trained pathologist (benign or malignant). -->
+Let's visualise the raw data by plotting initial weight (`initial_weight_g`) against drug dose (`drug_dose_g`).
 
-<!-- Automatic quantification of image features produces `r ncol(tumour_data) -2` 'features' including cell shapes, edge (plasma membrane) definition, cytosolic texture, staining intensity, necrosis, vascularity etc. -->
+```{r}
+#| label: explore-data-2
 
-<!-- ## Explore the data -->
+mouse_clust %>%
+  ggplot(aes(x = initial_weight_g, y = drug_dose_g)) +
+  geom_point(size = 2.5, alpha = 0.8) +
+  labs(
+    title = "Mouse Initial Weight vs Drug Dose",
+    x = "Initial Weight (g)",
+    y = "Drug Dose (g)"
+  )
+```
 
-<!-- ### Reshape for plotting -->
+Here we can see varying initial weights and drug doses across the *n* = 333 mice remaining in our dataset.
 
-<!-- ```{r} -->
-<!-- dat_long <- tumour_data %>%  -->
-<!--   pivot_longer(names_to = "key", values_to = "value",  -->
-<!--                cols = -c(donorid, status)) -->
+::::::::: {.callout-important title="Test Your Knowledge — Q1"}
+:::::::: question
+1\. Looking at the scatter plot above, how many natural groupings do you think you can see in the data?
 
-<!-- ``` -->
+::::::: choices
+::: choice
+1
+:::
 
-<!-- ### Check distributions -->
+::: choice
+2
+:::
 
-<!-- ```{r} -->
-<!-- dat_long %>%   ggplot(aes(x=value,group=key)) + geom_density() -->
+::: {.choice .correct-choice}
+3
+:::
 
-<!-- ``` -->
+::: choice
+4
+:::
 
-<!-- The data doesnt look normally distributed, but there is a big over-plotting problem here. -->
-<!-- Let's use the ggridges package to produce a single density plot for each feature: -->
+:::::::
+::::::::
 
-<!-- ```{r} -->
-<!-- dat_long %>%  ggplot(aes(x=value)) +  -->
-<!--   geom_density_ridges(aes(y=key)) -->
-<!-- ``` -->
+<details>
 
-<!-- The measurements in the dataset have a positive skew, meaning they are non-normal. -->
-<!-- For best results in machine learning (and data analysis more generally) its usually best to transform the data into a normal distribution where possible. -->
+<summary>Solutions</summary>
 
-<!-- ### Log transform -->
+<p>
 
-<!-- ```{r} -->
-<!-- dat_long_log <- dat_long %>% -->
-<!--   mutate(value=log10(value)) -->
-<!-- ``` -->
+1.  There appear to be distinct clusters of points.
+2.  There may be more than two groups. Look at the spread of points across both axes.
+3.  Correct! There appear to be roughly three natural groupings, consistent with our biological prior of three strains. 
+4.  While there is some spread, three groups is the most biologically supported answer.
 
-<!-- Plot transformed data -->
+</p>
 
-<!-- ```{r} -->
-<!-- dat_long_log %>%  ggplot(aes(x=value)) +  -->
-<!--   geom_density_ridges(aes(y=key)) -->
-<!-- ``` -->
+</details>
+:::::::::
 
-<!-- The data looks more normal now. -->
-<!-- Note that the mean values are different. -->
-<!-- This can be addressed by scaling data, which we return to later. -->
+## Define a Preprocessing Recipe {#sec-part1-recipe}
 
-<!-- ### Cluster analysis -->
+The <a href="workshop_8_fr.html#recipe" class="tooltip-link" data-tooltip="A tidymodels object that specifies the preprocessing steps (e.g. normalisation, dummy encoding) applied to data before a model is fit."><strong>recipe</strong></a> includes all of the variables (columns) that we want to include in our model, expressed as a statistical formula: `outcome variable ~ predictor variables`.
 
-<!-- Let's run an unsupervised machine learning method to explore how the samples group together using a 'data-driven' approach. -->
-<!-- `pr_comp()` gives us principal components analysis, and requires wide-format data. -->
+In **unsupervised learning**, we have no outcome variable because we do not know the class labels. Our recipe formula is therefore `~ .` (no outcome, all predictors).
 
-<!-- Reshape log-transformed data to wide format, and calculate principal components using the quantitative features (i.e., everything except donorid and malignancy status). -->
+As we saw in our figure above, the x- and y-axes are on markedly different scales. **Normalising** our data places all variables on a common scale where the mean = 0 and standard deviation = 1. This ensures that `weight_lost_g` (in grams) does not dominate `initial_weight_g` (in millimetres) simply because of its larger numeric range.
 
-<!-- ```{r} -->
-<!-- dat_wide_log <- dat_long_log %>%  -->
-<!--   pivot_wider(names_from = "key", values_from="value")  -->
+::: {.callout-note title="Why is normalisation essential for k-means?"}
+K-means clustering assigns observations to clusters based on **Euclidean distance** — the straight-line distance between points in feature space. If one variable is measured in grams (thousands) and another in millimetres (tens), the gram-scale variable will dominate the distance calculation, regardless of its biological relevance. Normalisation removes this scale bias.
+:::
 
-<!-- pc_dat <- dat_wide_log %>% select(-c(donorid,status)) %>%  -->
-<!--         #principal components function -->
-<!--   prcomp() -->
+```{r}
+#| label: clustering-recipe
 
-<!-- ``` -->
+clust_recipe <- recipe(~., data = mouse_clust) %>%
+  step_normalize(all_numeric_predictors())
 
-<!-- We can access the principal components for each sample by using the `broom::augment()` function. -->
-<!-- The primary PCs (e.g. 1 thru 5) encode the majority of the variation between samples. -->
-<!-- As such we focus on primary PCs (or dimension in MDS), when clustering samples -->
+summary(clust_recipe)
+```
 
-<!-- Plot first 2 PCs, coloured by tumour status -->
+## Specify the K-Means Model
 
-<!-- ```{r} -->
-<!-- pcs_fitted <- pc_dat %>% augment()  -->
+Now we have our recipe, we can specify our model using the `k_means()` function from `tidyclust`. We set our engine (`set_engine()`) to `"stats"`, which uses base R's built-in `kmeans()` function.
 
-<!-- #Join the sample labels to the fitted PCs -->
-<!-- pc_plot_dat <- bind_cols(tumour_data %>% select(status),  -->
-<!--                          pcs_fitted)  -->
+Setting `num_clusters = tune()` tells the workflow that we want to evaluate multiple values of *k* and identify the optimal one.
 
-<!-- #Scatter plot -->
-<!-- pc_plot_dat %>%  -->
-<!--   ggplot(aes(.fittedPC1, .fittedPC2)) +  -->
-<!--   geom_point(aes(col=status), size=2) -->
+Setting `nstart = 25` runs the algorithm 25 times with different random centroid initialisations and keeps the best result. This is important because k-means is sensitive to where the centroids start.
 
-<!-- ``` -->
+```{r}
+#| label: kmeans-spec
 
-<!-- There is certainly not a clear separation between malignant and benign. -->
-<!-- This indicates we will need to try a more sensitive/advanced method to reliably predict the tissue status. -->
+kmeans_spec <- k_means(num_clusters = tune()) %>%
+  set_engine("stats", nstart = 25)
 
-<!-- ### Linear model -->
+kmeans_spec
+```
 
-<!-- Lets try one of the simplest ML engines - the linear model, to see whether any of the imaging features are significantly associated with tissue status. -->
+## Bundle into a Workflow
 
-<!-- If we define a model where imaging feature is the *outcome* (y) and tumour status is the *predictor* (x) we can test for associations quite easily, using `lm_test()`. -->
+We now combine the recipe and model into a single <a href="workshop_8_fr.html#workflow" class="tooltip-link" data-tooltip="A tidymodels object that bundles a preprocessing recipe and a model specification together so they are applied consistently during fitting and prediction."><strong>workflow</strong></a> object. Bundling them together ensures that the same preprocessing steps are always applied consistently whenever the model is fitted or used to predict — reducing the risk of errors and making the pipeline reproducible.
 
-<!-- Our experimental question is 'Are any features (y) significantly different between benign (x = 0 ) and malignant (x=1)?' -->
+```{r}
+#| label: clustering-workflow
 
-<!-- ```{r} -->
-<!-- #marginal effects -->
-<!-- dat_long_log %>% group_by(key) %>%  -->
-<!--   lm_test( value ~  status  ) %>% filter(term!='intercept')  -->
+kmeans_workflow <- workflow() %>%
+  add_recipe(clust_recipe) %>%
+  add_model(kmeans_spec)
 
+kmeans_workflow
+```
 
-<!-- ``` -->
+## Define the Tuning Grid and Tune Over Values of k
 
-<!-- We can see several features do have significant associations with tissue status! -->
-<!-- This means that, although those feature associations are not large/strong enough to drive sample separation in PCA, the should be able to be combined to build a good predictive model. -->
+Here we evaluate *k* from 2 to 8 clusters. We cap at 8 as there is no biological reason to expect more than a small number of morphologically distinct mouse groups. Recall that our biological prior suggests *k* = 3 (three strains).
 
-<!-- ### Confirm LM results graphically -->
+```{r}
+#| label: clustering-grid
 
-<!-- ```{r} -->
-<!-- #features_of_interest (FOI) -->
-<!-- foi <- c('granularity','intensity_8','membrane_curvature') -->
+clust_grid <- tibble(num_clusters = 2:8)
+```
 
-<!-- dat_long_log %>%  -->
-<!--   filter(key %in% foi) %>%  -->
-<!--   ggplot(aes(x=status , y=value)) +  -->
-<!--   geom_boxplot(outlier.alpha = 0) + -->
-<!--   geom_jitter(aes(group=status), width=0.2,size=0.5) + -->
-<!--   facet_wrap(~key) -->
-<!-- ``` -->
+We create 10 **bootstrap resamples** of the data to obtain more stable silhouette estimates. We then tune the workflow across all values of *k*, collecting the `silhouette_avg` metric — a measure of how well each observation fits its assigned cluster relative to neighbouring clusters.
 
-<!-- ## Save output -->
+```{r}
+#| label: tune-clusters
 
-<!-- For the next steps, we will save the log-transformed, wide-format data (used for the PC analysis). -->
+set.seed(123)
 
-<!-- ```{r} -->
-<!-- writexl::write_xlsx(dat_wide_log, -->
-<!--                     'data_processed/tumour_data_log_wide.xlsx') -->
-<!-- ``` -->
+clust_resamples <- bootstraps(mouse_clust, times = 10)
 
-<!-- # Part 2 {.unnumbered #sec-mlpart02} -->
+kmeans_tuning <- tune_cluster(
+  kmeans_workflow,
+  resamples = clust_resamples,
+  grid = clust_grid,
+  metrics = cluster_metric_set(silhouette_avg)
+)
 
-<!-- ## Background  -->
+collect_metrics(kmeans_tuning)
+```
 
-<!-- We loaded and explored the histology imaging-derived data in [ML Part 1](ch8_section_1.qmd). Through this process we found: -->
+We now have an averaged silhouette estimate for each value of *k*, where values range from -1 (misclassified) to +1 (well-clustered). A score > 0.5 generally indicates reasonable cluster structure.
 
-<!-- -   the data requires log-transformation -->
+## Silhouette Plot Across k
 
-<!-- -   there is little separation in malignant vs benign samples when clustering via principal components analysis -->
+We can visualise the mean silhouette width for each value of *k* using `ggplot2`. The red dashed line marks our biological prior of *k* = 3, allowing us to assess whether the data-driven optimum agrees with our prior knowledge.
 
-<!-- -   using linear modeling, several imaging features show significant correlation with tumour status (benign vs malignant) -->
+```{r}
+#| label: silhouette-plot
 
-<!-- Given these findings, we have reason to believe that a machine learning algorithm may be successful in predicting malignant vs benign tumour status. -->
+kmeans_tuning %>%
+  collect_metrics() %>%
+  filter(.metric == "silhouette_avg") %>%
+  ggplot(aes(x = num_clusters, y = mean)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_point(colour = "steelblue", size = 3) +
+  geom_errorbar(
+    aes(ymin = mean - std_err, ymax = mean + std_err),
+    width = 0.2,
+    alpha = 0.6
+  ) +
+  geom_vline(
+    xintercept = 3,
+    linetype = "dashed",
+    colour = "firebrick",
+    linewidth = 0.8
+  ) +
+  scale_x_continuous(breaks = 2:8) +
+  labs(
+    title = "Average Silhouette Width by Number of Clusters",
+    x = "Number of Clusters (k)",
+    y = "Mean Silhouette Width"
+  )
+```
 
-<!-- By contrast, if no differences are seen in PCA or simple testing of linear models, the chance of building a reliable classification model is much lower. -->
+::: {.callout-tip title="Interpreting the silhouette plot"}
+The <a href="workshop_8_fr.html#silhouette-score" class="tooltip-link" data-tooltip="A per-observation metric ranging from -1 to +1 that measures how similar an observation is to its own cluster compared to the nearest neighbouring cluster; higher values indicate better-separated clusters.">silhouette score</a> ranges from **-1** (poor, misassigned points) to **+1** (optimal, well-separated clusters). While the data-driven maximum may suggest a different `k`, we have a strong biological reason to select **k = 3** corresponding to the three known mouse strains. If `k = 3` yields a silhouette score close to the maximum, this provides quantitative support for our biological prior.
+:::
 
-<!-- ## Aim -->
+::::::::: {.callout-important title="Test Your Knowledge — Q2"}
+:::::::: question
+2\. What does a silhouette score of 0 indicate for an observation?
 
-<!-- To train a classification model using the 'xgboost' algorithm (extreme gradient boosting), which is a class of algorithms that uses decision trees (similar to 'random forest'). -->
+::::::: choices
+::: choice
+The observation is perfectly assigned to its cluster
+:::
 
-<!-- Note, our primary aim here is *not* to understand the individual features that contribute to the benign vs malignant classification, but simply to build a robust classification tool. -->
+::: {.choice .correct-choice}
+The observation lies on the boundary between two clusters
+:::
 
+::: choice
+The observation has been misassigned to the wrong cluster
+:::
 
-<!-- In this tutorial we use xgboost, but this classification problem can be attempted using any supervised ML classification algorithm. You can read about the details of xgboost (a decision tree-based ML algorithm), [here](https://xgboost.readthedocs.io/en/stable/tutorials/model.html). -->
+::: choice
+The observation is an outlier
+:::
 
-<!-- ## Load libraries -->
+:::::::
+::::::::
 
-<!-- ```{r} -->
-<!-- #| message: false -->
+<details>
 
-<!-- library(tidyverse) -->
-<!-- library(readxl) -->
-<!-- library(tidymodels) -->
-<!-- library(xgboost) -->
+<summary>Solutions</summary>
 
-<!-- theme_set(theme_minimal()) -->
-<!-- ``` -->
+<p>
 
-<!-- ## Load data -->
+1.  A score of +1 indicates perfect assignment. A score of 0 means something different.
+2.  Correct! A silhouette score of 0 means the observation is equally close to its own cluster and the nearest neighbouring cluster — it sits right on the decision boundary.
+3.  Misassignment is indicated by a negative silhouette score, not zero.
+4.  Outliers may have low silhouette scores, but a score of 0 specifically indicates a boundary observation.
 
-<!-- Preprocessed data from [ML Part 1](ch8_section_1.qmd) is stored in `data_processed/` -->
-<!-- ```{r} -->
-<!-- dat_wide_log <- read_xlsx('data_processed/tumour_data_log_wide.xlsx') -->
+</p>
 
-<!-- ``` -->
+</details>
+:::::::::
 
-<!-- ## Set seed -->
+## Select k = 3 Based on Biological Prior
 
-<!-- 'Reproducible randomness'. This ensures everyone using this tutorial gets the same results. -->
+Now that we have confirmed our biological prior of *k* = 3 can be supported quantitatively, we can finalise our k-means workflow.
 
-<!-- ```{r} -->
-<!-- set.seed(42) -->
-<!-- ``` -->
+```{r}
+#| label: select-best-k
 
-<!-- ## Format data -->
+best_k_datadriven <- select_best(kmeans_tuning, metric = "silhouette_avg")
+best_k <- tibble(num_clusters = 3)
 
-<!-- Training the ML model requires the outcome (malignant status) encoded as a factor.  -->
+sil_at_k3 <- kmeans_tuning %>%
+  collect_metrics() %>%
+  filter(.metric == "silhouette_avg", num_clusters == 3)
 
-<!-- ::: {.callout-tip title="Data types and file types"} -->
-<!-- Data types aren't preserved in Excel, csv or tsv format files. They are however preserved in .Rdata and .Rds files. -->
-<!-- ::: -->
+# Use finalize_workflow_tidyclust() — NOT finalize_workflow()
+# tidyclust model specs are not parsnip objects so the standard
+# tidymodels version will throw an error here
+final_kmeans_workflow <- finalize_workflow_tidyclust(
+  kmeans_workflow,
+  best_k
+)
 
-<!-- ```{r} -->
-<!-- dat_wide_log %>% select(1:5) %>%  str() -->
-<!-- ``` -->
+final_kmeans_workflow
+```
 
-<!-- Re-establish status as a factor: -->
-<!-- ```{r} -->
-<!-- dat_wide_log <- dat_wide_log %>%  -->
-<!--   mutate(status=factor(status)) -->
+## Fit the Final K-Means Model
 
-<!-- ``` -->
+After finalising our workflow we can fit the k-means model on our `mouse_clust` dataset.
 
-<!-- Drop donorid from the training data. It encodes no useful information for training a model. -->
+```{r}
+#| label: fit-kmeans
 
-<!-- ```{r} -->
-<!-- data_final <- dat_wide_log %>% select(-c(donorid)) -->
+set.seed(123)
 
-<!-- ``` -->
+final_kmeans_fit <- final_kmeans_workflow %>%
+  fit(data = mouse_clust)
+```
 
-<!-- ## Split test & train -->
+::: {.callout-tip title="Inspecting Centroids"}
+Cluster centroids are reported in **scaled units** (because we applied `step_normalize()` in the recipe). Each row represents the centre of one cluster in the normalised feature space.
+:::
 
-<!-- The default is to split the data into training (75%) and test/hold-out (25%). We stratify by status, to ensure roughly equal numbers of benign and malignant samples in the test and training data -->
-<!-- ```{r} -->
-<!-- split_cl <- initial_split(data_final, strata = status) -->
+```{r}
+#| label: inspect-kmeans
 
-<!-- ``` -->
+extract_centroids(final_kmeans_fit)
+```
 
-<!-- Extract the test and training data to separate objects -->
-<!-- ```{r} -->
-<!-- train_cl <- training(split_cl) -->
+We can now predict which cluster each individual mouse belongs to. This is done on a per-row basis using `predict()`.
 
-<!-- test_cl  <- testing(split_cl) -->
+```{r}
+#| label: cluster-assignments-1
 
-<!-- ``` -->
+mouse_predicted_clusters <- predict(
+  final_kmeans_fit,
+  new_data = mouse_clust
+)
+```
 
+We then bind our cluster predictions back to the original (unscaled) data using `bind_cols()`.
 
-<!-- Check the balance of the status classes (malignant vs benign), remembering that ROC curves are more reliable when classes are balanced. -->
+```{r}
+#| label: cluster-assignments-2
 
-<!-- ```{r} -->
-<!-- train_cl %>% count(status) -->
+mouse_clustered <- mice_data %>%
+  drop_na() %>%
+  bind_cols(mouse_predicted_clusters)
 
-<!-- test_cl  %>% count(status) -->
-<!-- ``` -->
+head(mouse_clustered, 10)
+```
 
-<!-- This gives reasonably even splits. -->
+Now let's cross-tabulate the cluster assignments against the true strain labels. This reveals how well the unsupervised algorithm recovers the known biological groupings **without ever seeing the strain labels**.
 
-<!-- ## Recipe -->
+```{r}
+#| label: cluster-assignments-3
 
-<!-- The data recipe stores the model parameters, and the data pre-processing steps. These steps will be performed on any data input to the ML training process. -->
+table(mouse_clustered$.pred_cluster, mouse_clustered$mouse_strain)
+```
 
-<!-- ```{r} -->
-<!-- #| message: true -->
-<!-- rec_cl <- recipe(status ~ .  , data = train_cl ) %>%  -->
-<!--   step_zv(all_numeric_predictors()) %>%  -->
-<!--   step_normalize(all_numeric_predictors()) %>%  -->
-<!--   step_dummy(all_nominal_predictors()) %>%  -->
-<!--   print() -->
-<!-- ``` -->
+::: {.callout-tip title="Interpreting the final results"}
+A strong correspondence between cluster assignments and strain labels (i.e., each cluster dominated by one strain) confirms that the physiological features alone are sufficient to distinguish the three strains, supporting our biological prior.
+:::
 
-<!-- The model algebra indicates we want to predict the `status` column (aka 'y' / 'outcome') using all available columns (denoted by `.` ). The data argument `train_cl` is provided to define the structure of the data (i.e., the colnames for all the features we have available). -->
+::::::::: {.callout-important title="Test Your Knowledge — Q3"}
+:::::::: question
+3\. Looking at the cross-tabulation above, which strain appears to be the most difficult for the k-means algorithm to separate from the others?
 
-<!-- The tidymodels package has a number of `step_()` functions that allow us to chain data transformation instructions together using the pipe `%>%`, similar to a dplyr 'chain'. -->
+::::::: choices
+::: choice
+CD1
+:::
 
-<!-- `step_zv()` - step_zero_variance removes any features that have 0 variance, and therefore encode no information that can help to predict the outcome (which is 'status', in this case). -->
+::: {.choice .correct-choice}
+BALBc
+:::
 
-<!-- `step_normalize()` performs a scaling normalization. First it centres the data each feature by subtracting the mean from every value, and then transforms the centred data into z scores (i.e., dividing each value by the standard deviation for that feature). -->
+::: choice
+Black6
+:::
 
-<!-- `step_dummy()` - converts nominal (character) data such as sex, into 'dummy' numeric variables, to allow their use in the ML training data, which is strictly numeric. -->
+::: choice
+All three are equally well separated
+:::
 
-<!-- Note we have already log-transformed the data in our exploratory data analysis steps in [ML Part 1](ch8_section_1.qmd). However, if we had not done this, we could use `step_log()` before `step_normalize()`. -->
+:::::::
+::::::::
 
-<!-- ## Hyper-parameters -->
+<details>
 
-<!-- Hyper-parameters are pre-determined settings that govern how the model learns, and the model 'architecture' - akin to the depth and breadth of parameters that can be modified during training.  -->
-<!-- Different model classes have different types of hyper-parameters. In this case for the xgboost algorithm, we pre-determine the number of decision trees that are 'grown' during the training steps, the depth ( = maximum number of branch-points) of those trees, and the 'learning rate' - which governs the magnitude of updates to the model during training. -->
+<summary>Solutions</summary>
 
-<!-- We also determine the machine learning engine ('xgboost') and the mode ('classification') as opposed to 'regression'. -->
+<p>
 
-<!-- ```{r} -->
-<!-- xgb_params <- boost_tree(trees = 500,  -->
-<!--                            tree_depth = 20,  -->
-<!--                           learn_rate = 0.01) %>% -->
-<!--   set_engine("xgboost") %>% -->
-<!--   set_mode("classification") -->
+1.  CD1 mice tend to be well-separated in physiological feature space.
+2.  Correct! BALBc mice share some physiological overlap with CD1 mice, particularly in tail length, making them the most likely to be misassigned.
+3.  Black6 mice are typically well-separated due to their distinctly higher body weight and drug dose.
+4.  Look at the off-diagonal entries in the table — some strains have more misassignments than others.
 
-<!-- ``` -->
+</p>
 
-<!-- One of the great features about tidymodels is the simplicity of using different model classes. All that is required is to edit the `set_engine()` command to your model of choice! The pre-processing and evaluation steps remain unchanged, and this removes the need to learn a separate R library for each ML engine! -->
+</details>
+:::::::::
 
-<!-- ## Workflow -->
+## Detailed Per-Observation Silhouette Plot
 
-<!-- Now we package the data pre-processing recipe and the hyper-parameters into a workflow, ready for training. This workflow construct ensures that all steps - data pre-processing, model specification and tuning, are pre-defined in a single object. -->
+```{r}
+#| label: detailed-silhouette
 
-<!-- ```{r} -->
-<!-- wf_xgb <- workflow() %>% -->
-<!--   # model outcome and features & pre-processing steps: -->
-<!--   add_recipe(rec_cl) %>%   -->
-<!--   #hyper-parameters, machine learning model type, and mode: -->
-<!--   add_model(xgb_params)  -->
+# Extract the scaled data from the fitted recipe
+# We need this to compute pairwise distances for the silhouette
+scaled_data <- clust_recipe %>%
+  prep() %>%
+  bake(new_data = mouse_clust)
 
-<!-- ``` -->
+# Compute silhouette widths for each observation
+# Negative values indicate observations closer to a neighbouring
+# cluster than their assigned cluster — possible misassignments
+sil <- silhouette(
+  x = as.integer(mouse_clustered$.pred_cluster),
+  dist = dist(scaled_data)
+)
 
-<!-- ::: {.callout-note title="Hyper-parameter tuning"} -->
-<!-- Even though we are not tuning hyper-parameters in this simple workflow, the tuning process can be captured in the workflow object, as we will see later. -->
-<!-- ::: -->
+fviz_silhouette(sil) +
+  labs(
+    title = "Silhouette Plot — K-Means, k = 3 (tidyclust)",
+    subtitle = "Negative values suggest possible misassignment"
+  ) +
+  theme_minimal()
 
-<!-- ::: {.callout-important title="Models within models?"} -->
-<!-- In this tutorial 'models' appear in two contexts -->
+cat("Average silhouette width at k = 3:", round(mean(sil[, 3]), 3), "\n")
+```
 
-<!-- 1.  The model algebra (similar to a linear model equation), that specifies what our outcome is (y), and the predictor features we want to use. This is specified in the `recipe()` step. -->
+## Visualise Clusters via PCA Projection
 
-<!-- 2.  The machine learning model (in this case xgboost), which is specified in the workflow using `add_model()`. -->
-<!-- ::: -->
+We use Principal Components Analysis (PCA) to reduce our four physiological features to two dimensions for visualisation. This allows us to plot the cluster assignments in two dimensional space and compare them directly against the true strain labels.
 
-<!-- ## Train your model! -->
+```{r}
+#| label: cluster-pca-plot
 
-<!-- We provide the workflow and the input data. `fit()` performs the model training steps. This should take \~30-60 seconds on a standard laptop. -->
+pca_result <- prcomp(scaled_data)
 
-<!-- ```{r} -->
-<!-- fit_cl <- fit(wf_xgb, data = train_cl) -->
-<!-- ``` -->
+pca_plot_data <- pca_result$x %>%
+  as_tibble() %>%
+  select(PC1, PC2) %>%
+  bind_cols(
+    cluster = mouse_clustered$.pred_cluster,
+    mouse_strain = mouse_clustered$mouse_strain
+  )
 
-<!-- ## Predict the test set! -->
+p1 <- pca_plot_data %>%
+  ggplot(aes(x = PC1, y = PC2, colour = cluster)) +
+  geom_point(size = 2.5, alpha = 0.8) +
+  stat_ellipse(aes(group = cluster), linetype = 2) +
+  labs(
+    title = "K-Means Clusters (k = 3): PCA Projection",
+    subtitle = "Cluster assignments from unsupervised algorithm",
+    colour = "Cluster"
+  )
 
-<!-- Apply the newly trained model to predict the malignant status in the original `train_cl` training data, and the hold-out `test_cl` dataset. Here we set the type argument to 'prob', to generate _probabilities_ of each class, rather than discrete labels (0 or 1). -->
+p2 <- pca_plot_data %>%
+  ggplot(aes(x = PC1, y = PC2, colour = mouse_strain)) +
+  geom_point(size = 2.5, alpha = 0.8) +
+  stat_ellipse(aes(group = mouse_strain), linetype = 2) +
+  labs(
+    title = "True Strain Labels: PCA Projection",
+    subtitle = "Ground truth for comparison with cluster plot",
+    colour = "Strain"
+  )
 
-<!-- These probabilities will be used directly for plotting ROC and PR curves (below), and rounded for other diagnostic values. -->
+library(patchwork)
+p1 + p2
+```
 
-<!-- ```{r} -->
-<!-- pred_train <- predict(fit_cl, train_cl, type = 'prob') %>% -->
-<!--   bind_cols(train_cl) -->
+::::::::: {.callout-important title="Test Your Knowledge — Q4"}
+:::::::: question
+4\. "Comparing the two PCA plots above, what does a strong visual match between the cluster assignments and the true strain labels tell us?"
 
-<!-- pred_test <- predict(fit_cl, test_cl, type = 'prob') %>% -->
-<!--   bind_cols(test_cl) -->
+::::::: choices
+::: choice
+The model has memorised the training data
+:::
 
-<!-- ``` -->
+::: choice
+We should increase k to get a better result
+:::
 
-<!-- ## Evaluate -->
+::: choice
+The silhouette score must be exactly 1.0
+:::
 
-<!-- ### Round probabilities -->
+::: {.choice .correct-choice}
+The physiological features alone contain enough information to distinguish the three strains
+:::
 
-<!-- First a column of predicted class (discrete) values are generated by rounding the predicted probability of the malignant class -->
+:::::::
+::::::::
+<details>
 
-<!-- ```{r} -->
-<!-- pred_train <- pred_train %>%  -->
-<!--   mutate(.pred_class=if_else(round(.pred_malignant)==1, -->
-<!--                              'malignant', -->
-<!--                              'benign')) %>%  -->
-<!--   relocate(.pred_class, .before = status) %>%  -->
-<!--   mutate(.pred_class=factor(.pred_class)) -->
+<summary>Solutions</summary>
 
+<p>
 
-<!-- pred_test <- pred_test %>%  -->
-<!--   mutate(.pred_class=if_else(round(.pred_malignant)==1, -->
-<!--                              'malignant', -->
-<!--                              'benign')) %>%  -->
-<!--   relocate(.pred_class, .before = status) %>%  -->
-<!--   mutate(.pred_class=factor(.pred_class)) -->
+1.  K-means is an unsupervised algorithm — it never sees the strain labels, so it cannot memorise them.
+2.  A strong match at k = 3 supports our biological prior. Increasing k would split existing clusters unnecessarily.
+3.  A strong visual match does not require a perfect silhouette score. Some overlap between strains is expected in real biological data.
+4.  Correct! A strong match between unsupervised clusters and true strain labels confirms that initial weight, tail length, drug dose and weight lost are sufficient to separate the three strains — without any label information.
 
-<!-- ``` -->
+</p>
 
-<!-- ::: {.callout-tip title="The rounding decision threshold"} -->
-<!-- Creating PR and ROC curves requires varying the probability threshold at which a sample is labelled as TRUE (malignant) or FALSE (benign). What is the default decision threshold for the `round()` function? -->
-<!-- ::: -->
+</details>
+:::::::::
 
-<!-- ### Boxplot -->
+## k-Means vs Hierarchical Clustering
 
-<!-- Compare the predicted probability of malignancy to the true sample labels -->
+The lecture also introduced **hierarchical clustering** as a second unsupervised approach. Rather than iterating on centroids, hierarchical clustering builds a <a href="workshop_8_fr.html#dendrogram" class="tooltip-link" data-tooltip="A tree diagram produced by hierarchical clustering that records the order in which samples or clusters are merged, allowing the number of clusters to be chosen by cutting the tree at a given height."><strong>dendrogram</strong></a> ('clustering tree') by repeatedly merging the two closest samples or clusters, starting with every sample as its own cluster and finishing with a single cluster containing everything.
 
+The number of clusters is not fixed in advance: instead, you *cut* the dendrogram at a chosen distance/height, and the number of branches crossed determines the number of clusters. This is different from k-means, where `num_clusters` must be specified before fitting.
 
-<!-- ```{r} -->
-<!-- pred_train %>%  -->
-<!--   ggplot(aes(y=.pred_malignant, x=status)) +  -->
-<!--   geom_boxplot() + geom_jitter(width=0.2, height=0) + -->
-<!--   ylab('Predicted probability of malignancy') + -->
-<!--   xlab('True sample label') + -->
-<!--   ggtitle('Training data') -->
+In R, `hclust()` (base R) or `step_normalize()` + `dist()` + `hclust()` can build this tree, and `tidyclust::hier_clust()` provides a `tidymodels`-consistent interface analogous to the `k_means()` workflow used above. We won't run it in this core session — see the further reading below if you'd like to try it on `mouse_clust`.
 
-<!-- pred_test %>%  -->
-<!--   ggplot(aes(y=.pred_malignant, x=status)) +  -->
-<!--   geom_boxplot() + geom_jitter(width=0.2, height=0) + -->
-<!--   ylab('Predicted probability of malignancy') + -->
-<!--   xlab('True sample label') + -->
-<!--   ggtitle('Test data') -->
+::::::::: {.callout-important title="Test Your Knowledge — Q5"}
+:::::::: question
+5\. Which statement best distinguishes hierarchical clustering from k-means?
 
-<!-- ``` -->
+::::::: choices
+::: choice
+Hierarchical clustering requires the number of clusters to be specified before running the algorithm, just like k-means
+:::
 
+::: {.choice .correct-choice}
+Hierarchical clustering builds a tree (dendrogram) from pairwise distances, allowing you to choose the number of clusters after seeing the tree
+:::
 
-<!-- ### Confusion matrix -->
+::: choice
+Hierarchical clustering does not depend on a distance metric between samples
+:::
 
+::: choice
+k-means always produces better clustering results than hierarchical clustering
+:::
 
-<!-- ```{r} -->
-<!-- pred_train %>% conf_mat(truth = status,  -->
-<!--                         estimate = .pred_class,  -->
-<!--                         dnn = c('Predicted','Truth (TRAINING Data)'))  -->
+:::::::
+::::::::
 
+<details>
 
-<!-- pred_test  %>% conf_mat(truth=status,  -->
-<!--                         estimate = .pred_class,  -->
-<!--                         dnn = c('Predicted','Truth (TEST Data)')) -->
+<summary>Solutions</summary>
 
-<!-- ``` -->
+<p>
 
-<!-- What do you notice about the performance of the model on the training, vs the test data? -->
+1.  This describes k-means, not hierarchical clustering — hierarchical clustering does not require *k* upfront.
+2.  Correct! The dendrogram is built first, and the number of clusters is chosen afterwards by cutting the tree at a chosen height.
+3.  Hierarchical clustering relies entirely on a distance (or similarity) metric between all pairs of samples.
+4.  Neither method is universally better — the best choice depends on the structure of your data and whether you know the number of clusters in advance.
 
-<!-- ### Accuracy -->
+</p>
 
-<!-- The accuracy is the sum of the correct predictions divided by the total number of samples, where 1 = perfect accuracy. -->
+</details>
+:::::::::
 
-<!-- ```{r} -->
-<!-- pred_train %>% metrics(truth = status, estimate = .pred_class) -->
+Congratulations on completing Part 1!
 
-<!-- pred_test  %>% metrics(truth = status, estimate = .pred_class) -->
+# Part 2: Random Forest Classification with tidymodels {#sec-w8-part2}
 
+::: {.callout-tip title="Learning Objectives"}
+**Aim:** Train a supervised machine learning model (classifier) to predict mouse strain based on physiological features.
 
-<!-- ``` -->
+**Methods:**
 
-<!-- ### Curves -->
+1. Explore the data
+2. Train a machine learning model using pre-defined <a href="workshop_8_fr.html#hyperparameter" class="tooltip-link" data-tooltip="A model setting (e.g. mtry, k) chosen before training that controls how a model learns, as distinct from parameters estimated from the data itself.">hyperparameters</a>
+3. Test the model and evaluate its performance
+:::
 
-<!-- Creating ROC and PR curves require the predicted class probabilities rather than discrete labels.  -->
+## Setup
 
-<!-- The `roc_curve()` and `pr_curve()` functions from the `yardstick` package (part of the tidymodels stable) are very handy for calculating the true-positive and false-positive rates as the decision threshold decreases. -->
+Our `mice` dataset is clean and well-separated — almost too clean. It's a great teaching dataset, but real-world data is rarely this tidy. To give a more realistic sense of how ML performs on messier data, we use a noisy version of the dataset, `noisy_mice`, created by adding random measurement error to the physiological features.
 
-<!-- ```{r} -->
-<!-- roc_tbl <- roc_curve(pred_test, truth = status, .pred_malignant,  -->
-<!--                      event_level = 'second') -->
+```{r}
+noisy_mice <- read_csv(here::here("data/noisy_mice.csv"))
+```
 
-<!-- pr_tbl <- pr_curve(pred_test, truth = status, .pred_malignant,  -->
-<!--                      event_level = 'second') -->
+## Split Data into Training & Testing Sets
 
-<!-- ``` -->
+As we are now employing a **supervised ML** algorithm, we split our `noisy_mice` dataset into two distinct datasets: train and test. We train the model on the training set and evaluate it on the test set. The test set must **never** be seen during model training or tuning — this is what allows it to give an unbiased estimate of real-world performance.
 
-<!-- For a quick look at performance, ROC and PR curves can be plotted using the `autoplot()` function (ggplot2 geoms can be added on for customization): -->
-<!-- ```{r} -->
-<!-- roc_tbl %>% autoplot()  -->
+We use a 75/25 train/test split (`prop = 0.75`) and stratify by strain (`strata = mouse_strain`) so that each set has proportional representation of all three strain.
 
-<!-- pr_tbl %>% autoplot() + geom_hline(yintercept = 0.5,lty=2) -->
+```{r}
+#| label: data-split
 
-<!-- ``` -->
+set.seed(123)
 
-<!-- ### Area under the curve -->
+mouse_split <- initial_split(
+  noisy_mice,
+  prop = 0.75,
+  strata = mouse_strain
+)
 
-<!-- `yardstick` also contains `roc_auc()` and `pr_auc` to calculate the area under each curve type. Note that the 'event_level' argument is the category that we consider 'TRUE' (in this case 'malignant', which is the second level in the status factor). -->
-<!-- ```{r} -->
-<!-- # AUROCC -->
-<!-- roc_auc(data = pred_test, truth = status,  .pred_malignant, event_level = 'second')  -->
+mouse_train <- training(mouse_split)
+mouse_test <- testing(mouse_split)
+```
 
-<!-- # AUPRC -->
-<!-- pr_auc( data = pred_test, truth = status, .pred_malignant, event_level = 'second')  -->
+Great. Now let's confirm that our stratification was respected by inspecting our train and test datasets for their proportion of each strain. 
 
+```{r}
+#| label: data-split-1
 
-<!-- ``` -->
+train_check <- mouse_train %>%
+  count(mouse_strain) %>%
+  mutate(set = "train", proportion = round(n / sum(n), 2))
 
-<!-- ### Feature Gain -->
+test_check <- mouse_test %>%
+  count(mouse_strain) %>%
+  mutate(set = "test", proportion = round(n / sum(n), 2))
 
-<!-- 'Gain' is a measure of the contribution of each feature to the accuracy of an xgboost model.  -->
-<!-- Understanding the relative contribution of each feature is helpful if we want to create a smaller / lighter model using only the most important predictors, for example. This is also an important aspect of 'explainable AI' (xAI) /'interpretable machine learning'. -->
-<!-- The `vip` package ('variable importance plot') has a `vip()` function for creating the characteristic horizontal bar charts:  -->
+bind_rows(
+  train_check,
+  test_check,
+) %>%
+  arrange(set, mouse_strain)
+```
 
-<!-- ```{r} -->
-<!-- #Extract fitted xgboost model -->
-<!-- xgb_fit <- extract_fit_parsnip(fit_cl)$fit -->
+Now we repeat the same steps as [Part 1](#sec-w8-part1): define a recipe, specify a model and engine, bundle these into a workflow, and fit the model.
 
-<!-- # Plot Gain  ('variable importance plot' - vip) -->
-<!-- vip::vip(xgb_fit, num_features = 20) -->
+::: {.callout-note title="An alternative to a single train/test split"}
+Instead of a single train/test split, we could train on the entire dataset and estimate performance using repeated <a href="workshop_8_fr.html#cross-validation" class="tooltip-link" data-tooltip="A resampling technique that repeatedly splits data into folds, training on some and evaluating on the rest, to obtain a more robust estimate of model performance than a single split.">cross-validation</a>, which reduces the bias introduced by any one particular split. See the tidymodels [cross-validation tutorial](https://www.tidymodels.org/start/resampling/) for a worked example of this approach.
+:::
 
-<!-- ``` -->
+::::::::: {.callout-important title="Test Your Knowledge — Q6"}
+:::::::: question
+6\. Why must the test set never be used during model training or hyperparameter tuning?
 
-<!-- What do you notice about the most important features in this model, when compared to our original data exploration work in [ML Part 1](ch8_section_1.qmd) using `lm_test()`? -->
+::::::: choices
+::: choice
+It slows down computation too much to be practical
+:::
 
-<!-- ## Save output -->
+::: {.choice .correct-choice}
+Using it during training would let information leak into the fitting process, giving an overly optimistic estimate of real-world performance
+:::
 
-<!-- Let's save the recipe `rec_cl`, and `pred_test` output from the model, to compare with a 'tuned' model in the next step. -->
+::: choice
+The test set always contains different variables to the training set
+:::
 
-<!-- ```{r} -->
-<!-- save( -->
-<!--   #training & testing data: -->
-<!--   train_cl, test_cl,  -->
-<!--      #recipe object: -->
-<!--      rec_cl,  -->
-<!--      #predictions on test data: -->
-<!--      pred_test, file='data_processed/ml_pt2_objects.Rda') -->
+::: choice
+It is only a concern for regression models, not classification
+:::
 
-<!-- ``` -->
+:::::::
+::::::::
 
-<!-- # Part 3 {.unnumbered #sec-mlpart03} -->
+<details>
 
-<!-- ## Background -->
+<summary>Solutions</summary>
 
-<!-- Using a dataset containing imaging-derived histology features, and tumour status (benign vs malignant), so far we have run [ML Part 1](ch8_section_1.qmd) to explore and transform the data, and [ML Part 2](ch8_section_2.qmd) to build an XGBoost model with pre-defined hyper-parameters. -->
+<p>
 
-<!-- ## Aim -->
+1.  Computation time is not the reason for the train/test split — it exists to give an honest estimate of performance.
+2.  Correct! If the model (or its tuning process) ever sees the test set, performance estimates become biased ('data leakage') and no longer reflect how the model will perform on genuinely new data.
+3.  The test set contains the same variables as the training set — only the *observations* differ.
+4.  The train/test paradigm applies equally to regression and classification tasks.
 
-<!-- In this final section, we will use the same input data to create an XGBoost classifier, but instead of pre-defining the model hyper-parameters, we will perform a 'grid search' to identify the combination of hyper-parameter values that produce the most accurate classifier. -->
+</p>
 
-<!-- We will then compare the tuned model to that created using pre-defined hyper-parameters in [ML Part 2](ch8_section_2.qmd). -->
+</details>
+:::::::::
 
-<!-- ## Load libraries -->
+## Define a Preprocessing Recipe
 
-<!-- ```{r} -->
-<!-- #| message: false -->
+As this is a **supervised ML** workflow, we specify `mouse_strain` as the `outcome variable` in the recipe formula, and keep all remaining columns as `predictor variables`.
 
-<!-- library(tidyverse) -->
-<!-- library(readxl) -->
-<!-- library(tidymodels) -->
-<!-- library(xgboost) -->
+As in [Part 1](#sec-part1-recipe), we apply `step_normalize()` to scale all numeric predictors to mean = 0, sd = 1. This time we also have categorical predictors (`sex`, `cage_number`), which we convert to one-hot encoded numeric columns using `step_dummy()`.
 
-<!-- theme_set(theme_minimal()) -->
-<!-- ``` -->
+```{r}
+#| label: rf-recipe
+#| 
+mouse_recipe <- recipe(mouse_strain ~ ., data = mouse_train) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_dummy(all_nominal_predictors())
 
-<!-- ## Load data -->
+summary(mouse_recipe)
+```
 
-<!-- First, we load the data created in [ML Part 2](ch8_section_2.qmd)  -->
+::: {.callout-tip title="Curious about redundant predictors?"}
+We use all four physiological features here without checking whether any are redundant. See the tidymodels [Feature Engineering and Selection](https://www.tidymodels.org/books/fes/) book for a discussion of checking for correlated predictors and reducing dimensionality.
+:::
 
-<!-- ```{r} -->
-<!-- load('data_processed/ml_pt2_objects.Rda') -->
-<!-- ``` -->
+## Specify the Random Forest Model
 
-<!-- ## Set seed -->
+A random forest is built from many individual **decision trees**. A single decision tree makes a prediction by asking a series of yes/no questions about the predictors, splitting the data at each step until it reaches a decision. For example, a bank might decide whether to approve a loan by first checking an applicant's credit history, then their income (@fig-decision-tree, left). The same logic applies in a biological context: a tree could classify a sample as disease-positive or -negative based on the expression levels of a few genes (@fig-decision-tree, right).
 
-<!-- Reproducible 'randomness'. This ensures everyone using this tutorial gets the same results. -->
+![A single decision tree splits on predictors in sequence to reach a decision: illustrated here for a loan approval example (left) and a gene-expression-based disease classification example (right).](images/S08F01_RF_tree_1.png){#fig-decision-tree}
 
-<!-- ```{r} -->
-<!-- #| eval: true -->
-<!--  set.seed(42) -->
-<!-- ``` -->
+::: {.callout-tip title="What is a Random Forest?"}
+A single decision tree can easily overfit its training data. A <a href="workshop_8_fr.html#random-forest" class="tooltip-link" data-tooltip="An ensemble of many decision trees, each trained on a random bootstrap sample of the data and a random subset of predictors at each split; averaging their predictions reduces overfitting relative to a single tree.">random forest</a> addresses this by growing an **ensemble** of many decision trees, each on a random bootstrap sample of the data, considering only a random subset of predictors at each split (`mtry`). This makes the trees independent and uncorrelated with one another. Every tree "votes" on the predicted class, and the forest's final prediction is simply the **majority vote** across all trees (@fig-random-forest), typically giving more accurate and stable predictions than any single tree.
+:::
 
-<!-- ## Cross training -->
+![A random forest grows many independent, uncorrelated decision trees from the same data and takes a majority vote across trees to arrive at the final predicted class.](images/S08F02_RF_tree_2.png){#fig-random-forest}
 
-<!-- Cross-fold validation requires the training data to be split into sub-sets of roughly equal size. The model is trained on N-1 sets and tested on the remaining 'unseen' data subset. Here we determine the folds for cross-validation during tuning, using `vfold_cv()`. -->
+Below we specify the random forest model. We use the default hyperparameters for `mtry` and `min_n`, and fix the number of trees at 500 (`trees = 500`). If you'd like to see how to systematically search for better hyperparameter values, see the tidymodels [hyperparameter tuning tutorial](https://www.tidymodels.org/start/tuning/).
 
-<!-- ```{r} -->
-<!-- folds <- vfold_cv(train_cl, v = 5, strata = status) -->
-<!-- folds -->
+For the engine, we use the [`ranger`](https://cran.r-project.org/package=ranger) R package, and set `importance = "impurity"` so that we can later calculate variable importance, which is a measure of how much each predictor contributes to classification accuracy.
 
-<!-- ``` -->
+```{r}
+#| label: rf-spec
 
-<!-- ## Hyper-parameter tuning -->
+rf_model <- rand_forest(trees = 500) %>%
+  set_engine("ranger", importance = "impurity") %>%
+  set_mode("classification")
 
-<!-- Compared with the single model with defined hyper-parameters in [ML Part 2](ch8_section_2.qmd), here we allow the `tree_depth` and `learn_rate` to be tuned, using a range of values across a 'grid'. -->
+rf_model
+```
 
-<!-- In the previous section we set the exact parameters for the `boost_tree()` function. Here we allow the tree depth and the learning rate to be tuned for optimal performance, by running multiple models across a range of tree depth and learning rate parameters. Note that these arguments are now set to `tune()`. -->
+## Bundle into a Workflow
 
-<!-- ```{r} -->
-<!-- xgb_spec_tune_cl <- boost_tree(trees = 500,  -->
-<!--                                tree_depth = tune(),  -->
-<!--                                learn_rate = tune()) %>% -->
-<!--   set_engine("xgboost") %>% -->
-<!--   set_mode("classification") -->
+```{r}
+#| label: rf-workflow
 
+# Combine the recipe and model into a workflow
+rf_workflow <- workflow() %>%
+  add_recipe(mouse_recipe) %>%
+  add_model(rf_model)
 
+rf_workflow
+```
 
-<!-- ``` -->
+## Fit the Model
 
-<!-- ## Tuning workflow -->
+We now fit the final model on the full training set and evaluate it on the test set.
 
-<!-- We construct a workflow where the xgboost model now includes the original recipe from [ML Part 2](ch8_section_2.qmd), and the tuning steps defined above. -->
+The `last_fit()` function fits the workflow once on the training data and generates predictions on the held-out test set in a single step. Recall that the test set has not been seen during training or tuning.
 
-<!-- ```{r} -->
-<!-- wf_xgb_tune  <- workflow() %>%  -->
-<!--   # model outcome and features & pre-processing steps: -->
-<!--   add_recipe(rec_cl) %>%  -->
-<!--   #hyper-parameters, machine learning model type, and mode: -->
-<!--   add_model(xgb_spec_tune_cl) -->
-<!-- ``` -->
+```{r}
+#| label: finalise-rf
 
-<!-- Running the `tune_grid()` command iterates through the hyper-parameter values in `grid`, and determines the optimal combinations via cross-fold validation (using the `folds` object). We also set the evaluation metrics as area under the ROC curve, and mean log loss. Note that log-loss for classification tasks, is similar to RMSE for regression. It measures the accuracy by penalizing false predictions. The lower the log-loss the better. -->
+final_fit <- last_fit(rf_workflow, mouse_split)
 
-<!-- ```{r} -->
-<!-- grid <- grid_regular(tree_depth(), learn_rate(), levels = 5) -->
+final_fit
+```
 
+## Evaluate Model Performance
 
-<!-- xgb_tune_res <- tune_grid( -->
-<!--   wf_xgb_tune, -->
-<!--   resamples = folds, -->
-<!--   grid = grid, -->
-<!--   metrics = metric_set(roc_auc, mn_log_loss), -->
-<!--   control = control_grid(save_pred = TRUE) -->
-<!-- ) -->
-<!-- ``` -->
+We can collect the test set performance metrics using `collect_metrics()`. By default this reports `accuracy` (the proportion of correctly classified mice) and `roc_auc` (AUROC, the Area Under the Receiver Operating Characteristic Curve).
 
-<!-- NB this step can take 30-60 seconds on a standard laptop with the current data. -->
+```{r}
+#| label: model-metrics
 
-<!-- # Grid search results -->
+collect_metrics(final_fit)
+```
 
-<!-- We can generate a plot to inspect the performance metrics for each combination of hyper-parameters. The models with the highest mean values have the best performance. -->
+We can also visualise performance using precision-recall (PR) and ROC curves. Since `mouse_strain` has three classes, `pr_curve()` and `roc_curve()` use a **one-vs-all** strategy, treating each strain in turn as the positive class against the other two.
 
-<!-- ```{r} -->
-<!-- collect_metrics(xgb_tune_res) %>%  -->
-<!--   ggplot(aes(x = factor(tree_depth), y = mean)) +  -->
-<!--   geom_point(aes(size = log10(learn_rate)), pch = 1) +  -->
-<!--   facet_wrap(~ .metric) +  -->
-<!--   theme_bw() -->
+```{r}
+#| label: aupr-curve
 
-<!-- ``` -->
+final_fit %>%
+  collect_predictions() %>%
+  pr_curve(
+    truth = mouse_strain, 
+    .pred_BALBc, 
+    .pred_Black6, 
+    .pred_CD1
+  ) %>%
+  autoplot() +
+  labs(title = "PR Curves: Random Forest (Test Set)")
+```
 
-<!-- The predictions for every cross-fold iteration across the tuning grid, can be accessed via `collect_predictions(xgb_tune_res, summarize = F)`. -->
+ROC curves plot the true positive rate (sensitivity) against the false positive rate (1 - specificity) as the classification threshold varies. A curve that bows toward the top-left corner indicates better discrimination between classes, and an AUC closer to 1.0 indicates better overall classification performance.
 
-<!-- If considering only the AUROCC metric, we can create a tile plot to identify the optimal hyper-parameters. -->
+```{r}
+#| label: auroc-curve
 
-<!-- ```{r} -->
-<!-- show_best(xgb_tune_res, metric = 'roc_auc', n = Inf) %>% -->
-<!--   mutate(log_learnrate = log10(learn_rate)) %>% -->
-<!--   ggplot(aes( -->
-<!--     x = factor(log_learnrate), -->
-<!--     y = factor(tree_depth), -->
-<!--     fill = mean -->
-<!--   ))  + -->
-<!--   geom_tile(col = 'white')  -->
+final_fit %>%
+  collect_predictions() %>%
+  roc_curve(
+    truth = mouse_strain, 
+    .pred_BALBc, 
+    .pred_Black6, 
+    .pred_CD1
+  ) %>%
+  autoplot() +
+  labs(title = "ROC Curves: Random Forest (Test Set)")
+```
 
-<!-- ``` -->
+Because `mouse_strain` has three classes, this produces one curve per strain (each treating that strain vs. the other two) rather than a single combined curve.
 
-<!-- ### Select best hyper-parameters -->
+We can also evaluate the confusion matrix (`conf_mat()`), where rows are our "truth" (the strain in `noisy_mice`; `truth = mouse_strain`) and columns are the "predictions" (the predicted strain; `estimate = .pred_class`). Diagonal cells are correct predictions, while off-diagonal cells are misclassifications. 
 
-<!-- We can see from the plots that models with a learning rate of 0.1 perform the best. There is little difference by tree depth however. To extract the combination of hyper-parameters that performs the best, use `select_best()`. Note we can only use one metric to determine the best model! -->
+```{r}
+#| label: confusion-matrix
 
-<!-- ```{r} -->
-<!-- best_params <- select_best(xgb_tune_res, metric ="roc_auc" ) -->
-<!-- best_params -->
-<!-- ``` -->
+final_fit %>%
+  collect_predictions() %>%
+  conf_mat(
+    truth = mouse_strain,
+    estimate = .pred_class
+  ) %>%
+  autoplot(type = "heatmap") +
+  labs(title = "Confusion Matrix: Random Forest (Test Set)")
+```
 
-<!-- Confirm that the best model has been selected, by printing all results and sorting on descending mean: -->
+::: {.callout-note title="Try it yourself"}
+Using `collect_predictions(final_fit)`, compute the sensitivity, specificity, positive predictive value (PPV) and negative predictive value (NPV) for each strain class (see the `yardstick` package functions: `sens()`, `spec()`, `ppv()`, `npv()`). The tidymodels [cross-validation tutorial](https://www.tidymodels.org/start/resampling/) works through a similar calculation in detail if you'd like a worked example.
+:::
 
-<!-- ```{r} -->
-<!-- collect_metrics(xgb_tune_res) %>% arrange(desc(mean)) -->
-<!-- ``` -->
+::::::::: {.callout-important title="Test Your Knowledge — Q7"}
+:::::::: question
+7\. A classifier has an AUROC of 0.90 but an AUPRC of only 0.30. What does this most likely indicate?
 
-<!-- ### Finalize workflow -->
+::::::: choices
+::: choice
+The model is performing extremely well overall, with no concerns
+:::
 
-<!-- ```{r} -->
-<!-- final_wf <- finalize_workflow(wf_xgb_tune, best_params) -->
-<!-- ``` -->
+::: {.choice .correct-choice}
+The classes in the dataset are likely imbalanced — AUPRC is more sensitive to class imbalance than AUROC
+:::
 
-<!-- ## Train your model! -->
+::: choice
+AUPRC and AUROC should always be equal, so this must be a coding error
+:::
 
-<!-- ```{r} -->
-<!-- final_fit <- fit(final_wf, data = train_cl) -->
-<!-- ``` -->
+::: choice
+The confusion matrix is no longer needed once you have an AUROC value
+:::
 
-<!-- ## Predict the test set! -->
+:::::::
+::::::::
 
-<!-- Apply the model trained using optimal hyper-parameters, to predict the malignant status in the hold-out `test_cl` dataset. -->
+<details>
 
-<!-- ```{r} -->
-<!-- pred_tuned <- predict(final_fit, test_cl, type = "prob") %>% -->
-<!--   bind_cols(test_cl) -->
-<!-- ``` -->
+<summary>Solutions</summary>
 
-<!-- # Compare tuning effects -->
+<p>
 
-<!-- ## Evaluate -->
+1.  A high AUROC alongside a low AUPRC is a red flag, not a sign of strong performance — it usually means the model looks good on paper but struggles with the minority class.
+2.  Correct! As shown in the lecture's imbalanced-data example, AUROC can remain high under class imbalance while AUPRC drops sharply, because AUPRC is sensitive to how rare the positive class is.
+3.  These two metrics measure different trade-offs (sensitivity/specificity vs precision/recall) and are not expected to match.
+4.  The confusion matrix, AUROC and AUPRC each reveal different aspects of performance and are best used together.
 
-<!-- Here we generate performance curves and metrics for ROC and PR, for both the original and the tuned models. -->
+</p>
 
-<!-- ### Original hyper-parameters -->
+</details>
+:::::::::
 
-<!-- Assign the original model results to `pred_orig`, then extract the ROC and PR data for the original model: -->
+## Variable Importance Plot
 
-<!-- ```{r} -->
-<!-- pred_orig <- pred_test -->
-<!-- ``` -->
+You may be interested in understanding which predictor variable was the most important in informing the final classification prediction. We can do this by extracting the fitted model (`extract_fit_parsnip()`) and plotting variable importance using the `vip` R package.
 
-<!-- ```{r} -->
-<!-- roc_orig <- roc_curve(pred_orig, truth = status, .pred_malignant,  -->
-<!--                       event_level = "second") %>% -->
-<!--   mutate(model = "Original")  -->
+Importance is measured by mean decrease in node impurity (Gini impurity), where higher values indicate a greater contribution to classification decisions. This tells us which physiological features best distinguish strains. 
 
+```{r}
+#| label: variable-importance
 
-<!-- pr_orig <- pr_curve(pred_orig, truth = status, .pred_malignant,  -->
-<!--                     event_level = "second") %>% -->
-<!--   mutate(model = "Original")  -->
+final_fit %>%
+  extract_fit_parsnip() %>%
+  vip() +
+  labs(title = "Variable Importance: Random Forest")
+```
 
+Here we can see that `initial_weight_g` is the most important variable that informs our random forest, and `sex` as the least informative variable! 
 
-<!-- ``` -->
+## Predict Strain for the Synthetic Unlabelled Dataset
 
-<!-- ### Tuned hyper-parameters -->
+Now that we have a trained and evaluated model, we can use it to predict on genuinely new data — this is often the ultimate goal of training an ML model.
 
-<!-- Extract the ROC and PR results for the tuned model -->
+We load a new, unlabelled dataset, `mouse_new`, containing physiological measurements but no strain labels.
 
-<!-- ```{r} -->
-<!-- roc_tuned <- roc_curve(pred_tuned, truth = status, .pred_malignant,  -->
-<!--                        event_level = "second") %>% -->
-<!--   mutate(model = "Tuned")  -->
+```{r}
+#| label: predict-new-data
 
+mouse_new <- read_csv("data/new_mice.csv") %>%
+  # Convert character columns to factors to match the training data's
+  # column types -- step_dummy() in the recipe expects factor predictors
+  mutate(across(where(is.character), as.factor))
 
-<!-- pr_tuned <- pr_curve(pred_tuned, truth = status, .pred_malignant,  -->
-<!--                      event_level = "second") %>% -->
-<!--   mutate(model = "Tuned")  -->
+# Extract the final fitted model from last_fit()
+final_model <- extract_workflow(final_fit)
 
-<!-- ``` -->
+# Generate class predictions and class probabilities
+new_predictions <- mouse_new %>%
+  bind_cols(
+    predict(final_model, new_data = mouse_new),
+    predict(final_model, new_data = mouse_new, type = "prob")
+  )
 
-<!-- ## Statistics -->
+# View predictions with confidence probabilities
+head(new_predictions, 10)
+```
 
-<!-- ### Original hyper-parameters -->
+It's often useful to wrap this prediction logic into a reusable function, so you (or a collaborator) can apply the saved model to any new dataset without repeating the code above.
 
-<!-- Calculate the AUC for the original model: -->
+```{r}
+#| label: predict-mice-function
 
-<!-- ```{r} -->
-<!-- aurocc_orig <- roc_auc(pred_orig,  truth = status, .pred_malignant,  -->
-<!--                        event_level = "second") %>%  -->
-<!--   pull(.estimate) %>% round(3) -->
+# Save the fitted model so it can be reloaded without re-training
+saveRDS(final_fit, "model/mice.rds")
 
-<!-- auprc_orig <- pr_auc(pred_orig,  truth = status, .pred_malignant,  -->
-<!--                      event_level = "second") %>%  -->
-<!--   pull(.estimate) %>% round(3) -->
+predict_mice <- function(df, model = "model/mice.rds") {
+  # Match the column types used during training
+  df <- df %>% mutate(across(where(is.character), as.factor))
 
-<!-- ``` -->
+  # Load the saved model
+  final_fit <- readRDS(model)
 
-<!-- ### Tuned parameters -->
+  # Extract the fitted workflow from last_fit()
+  final_model <- extract_workflow(final_fit)
 
-<!-- ```{r} -->
-<!-- aurocc_tuned <- roc_auc(pred_tuned, truth = status, .pred_malignant, -->
-<!--                         event_level = "second") %>%  -->
-<!--   pull(.estimate) %>% round(3) -->
+  # Generate class predictions and class probabilities
+  df %>%
+    bind_cols(
+      predict(final_model, new_data = df),
+      predict(final_model, new_data = df, type = "prob")
+    )
+}
 
+predict_mice(mouse_new)
+```
 
-<!-- auprc_tuned <- pr_auc(pred_tuned, truth = status, .pred_malignant,  -->
-<!--                       event_level = "second") %>%  -->
-<!--   pull(.estimate) %>% round(3) -->
+Congratulations! You've completed the core [Part 1](#sec-w8-part1) and [Part 2](#sec-w8-part2) workshop content! 
 
-<!-- ``` -->
+<!-- 
+# Session Info - see if Kathleen uses session info in previous workshops. 
 
-<!-- ## Plots -->
+```{r}
+#| label: session-info
 
-<!-- Here we create ROC and PR curves using ggplot, to directly compare the performance of the original vs the tuned classifiers. (We sort the data by sensitivity, and precision respectively, to avoid unwanted extra lines in the `geom_step()` geom) -->
-
-<!-- ### ROC -->
-
-<!-- ```{r} -->
-<!-- #| fig-width: 7 -->
-<!-- #| fig-height: 5 -->
-
-<!-- roc_origVtuned <- bind_rows( -->
-<!--   roc_orig  %>% arrange(sensitivity),  -->
-<!--   roc_tuned %>% arrange(sensitivity) )  -->
-
-<!-- roc_origVtuned %>% ggplot(aes(x = 1-specificity, y = sensitivity)) + -->
-<!--   geom_step(aes(color=model), lwd=1.5) + -->
-<!--   geom_abline(linetype = "dashed", color = "grey") + -->
-<!--   annotate("text", x = 0.6, y = 0.2,  -->
-<!--            label = paste0("AUROC (orig): ",  aurocc_orig) ) + -->
-<!--   annotate("text", x = 0.6, y = 0.1,  -->
-<!--            label = paste0("AUROC (tuned): ", aurocc_tuned)) + -->
-<!--   labs(title = "ROC Curve Comparison", -->
-<!--        x = "False Positive Rate", -->
-<!--        y = "True Positive Rate", -->
-<!--        color = "Model") + -->
-<!--   theme_minimal() -->
-
-
-<!-- ``` -->
-
-<!-- ### PR -->
-
-<!-- ```{r} -->
-<!-- #| fig-width: 7 -->
-<!-- #| fig-height: 5 -->
-
-
-<!-- pr_origVtuned <- bind_rows( -->
-<!--   pr_orig  %>% arrange(desc(precision)), -->
-<!--   pr_tuned %>% arrange(desc(precision))) -->
-
-<!-- pr_origVtuned %>%  -->
-<!--   ggplot(aes(x = recall, y = precision)) + -->
-<!--   geom_step(aes(color=model), lwd=1.5) + -->
-<!--   geom_hline(linetype = "dashed", color = "grey",yintercept = 0.5) + -->
-<!--   annotate("text", x = 0.6, y = 0.2,  -->
-<!--            label = paste0("AUROC (orig): ",  auprc_orig) ) + -->
-<!--   annotate("text", x = 0.6, y = 0.1,  -->
-<!--            label = paste0("AUROC (tuned): ", auprc_tuned)) + -->
-<!--   labs(title = "PR Curve Comparison", -->
-<!--        x = "Recall", -->
-<!--        y = "Precision", -->
-<!--        color = "Model") + -->
-<!--   theme_minimal() -->
-<!-- ``` -->
-
-<!-- # RESULTS -->
-
-<!-- By tuning the model hyper-parameters, we identified an optimum that allowed us to build a classifier that has slightly better accuracy than our original model! -->
+# Record package versions for reproducibility
+sessionInfo()
+``` -->
