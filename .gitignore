@@ -5,3 +5,4 @@
 _book/
 .Rhistory
 **/*.quarto_ipynb
+.posit/assistant

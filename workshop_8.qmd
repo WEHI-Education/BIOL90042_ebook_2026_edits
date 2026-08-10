@@ -107,9 +107,9 @@ then unzip, and copy the files into your R project home directory e.g. `BIOL9004
 ## Read data
 
 ```{r}
-mice_data <- read_csv(here::here("data/mousezempic_dosage_data.csv"))
+dosage <- read_csv(here::here("data/mousezempic_dosage_data.csv"))
 
-mice_data
+dosage
 ```
 
 # Part 1: K-Means Clustering with tidyclust {#sec-w8-part1}
@@ -137,7 +137,7 @@ The `mousezempic_dosage_data` dataset contains measurements for **344 mice** acr
 ```{r}
 #| label: mice-df
 
-mice_data <- mice_data %>%
+dosage <- dosage %>%
   mutate(
     mouse_strain = case_when(
       mouse_strain == "CD-1" ~ "CD1",
@@ -147,7 +147,7 @@ mice_data <- mice_data %>%
     mouse_strain = as.factor(mouse_strain)
   )
 
-glimpse(mice_data)
+glimpse(dosage)
 ```
 
 ::: {.callout-note title="Biological Prior: How Many Clusters Should We Expect?"}
@@ -161,7 +161,7 @@ We are going to explicitly keep only the numeric physiological features of our d
 ```{r}
 #| label: prepare-clustering-data
 
-mouse_clust <- mice_data %>%
+mouse_clust <- dosage %>%
   drop_na() %>%
   select(initial_weight_g, tail_length_mm, drug_dose_g, weight_lost_g)
 
@@ -450,7 +450,7 @@ We then bind our cluster predictions back to the original (unscaled) data using 
 ```{r}
 #| label: cluster-assignments-2
 
-mouse_clustered <- mice_data %>%
+mouse_clustered <- dosage %>%
   drop_na() %>%
   bind_cols(mouse_predicted_clusters)
 
@@ -682,15 +682,15 @@ Congratulations on completing Part 1!
 
 ## Setup
 
-Our `mice` dataset is clean and well-separated — almost too clean. It's a great teaching dataset, but real-world data is rarely this tidy. To give a more realistic sense of how ML performs on messier data, we use a noisy version of the dataset, `noisy_mice`, created by adding random measurement error to the physiological features.
+Our `mice` dataset is clean and well-separated — almost too clean. It's a great teaching dataset, but real-world data is rarely this tidy. To give a more realistic sense of how ML performs on messier data, we use a noisy version of the dataset, `noisy_dosage`, created by adding random measurement error to the physiological features.
 
 ```{r}
-noisy_mice <- read_csv(here::here("data/noisy_mice.csv"))
+noisy_dosage <- read_csv(here::here("data/noisy_dosage.csv"))
 ```
 
 ## Split Data into Training & Testing Sets
 
-As we are now employing a **supervised ML** algorithm, we split our `noisy_mice` dataset into two distinct datasets: train and test. We train the model on the training set and evaluate it on the test set. The test set must **never** be seen during model training or tuning — this is what allows it to give an unbiased estimate of real-world performance.
+As we are now employing a **supervised ML** algorithm, we split our `noisy_dosage` dataset into two distinct datasets: train and test. We train the model on the training set and evaluate it on the test set. The test set must **never** be seen during model training or tuning — this is what allows it to give an unbiased estimate of real-world performance.
 
 We use a 75/25 train/test split (`prop = 0.75`) and stratify by strain (`strata = mouse_strain`) so that each set has proportional representation of all three strain.
 
@@ -700,7 +700,7 @@ We use a 75/25 train/test split (`prop = 0.75`) and stratify by strain (`strata 
 set.seed(123)
 
 mouse_split <- initial_split(
-  noisy_mice,
+  noisy_dosage,
   prop = 0.75,
   strata = mouse_strain
 )
@@ -894,7 +894,7 @@ final_fit %>%
 
 Because `mouse_strain` has three classes, this produces one curve per strain (each treating that strain vs. the other two) rather than a single combined curve.
 
-We can also evaluate the confusion matrix (`conf_mat()`), where rows are our "truth" (the strain in `noisy_mice`; `truth = mouse_strain`) and columns are the "predictions" (the predicted strain; `estimate = .pred_class`). Diagonal cells are correct predictions, while off-diagonal cells are misclassifications. 
+We can also evaluate the confusion matrix (`conf_mat()`), where rows are our "truth" (the strain in `noisy_dosage`; `truth = mouse_strain`) and columns are the "predictions" (the predicted strain; `estimate = .pred_class`). Diagonal cells are correct predictions, while off-diagonal cells are misclassifications. 
 
 ```{r}
 #| label: confusion-matrix
@@ -1004,9 +1004,9 @@ It's often useful to wrap this prediction logic into a reusable function, so you
 #| label: predict-mice-function
 
 # Save the fitted model so it can be reloaded without re-training
-saveRDS(final_fit, "model/mice.rds")
+saveRDS(final_fit, "model/dosage.rds")
 
-predict_mice <- function(df, model = "model/mice.rds") {
+predict_mice <- function(df, model = "model/dosage.rds") {
   # Match the column types used during training
   df <- df %>% mutate(across(where(is.character), as.factor))
 
