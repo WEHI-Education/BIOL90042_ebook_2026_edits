@@ -1,0 +1,342 @@
+---
+title: "Workshop 6: Live-coding & Practice Exercises"
+format:
+  html:
+    toc: true
+    toc-location: left
+    toc-title: "In this chapter:"
+---
+
+<!-- Companion file to workshop_6.qmd. -->
+<!-- workshop_6.qmd is the complete, worked-example reference document. -->
+<!-- This file contains: -->
+<!--   1. "Live-coding" skeleton chunks for the instructor to build up on screen during class -->
+<!--      (same variables/story as workshop_6.qmd, with key pieces blanked out as `___`) -->
+<!--   2. "Your turn" practice questions for students to attempt themselves during class, -->
+<!--      using different variables from `dosage` so they aren't just copying the demo -->
+<!--   3. A collapsed instructor answer key at the very end -->
+
+# Setup
+
+Before starting, make sure the `dosage` data frame is loaded and cleaned exactly as in the main workshop:
+
+```{r}
+#| message: false
+library(tidyverse)
+library(tidyrstats)
+
+dosage <- read_delim("data/mousezempic_dosage_data.csv") %>%
+  mutate(
+    mouse_strain = case_when(
+      mouse_strain == "CD-1" ~ "CD1",
+      mouse_strain == "Black 6" ~ "Black6",
+      mouse_strain == "BALB C" ~ "BALBc",
+      TRUE ~ mouse_strain
+    )
+  ) %>%
+  na.omit(mouse_strain, sex)
+```
+
+# 1. Testing associations between categorical variables
+
+## Live-coding (build together)
+
+Follow along as we build the chi-squared test step by step. Fill in the blanks (`___`) as we go.
+
+```{r}
+#| eval: false
+
+# Step 1: build a contingency table of mouse_strain and sex
+strain_sex_table <- table(dosage$___, dosage$___)
+strain_sex_table
+
+# Step 2: visualise it as a stacked bar chart first
+dosage %>%
+  ggplot(aes(x = ___, fill = ___)) +
+  geom_bar(position = "___") +
+  labs(y = "Proportion", x = "Mouse strain", title = "Sex distribution by strain")
+
+# Step 3: run the test
+___(strain_sex_table)
+```
+
+## Your turn
+
+Were mice allocated evenly across the three experimental **replicates** (`replicate`), regardless of `mouse_strain`? Investigate this using the same workflow we just built.
+
+1. Build a contingency table of `mouse_strain` and `replicate`.
+2. Visualise it as a stacked bar chart.
+3. Check that the chi-squared assumption (expected cell counts) is reasonable before running the test.
+4. Run the appropriate test and state your conclusion in plain language: is there evidence of an association between strain and replicate?
+
+```{r}
+#| eval: false
+
+# Your code here
+
+```
+
+# 2. Correlation between continuous variables
+
+## Live-coding (build together)
+
+```{r}
+#| eval: false
+
+# Step 1: test the correlation
+cor.test(dosage$___, dosage$___)
+
+# Step 2: visualise it
+ggplot(dosage, aes(x = ___, y = ___)) +
+  geom_point() +
+  geom_smooth(method = "___")
+
+# Step 3: a correlation matrix across several variables at once
+library(ggcorrplot)
+
+dosage %>%
+  select(drug_dose_g, weight_lost_g, tail_length_mm, initial_weight_g) %>%
+  cor() %>%
+  ggcorrplot(lab = ___)
+```
+
+## Your turn
+
+Do heavier mice (at the start of the study) tend to lose more weight? And is there a relationship between a mouse's tail length and its starting weight?
+
+1. Test the correlation between `initial_weight_g` and `weight_lost_g` using `cor.test()`.
+2. Visualise this relationship with a scatterplot and a fitted line.
+3. Test the correlation between `tail_length_mm` and `initial_weight_g`. Is the relationship positive or negative?
+4. For one of the two relationships above, also compute the Spearman correlation. Does your conclusion change?
+
+```{r}
+#| eval: false
+
+# Your code here
+
+```
+
+# 3. Parametric and non-parametric tests
+
+## Live-coding (build together)
+
+```{r}
+#| eval: false
+
+# Step 1: visualise the two groups
+ggplot(dosage, aes(x = ___, y = weight_lost_g)) +
+  geom_boxplot()
+
+# Step 2: check normality with a QQ plot
+ggplot(dosage, aes(sample = weight_lost_g)) +
+  geom_qq() +
+  geom_qq_line() +
+  facet_wrap(~___)
+
+# Step 3: confirm with a Shapiro-Wilk test (do this once per group)
+dosage %>%
+  filter(sex == "male") %>%
+  pull(weight_lost_g) %>%
+  ___()
+
+# Step 4: run the t-test
+dosage %>%
+  t.test(weight_lost_g ~ ___, data = .)
+
+# Step 5: run the non-parametric alternative
+dosage %>%
+  ___.test(weight_lost_g ~ sex, data = .)
+
+# Step 6: for 3+ groups, use the Kruskal-Wallis test
+dosage %>%
+  kruskal.test(weight_lost_g ~ ___, data = .)
+```
+
+## Your turn
+
+Does a mouse's starting weight (`initial_weight_g`) differ by sex? And does tail length (`tail_length_mm`) differ by strain?
+
+1. Visualise `initial_weight_g` by `sex` with a boxplot, then check normality with a QQ plot and/or Shapiro-Wilk test for each group.
+2. Based on your assumption check, run **either** a t-test **or** a Wilcoxon test (whichever is more appropriate) comparing `initial_weight_g` between sexes.
+3. Visualise `tail_length_mm` by `mouse_strain` with a boxplot.
+4. Run a Kruskal-Wallis test comparing `tail_length_mm` across the three strains, and describe what the boxplot and test result tell you together.
+
+```{r}
+#| eval: false
+
+# Your code here
+
+```
+
+# 4. Linear modelling in the tidyverse
+
+## Live-coding (build together)
+
+```{r}
+#| eval: false
+
+# Step 1: a two-group comparison as a linear model
+dosage %>%
+  lm_test(weight_lost_g ~ ___)
+
+# Compare the statistic/p.value above to the t-test from Section 3 — they should match!
+
+# Step 2: group means tested against 0
+dosage %>%
+  lm_test(weight_lost_g ~ 0 + ___)
+
+# Step 3: a continuous predictor
+dosage %>%
+  lm_test(weight_lost_g ~ ___)
+
+# Step 4: check for a possible confounder before correcting for it
+dosage %>%
+  summarise(
+    mean_dose = mean(drug_dose_g),
+    mean_weight_lost = mean(weight_lost_g),
+    .by = ___
+  )
+
+# Step 5: correct for the confounder
+dosage %>%
+  lm_test(weight_lost_g ~ drug_dose_g + ___)
+```
+
+## Your turn
+
+Investigate whether `drug_dose_g` predicts `tail_length_mm`, and whether `mouse_strain` confounds that relationship. This one has a twist — pay close attention to the sign of the slope at each step!
+
+1. Fit `lm_test(initial_weight_g ~ sex)`. Compare the `statistic` and `p.value` to your t-test from Section 3, Q2 — do they match?
+2. Fit `lm_test(tail_length_mm ~ drug_dose_g)` (no covariates yet). Note the direction (sign) of the slope for `drug_dose_g`.
+3. Compute the mean `drug_dose_g` and mean `tail_length_mm` for each `mouse_strain`. What do you notice about Black6 mice?
+4. Now fit `lm_test(tail_length_mm ~ drug_dose_g + mouse_strain)`. What happens to the sign of the `drug_dose_g` slope compared to step 2? Discuss with your neighbour: why might correcting for a confounder actually **reverse** the direction of an effect, not just weaken it?
+
+```{r}
+#| eval: false
+
+# Your code here
+
+```
+
+# 5. Logistic regression
+
+## Live-coding (build together)
+
+```{r}
+#| eval: false
+
+# Step 1: create a binary outcome
+dosage <- dosage %>%
+  drop_na(weight_lost_g, drug_dose_g) %>%
+  mutate(
+    responder = if_else(weight_lost_g > median(weight_lost_g), 1, 0),
+    drug_dose_z = as.numeric(scale(___))
+  )
+
+dosage %>% count(___)
+
+# Step 2: check for separation before fitting
+table(dosage$mouse_strain, dosage$___)
+
+# Step 3: fit the model
+logit_model <- glm(
+  responder ~ drug_dose_z + ___,
+  data = dosage,
+  family = "___"
+)
+
+summary(logit_model)
+
+# Step 4: convert coefficients to odds ratios
+broom::tidy(logit_model, exponentiate = ___, conf.int = TRUE)
+```
+
+## Your turn
+
+Create a new binary outcome — whether a mouse has a **long tail** (above the sample median `tail_length_mm`) — and model it using `initial_weight_g` and `sex`.
+
+1. Starting from `dosage`, create a new data frame `dosage_ex` with a `long_tail` column (1 if `tail_length_mm` is above the median, 0 otherwise), and a standardised `initial_weight_z` column (using `scale()`).
+2. **Before fitting any model**, cross-tabulate `mouse_strain` against `long_tail`. What do you notice about one of the strains? Why would including `mouse_strain` as a predictor in a `glm()` here cause a problem?
+3. Fit `glm(long_tail ~ initial_weight_z + sex, data = dosage_ex, family = "binomial")` instead.
+4. Convert the coefficients to odds ratios with `broom::tidy(..., exponentiate = TRUE, conf.int = TRUE)`, and interpret both the `initial_weight_z` and `sex` odds ratios in plain language.
+
+```{r}
+#| eval: false
+
+# Your code here
+
+```
+
+# Instructor answer key {.appendix}
+
+::: {.callout-note title="Section 1 answer" collapse="true"}
+```{r}
+#| eval: false
+strain_replicate_table <- table(dosage$mouse_strain, dosage$replicate)
+strain_replicate_table
+
+dosage %>%
+  ggplot(aes(x = mouse_strain, fill = replicate)) +
+  geom_bar(position = "fill")
+
+chisq.test(strain_replicate_table)
+```
+Expected counts are comfortably above 5 in every cell, so the chi-squared approximation is valid. The p value is well above 0.05 (≈0.51), so there is no evidence of an association between strain and replicate — consistent with mice being allocated to replicates independently of strain.
+:::
+
+::: {.callout-note title="Section 2 answer" collapse="true"}
+```{r}
+#| eval: false
+cor.test(dosage$initial_weight_g, dosage$weight_lost_g)
+cor.test(dosage$tail_length_mm, dosage$initial_weight_g)
+cor.test(dosage$tail_length_mm, dosage$initial_weight_g, method = "spearman")
+```
+`initial_weight_g` and `weight_lost_g` are moderately positively correlated (r ≈ 0.59, p < 0.001) — heavier mice tended to lose more weight. `tail_length_mm` and `initial_weight_g` are weakly negatively correlated (r ≈ -0.23, p < 0.001). Both conclusions hold under a Spearman correlation as well.
+:::
+
+::: {.callout-note title="Section 3 answer" collapse="true"}
+```{r}
+#| eval: false
+shapiro.test(dosage$initial_weight_g[dosage$sex == "male"])
+shapiro.test(dosage$initial_weight_g[dosage$sex == "female"])
+# Both p < 0.05: normality is questionable in both groups
+wilcox.test(initial_weight_g ~ sex, data = dosage)
+
+kruskal.test(tail_length_mm ~ mouse_strain, data = dosage)
+```
+`initial_weight_g` is non-normal in both groups (Shapiro-Wilk p < 0.001), so a Wilcoxon test is the safer choice; it agrees with a t-test here (p < 0.001 either way) — males are heavier at baseline. Tail length differs strongly by strain (Kruskal-Wallis p < 0.001); the boxplot shows Black6 mice have noticeably **shorter** tails than BALBc or CD1.
+:::
+
+::: {.callout-note title="Section 4 answer" collapse="true"}
+```{r}
+#| eval: false
+dosage %>% lm_test(initial_weight_g ~ sex)
+dosage %>% lm_test(tail_length_mm ~ drug_dose_g)
+dosage %>% summarise(mean_dose = mean(drug_dose_g), mean_tail = mean(tail_length_mm), .by = mouse_strain)
+dosage %>% lm_test(tail_length_mm ~ drug_dose_g + mouse_strain)
+```
+The `lm_test(initial_weight_g ~ sex)` statistic and p value match the t-test exactly, confirming the equivalence.
+
+This is a good example of **Simpson's paradox**: the uncorrected slope for `drug_dose_g` is strongly **negative** (higher dose associated with shorter tails), but Black6 mice happen to have both a higher average dose *and* much shorter tails than the other strains. Once `mouse_strain` is added to the model, the `drug_dose_g` slope flips to strongly **positive** — within any given strain, higher doses are actually associated with longer tails. The uncorrected relationship was driven entirely by strain differences, not a true dose effect in the opposite direction. This is worth discussing explicitly: correcting for a confounder can change not just the strength but the *direction* of an estimated effect.
+:::
+
+::: {.callout-note title="Section 5 answer" collapse="true"}
+```{r}
+#| eval: false
+dosage_ex <- dosage %>%
+  drop_na(tail_length_mm, initial_weight_g) %>%
+  mutate(
+    long_tail = if_else(tail_length_mm > median(tail_length_mm), 1, 0),
+    initial_weight_z = as.numeric(scale(initial_weight_g))
+  )
+
+table(dosage_ex$mouse_strain, dosage_ex$long_tail)
+
+ex_logit <- glm(long_tail ~ initial_weight_z + sex, data = dosage_ex, family = "binomial")
+broom::tidy(ex_logit, exponentiate = TRUE, conf.int = TRUE)
+```
+
+The cross-tab reveals **perfect separation**: every single Black6 mouse falls in the short-tail group (0 long-tailed Black6 mice out of 119). Including `mouse_strain` as a predictor of `long_tail` would make the model unstable (infinite/unreliable coefficient for Black6), so it must be left out of this particular model.
+
+Both `initial_weight_z` and `sex` are significant predictors: each 1-SD increase in starting weight is associated with roughly a 59% *decrease* in the odds of having a long tail (OR ≈ 0.41), while male mice have roughly 6-fold higher odds of a long tail than female mice (OR ≈ 6.2), holding starting weight constant.
+:::

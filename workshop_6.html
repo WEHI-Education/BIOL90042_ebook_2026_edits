@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>workshop_6</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="workshop_6_files/libs/clipboard/clipboard.min.js"></script>
+<script src="workshop_6_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="workshop_6_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="workshop_6_files/libs/quarto-html/popper.min.js"></script>
+<script src="workshop_6_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="workshop_6_files/libs/quarto-html/anchor.min.js"></script>
+<link href="workshop_6_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="workshop_6_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="workshop_6_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="workshop_6_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="workshop_6_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="workshop_6_files/libs/quarto-contrib/alpine-3.12/buttons.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">In this chapter:</h2>
+   
+  <ul>
+  <li><a href="#statistics-in-r" id="toc-statistics-in-r" class="nav-link active" data-scroll-target="#statistics-in-r">Statistics in R</a></li>
+  <li><a href="#testing-associations-between-categorical-variables" id="toc-testing-associations-between-categorical-variables" class="nav-link" data-scroll-target="#testing-associations-between-categorical-variables">Testing associations between categorical variables</a>
+  <ul class="collapse">
+  <li><a href="#read-and-prepare-the-data" id="toc-read-and-prepare-the-data" class="nav-link" data-scroll-target="#read-and-prepare-the-data">Read and prepare the data</a></li>
+  <li><a href="#build-a-contingency-table" id="toc-build-a-contingency-table" class="nav-link" data-scroll-target="#build-a-contingency-table">Build a contingency table</a></li>
+  <li><a href="#check-the-assumption-and-run-the-test" id="toc-check-the-assumption-and-run-the-test" class="nav-link" data-scroll-target="#check-the-assumption-and-run-the-test">Check the assumption and run the test</a></li>
+  <li><a href="#interpret-the-results" id="toc-interpret-the-results" class="nav-link" data-scroll-target="#interpret-the-results">Interpret the results</a></li>
+  </ul></li>
+  <li><a href="#correlation-between-continuous-variables" id="toc-correlation-between-continuous-variables" class="nav-link" data-scroll-target="#correlation-between-continuous-variables">Correlation between continuous variables</a>
+  <ul class="collapse">
+  <li><a href="#calculate-a-correlation-coefficient" id="toc-calculate-a-correlation-coefficient" class="nav-link" data-scroll-target="#calculate-a-correlation-coefficient">Calculate a correlation coefficient</a></li>
+  <li><a href="#visualise-the-correlation" id="toc-visualise-the-correlation" class="nav-link" data-scroll-target="#visualise-the-correlation">Visualise the correlation</a></li>
+  </ul></li>
+  <li><a href="#parametric-and-non-parametric-tests" id="toc-parametric-and-non-parametric-tests" class="nav-link" data-scroll-target="#parametric-and-non-parametric-tests">Parametric and non-parametric tests</a>
+  <ul class="collapse">
+  <li><a href="#comparing-two-groups-the-t-test" id="toc-comparing-two-groups-the-t-test" class="nav-link" data-scroll-target="#comparing-two-groups-the-t-test">Comparing two groups: the t-test</a></li>
+  <li><a href="#when-assumptions-are-violated-the-wilcoxon-rank-sum-test" id="toc-when-assumptions-are-violated-the-wilcoxon-rank-sum-test" class="nav-link" data-scroll-target="#when-assumptions-are-violated-the-wilcoxon-rank-sum-test">When assumptions are violated: the Wilcoxon rank-sum test</a></li>
+  <li><a href="#comparing-more-than-two-groups-the-kruskal-wallis-test" id="toc-comparing-more-than-two-groups-the-kruskal-wallis-test" class="nav-link" data-scroll-target="#comparing-more-than-two-groups-the-kruskal-wallis-test">Comparing more than two groups: the Kruskal-Wallis test</a></li>
+  </ul></li>
+  <li><a href="#linear-modelling-in-the-tidyverse" id="toc-linear-modelling-in-the-tidyverse" class="nav-link" data-scroll-target="#linear-modelling-in-the-tidyverse">Linear modelling in the tidyverse</a>
+  <ul class="collapse">
+  <li><a href="#testing-differences-between-groups-discrete-x" id="toc-testing-differences-between-groups-discrete-x" class="nav-link" data-scroll-target="#testing-differences-between-groups-discrete-x">Testing differences between groups (discrete x)</a></li>
+  <li><a href="#testing-differences-relative-to-0-discrete-x" id="toc-testing-differences-relative-to-0-discrete-x" class="nav-link" data-scroll-target="#testing-differences-relative-to-0-discrete-x">Testing differences relative to 0 (discrete x)</a></li>
+  <li><a href="#testing-associations-between-variables-continuous-x" id="toc-testing-associations-between-variables-continuous-x" class="nav-link" data-scroll-target="#testing-associations-between-variables-continuous-x">Testing associations between variables (continuous x)</a></li>
+  <li><a href="#correcting-for-covariates" id="toc-correcting-for-covariates" class="nav-link" data-scroll-target="#correcting-for-covariates">Correcting for covariates</a></li>
+  </ul></li>
+  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression">Logistic regression</a>
+  <ul class="collapse">
+  <li><a href="#create-a-binary-outcome" id="toc-create-a-binary-outcome" class="nav-link" data-scroll-target="#create-a-binary-outcome">Create a binary outcome</a></li>
+  <li><a href="#check-model-assumptions" id="toc-check-model-assumptions" class="nav-link" data-scroll-target="#check-model-assumptions">Check model assumptions</a></li>
+  <li><a href="#fit-the-logistic-regression-model" id="toc-fit-the-logistic-regression-model" class="nav-link" data-scroll-target="#fit-the-logistic-regression-model">Fit the logistic regression model</a></li>
+  <li><a href="#interpret-coefficients-as-odds-ratios" id="toc-interpret-coefficients-as-odds-ratios" class="nav-link" data-scroll-target="#interpret-coefficients-as-odds-ratios">Interpret coefficients as odds ratios</a></li>
+  <li><a href="#visualise-the-fitted-model" id="toc-visualise-the-fitted-model" class="nav-link" data-scroll-target="#visualise-the-fitted-model">Visualise the fitted model</a></li>
+  </ul></li>
+  <li><a href="#linear-modelling-in-bioinformatics" id="toc-linear-modelling-in-bioinformatics" class="nav-link" data-scroll-target="#linear-modelling-in-bioinformatics">Linear modelling in bioinformatics</a></li>
+  <li><a href="#machine-learning" id="toc-machine-learning" class="nav-link" data-scroll-target="#machine-learning">Machine learning</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content" id="quarto-document-content">
+
+
+
+
+<!-- Notes for Kathleen to read BEFORE reading below. -->
+<!-- Dionne so far has taken the 2025 website chapter, which had some good things in it, and modified based on current 2026 teachings ie., using `read_delim()` instead of `read_csv()` as preferred method; relabelled dataset to `dosage`; added section on testing associations between categorical variables (chisq, fishers test, correlation). -->
+<!-- key important stats to learn: -->
+<!-- - `chisq.test()` and `fisher.test()` (if small n) -->
+<!-- - `cor.test()` pearson/spearman correlations -->
+<!-- - *parametric* ie., normal dist: `t.test()`, `lm_test()` or `lm()` -->
+<!-- - *non-parametric* ie., non-normal idst: `wilcox.test()` / `kruskal.test()` -->
+<!-- - logistic regression (`glm()`)  -->
+<!-- - odds ratio? predicted probability? [more applied epi] `ggpredict()` `emmeans()` (not really necessary, can provide resources: [broom](https://broom.tidymodels.org/), [ggpredict](https://strengejacke.github.io/ggeffects/reference/ggpredict.html), [emmeans](https://rvlenth.github.io/emmeans/) -->
+<section id="statistics-in-r" class="level1 unnumbered">
+<h1 class="unnumbered">Statistics in R</h1>
+<div class="callout callout-style-default callout-tip callout-titled" title="Learning Objectives">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>At the end of this session, learners should be able to:</p>
+<ol type="1">
+<li>Apply a simple linear regression to model the relationship between two continuous variables and evaluate the significance of a model</li>
+<li>Demonstrate how simple linear regression with a categorical independent variable is equivalent to an independent t-test</li>
+<li>Construct a multiple linear regression model to account for additional sources of variability in a biological dataset</li>
+<li>Test for an association between two categorical variables using a chi-squared test</li>
+<li>Extend linear modelling to a binary (yes/no) outcome using logistic regression, and interpret coefficients as odds ratios</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="testing-associations-between-categorical-variables" class="level1">
+<h1>Testing associations between categorical variables</h1>
+<p>So far we have talked about testing relationships where at least one variable is continuous. Sometimes both variables of interest are categorical.</p>
+<p>For example: were mice of different strains randomly allocated to the two sexes in the mousezempic study, or is there a systematic association between strain and sex?</p>
+<p>The <strong>chi-squared (χ²) test of independence</strong> compares the observed frequency of every combination of two categorical variables against the frequency we would expect if the two variables were completely unrelated (independent).</p>
+<ul>
+<li>Null hypothesis (H0): the two categorical variables are independent (no association)</li>
+<li>Alternate hypothesis (HA): the two categorical variables are associated</li>
+</ul>
+<section id="read-and-prepare-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="read-and-prepare-the-data">Read and prepare the data</h2>
+<p>For this section we’ll read in the raw mousezempic dosage data directly, so that we can inspect the categorical study design variables (<code>mouse_strain</code>, <code>sex</code>) that were summarised away in the joined dataset used above.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyrstats)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>dosage <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">"data/mousezempic_dosage_data.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># data processing/wrangling </span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># removing spaces and dashes to be computer-friendly</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">mouse_strain =</span> <span class="fu">case_when</span>(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      mouse_strain <span class="sc">==</span> <span class="st">"CD-1"</span> <span class="sc">~</span> <span class="st">"CD1"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      mouse_strain <span class="sc">==</span> <span class="st">"Black 6"</span> <span class="sc">~</span> <span class="st">"Black6"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      mouse_strain <span class="sc">==</span> <span class="st">"BALB C"</span> <span class="sc">~</span> <span class="st">"BALBc"</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> mouse_strain</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove NA values </span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>(mouse_strain, sex)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>dosage</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 333 × 9
+   mouse_strain cage_number weight_lost_g replicate sex    drug_dose_g
+   &lt;chr&gt;        &lt;chr&gt;               &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;        &lt;dbl&gt;
+ 1 CD1          1A                   3.75 rep1      male       0.00181
+ 2 CD1          1A                   3.8  rep1      female     0.00186
+ 3 CD1          1A                   3.25 rep1      female     0.00195
+ 4 CD1          1A                   3.45 rep1      female     0.00193
+ 5 CD1          1A                   3.65 rep1      male       0.0019 
+ 6 CD1          1A                   3.62 rep1      female     0.00181
+ 7 CD1          1A                   4.68 rep1      male       0.00195
+ 8 CD1          1A                   3.2  rep1      female     0.00182
+ 9 CD1          1A                   3.8  rep1      male       0.00191
+10 CD1          1A                   4.4  rep1      male       0.00198
+# ℹ 323 more rows
+# ℹ 3 more variables: tail_length_mm &lt;dbl&gt;, initial_weight_g &lt;dbl&gt;,
+#   id_num &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="build-a-contingency-table" class="level2">
+<h2 class="anchored" data-anchor-id="build-a-contingency-table">Build a contingency table</h2>
+<p>A <strong>contingency table</strong> cross-tabulates the counts of every combination of the two categorical variables:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>strain_sex_table <span class="ot">&lt;-</span> <span class="fu">table</span>(dosage<span class="sc">$</span>mouse_strain, dosage<span class="sc">$</span>sex)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>strain_sex_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        
+         female male
+  BALBc      34   34
+  Black6     58   61
+  CD1        73   73</code></pre>
+</div>
+</div>
+<p>It’s often useful to visualise a contingency table as a stacked bar chart before running any test:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mouse_strain, <span class="at">fill =</span> sex)) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Proportion"</span>, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Mouse strain"</span>, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Sex distribution by strain"</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_6_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The proportion of male and female mice looks very similar across all three strains, suggesting there may be no association between strain and sex — exactly what we’d expect if mice were randomly allocated to strain regardless of sex.</p>
+</section>
+<section id="check-the-assumption-and-run-the-test" class="level2">
+<h2 class="anchored" data-anchor-id="check-the-assumption-and-run-the-test">Check the assumption and run the test</h2>
+<p>The chi-squared test assumes that expected cell counts are reasonably large — a common rule of thumb is that no more than 20% of cells should have an expected count below 5. As we saw above, when we created the <code>strain_sex_table</code> data frame, all expected counts are comfortably <strong>above 5</strong>, so the chi-squared approximation is appropriate here. Always check this <em>before</em> interpreting the p value.</p>
+<p>Now we run the test:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(strain_sex_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test
+
+data:  strain_sex_table
+X-squared = 0.048607, df = 2, p-value = 0.976</code></pre>
+</div>
+</div>
+</section>
+<section id="interpret-the-results" class="level2">
+<h2 class="anchored" data-anchor-id="interpret-the-results">Interpret the results</h2>
+<p>The test statistic is very small (X-squared ≈ 0.05) and the p value (≈ 0.98) is far greater than 0.05, so we <strong>fail to reject the null hypothesis</strong>.</p>
+<p>We conclude there is no evidence of an association between mouse strain and sex in this dataset — consistent with sex being allocated at random with respect to strain, as we would hope for a well-designed experiment.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Chi-squared and small samples">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Chi-squared and small samples
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When cell counts are small (expected count &lt; 5 in more than 20% of cells), the chi-squared approximation becomes unreliable. <code>fisher.test()</code> computes an exact p value instead and is a safer choice for small or sparse contingency tables, most commonly used for 2x2 tables.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="correlation-between-continuous-variables" class="level1">
+<h1>Correlation between continuous variables</h1>
+<p>Chi-squared tests are useful for two categorical variables, but the <code>dosage</code> data frame also contains several <strong>continuous</strong> variables, such as <code>drug_dose_g</code>, <code>weight_lost_g</code>, <code>tail_length_mm</code>, and <code>initial_weight_g</code>. To measure the strength and direction of a linear relationship between two continuous variables, we calculate a <strong>correlation coefficient</strong>.</p>
+<p>A correlation coefficient ranges from -1 to 1:</p>
+<ul>
+<li>Values close to <strong>1</strong> indicate a strong <em>positive</em> relationship (as one variable increases, so does the other)</li>
+<li>Values close to <strong>-1</strong> indicate a strong <em>negative</em> relationship (as one variable increases, the other decreases)</li>
+<li>Values close to <strong>0</strong> indicate little to no linear relationship</li>
+</ul>
+<section id="calculate-a-correlation-coefficient" class="level2">
+<h2 class="anchored" data-anchor-id="calculate-a-correlation-coefficient">Calculate a correlation coefficient</h2>
+<p>Let’s test whether <code>drug_dose_g</code> and <code>weight_lost_g</code> are correlated, using <code>cor.test()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(dosage<span class="sc">$</span>drug_dose_g, dosage<span class="sc">$</span>weight_lost_g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's product-moment correlation
+
+data:  dosage$drug_dose_g and dosage$weight_lost_g
+t = 32.562, df = 331, p-value &lt; 2.2e-16
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.8447622 0.8963550
+sample estimates:
+      cor 
+0.8729789 </code></pre>
+</div>
+</div>
+<p>The correlation coefficient (r ≈ 0.87) is close to 1, and the p value is far smaller than 0.05, so we have strong evidence of a <strong>positive linear relationship</strong> between drug dose and weight lost — mice given a higher dose tended to lose more weight.</p>
+</section>
+<section id="visualise-the-correlation" class="level2">
+<h2 class="anchored" data-anchor-id="visualise-the-correlation">Visualise the correlation</h2>
+<p>It’s good practice to visualise a correlation alongside the test statistic, both to check that a straight line is a sensible summary of the relationship and to communicate the result:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dosage, <span class="fu">aes</span>(<span class="at">x =</span> drug_dose_g, <span class="at">y =</span> weight_lost_g)) <span class="sc">+</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Drug dose (g)"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Weight lost (g)"</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Correlation between drug dose and weight lost"</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_6_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can also examine the correlation between every pair of continuous variables at once, and visualise the resulting correlation matrix as a heatmap:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggcorrplot)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># select the columns of interest</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># these columns should be numeric </span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(drug_dose_g, weight_lost_g, tail_length_mm, initial_weight_g) <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the correlation between these variables</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># it does this in a pairwise manner</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># visualise the correlation </span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggcorrplot</span>(</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># default is lab = FALSE, </span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># lab = TRUE adds the correlation coefficient to the plot</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">lab =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># create your title</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Correlation matrix of continuous variables"</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
+ℹ Please use tidy evaluation idioms with `aes()`.
+ℹ See also `vignette("ggplot2-in-packages")` for more information.
+ℹ The deprecated feature was likely used in the ggcorrplot package.
+  Please report the issue at &lt;https://github.com/kassambara/ggcorrplot/issues&gt;.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_6_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Pearson vs Spearman correlation">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Pearson vs Spearman correlation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>cor.test()</code> calculates a <strong>Pearson correlation</strong> by default, which assumes a <em>linear</em> relationship between two continuous, roughly normally distributed variables.</p>
+<p>If your data are not normally distributed, contain outliers, or the relationship is monotonic but not linear (e.g.&nbsp;curved but always increasing), a <strong>Spearman correlation</strong> is more appropriate. Spearman correlation works on the <em>ranks</em> of the data rather than the raw values, making it a non-parametric alternative to Pearson correlation.</p>
+<p>You can request a Spearman correlation with the <code>method</code> argument:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor.test</span>(dosage<span class="sc">$</span>drug_dose_g, dosage<span class="sc">$</span>weight_lost_g, <span class="at">method =</span> <span class="st">"spearman"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in cor.test.default(dosage$drug_dose_g, dosage$weight_lost_g, method =
+"spearman"): Cannot compute exact p-value with ties</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Spearman's rank correlation rho
+
+data:  dosage$drug_dose_g and dosage$weight_lost_g
+S = 982284, p-value &lt; 2.2e-16
+alternative hypothesis: true rho is not equal to 0
+sample estimates:
+      rho 
+0.8403902 </code></pre>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="parametric-and-non-parametric-tests" class="level1">
+<h1>Parametric and non-parametric tests</h1>
+<p>So far we’ve tested associations between two categorical variables (chi-squared) and between two continuous variables (correlation). Another very common task is testing whether a continuous outcome differs <strong>between groups</strong>: for example, does <code>weight_lost_g</code> differ between male and female mice, or between mouse strains?</p>
+<ul>
+<li><strong>Parametric tests</strong> (like the t-test) assume the outcome is approximately normally distributed within each group.</li>
+<li><strong>Non-parametric tests</strong> (like the Wilcoxon and Kruskal-Wallis tests) make no distributional assumption, instead testing differences in the <em>ranks</em> of the data. They are a safer choice when normality cannot be assumed, at the cost of some statistical power when the data really are normal.</li>
+</ul>
+<section id="comparing-two-groups-the-t-test" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-two-groups-the-t-test">Comparing two groups: the t-test</h2>
+<p>Let’s test whether <code>weight_lost_g</code> differs between male and female mice. First, visualise the two distributions:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dosage, <span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> weight_lost_g)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_6_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Before running a t-test we should check its normality assumption, using a QQ plot for each group:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dosage, <span class="fu">aes</span>(<span class="at">sample =</span> weight_lost_g)) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_qq</span>() <span class="sc">+</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_qq_line</span>() <span class="sc">+</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_6_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Both groups show a distinct curve away from the straight reference line, which suggests <code>weight_lost_g</code> is not normally distributed in either group. We can confirm this with a Shapiro-Wilk test (H0: the data are normally distributed), using the <code>shapiro.test()</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"male"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(weight_lost_g) <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">shapiro.test</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  .
+W = 0.92504, p-value = 1.227e-07</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"female"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(weight_lost_g) <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">shapiro.test</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  .
+W = 0.91931, p-value = 6.155e-08</code></pre>
+</div>
+</div>
+<p>Both p values are far below 0.05, so we reject normality in both groups. Strictly speaking, this means a t-test <strong>isn’t</strong> the ideal choice here, but let’s run one anyway for comparison, then follow up with the non-parametric alternative below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># format: y ~ x (outcome ~ grouping variable)</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># we write data = . so that it refers to the dosage dataset </span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t.test</span>(weight_lost_g <span class="sc">~</span> sex, <span class="at">data =</span> .)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Welch Two Sample t-test
+
+data:  weight_lost_g by sex
+t = -8.5545, df = 323.9, p-value = 4.794e-16
+alternative hypothesis: true difference in means between group female and group male is not equal to 0
+95 percent confidence interval:
+ -0.8405783 -0.5262453
+sample estimates:
+mean in group female   mean in group male 
+            3.862273             4.545685 </code></pre>
+</div>
+</div>
+</section>
+<section id="when-assumptions-are-violated-the-wilcoxon-rank-sum-test" class="level2">
+<h2 class="anchored" data-anchor-id="when-assumptions-are-violated-the-wilcoxon-rank-sum-test">When assumptions are violated: the Wilcoxon rank-sum test</h2>
+<p>The <strong>Wilcoxon rank-sum test</strong> (also called the Mann-Whitney U test) is the non-parametric equivalent of the independent-samples t-test. Instead of comparing means, it tests whether one group tends to have systematically higher or lower ranked values than the other:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># format: y ~ x (outcome ~ grouping variable)</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># we write data = . so that it refers to the dosage dataset </span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">wilcox.test</span>(weight_lost_g <span class="sc">~</span> sex, <span class="at">data =</span> .)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Wilcoxon rank sum test with continuity correction
+
+data:  weight_lost_g by sex
+W = 6874.5, p-value = 1.813e-15
+alternative hypothesis: true location shift is not equal to 0</code></pre>
+</div>
+</div>
+<p>The p value is again far smaller than 0.05, so both tests agree here: male and female mice differ in weight lost.</p>
+<p>This won’t always be the case. When a parametric assumption is badly violated, the t-test and its non-parametric counterpart can disagree, which is exactly why checking assumptions matters.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Parametric vs non-parametric tests">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Parametric vs non-parametric tests
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Parametric tests (t-test, ANOVA, Pearson correlation) tend to have more statistical power when their assumptions hold, because they make full use of the numeric values rather than just their ranks.</p>
+<p>Non-parametric tests (Wilcoxon, Kruskal-Wallis, Spearman correlation) are more robust to outliers and skewed distributions, but can be less powerful to detect a true effect when the data actually are well-behaved.</p>
+<p>As a rule of thumb: check the assumption first (e.g.&nbsp;with a QQ plot or Shapiro-Wilk test), and only fall back to the non-parametric alternative when it’s clearly violated.</p>
+</div>
+</div>
+</section>
+<section id="comparing-more-than-two-groups-the-kruskal-wallis-test" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-more-than-two-groups-the-kruskal-wallis-test">Comparing more than two groups: the Kruskal-Wallis test</h2>
+<p>The Wilcoxon test only compares two groups. To compare <code>weight_lost_g</code> across all three mouse strains at once, we need its multi-group extension, the <strong>Kruskal-Wallis test</strong> — the non-parametric analogue of a one-way ANOVA:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dosage, <span class="fu">aes</span>(<span class="at">x =</span> mouse_strain, <span class="at">y =</span> weight_lost_g)) <span class="sc">+</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_6_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># format: y ~ x (outcome ~ grouping variable)</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># we write data = . so that it refers to the dosage dataset </span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kruskal.test</span>(weight_lost_g <span class="sc">~</span> mouse_strain, <span class="at">data =</span> .)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Kruskal-Wallis rank sum test
+
+data:  weight_lost_g by mouse_strain
+Kruskal-Wallis chi-squared = 212.09, df = 2, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>The p value is extremely small, so we conclude that <code>weight_lost_g</code> differs between at least one pair of strains — Black6 mice visibly lose more weight than BALBc or CD1 mice in the boxplot above.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Which pair of groups differs?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Which pair of groups differs?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A significant Kruskal-Wallis (or ANOVA) result only tells us that <em>some</em> group differs from another — it doesn’t say which pair. Answering that requires a follow-up <strong>post-hoc pairwise test</strong> (e.g.&nbsp;pairwise Wilcoxon tests with a multiple-comparison correction), which is beyond the scope of this section but worth knowing exists.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="linear-modelling-in-the-tidyverse" class="level1">
+<h1>Linear modelling in the tidyverse</h1>
+<p>Linear models are very useful for testing for significant associations between variables, or significant differences between groups.</p>
+<p>They have the advantage of being able to correct for the effects of other variables, and thereby remove unwanted sources of variation that could otherwise reduce our ability to discover true relationships.</p>
+<p>Linear modeling is essentially a two-step process: fitting a straight line through the data (making a linear model of the relationship between x and y), and then testing whether the slope of that line is ‘greater than would be expected by chance’ via a hypothesis test.</p>
+<p>In practice the slope and variance around the fitted line, and the p value for the hypothesis test, are estimated using a single function and reported in the same summary table.</p>
+<p>In the R tidyverse, plotting data is a central part of exploratory data analysis, with ggplot2 as the foundational package.</p>
+<p>We’ll continue using the <code>dosage</code> data frame prepared earlier in this chapter, which lets us directly compare each linear model below against the hypothesis tests we’ve already run.</p>
+<section id="testing-differences-between-groups-discrete-x" class="level2">
+<h2 class="anchored" data-anchor-id="testing-differences-between-groups-discrete-x">Testing differences between groups (discrete x)</h2>
+<p>Above, we used an independent t-test to check whether <code>weight_lost_g</code> differs between male and female mice. A <strong>simple linear regression</strong> with a single, two-level categorical predictor is mathematically identical to that t-test.</p>
+<p>The <code>lm_test()</code> function from tidyrstats fits <code>lm()</code> and tidies the result with <code>broom::tidy()</code> in one step, using the exact same data format required for ggplot:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># format: y ~ x (outcome ~ grouping variable)</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm_test</span>(weight_lost_g <span class="sc">~</span> sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Results for linear model: weight_lost_g ~ sex</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term      estimate std.error statistic   p.value
+  &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 intercept    3.86     0.0568     68.0  1.70e-196
+2 sexmale      0.683    0.0800      8.54 4.90e- 16</code></pre>
+</div>
+</div>
+<p>Compare the <code>statistic</code> and <code>p.value</code> for <code>sexmale</code> to the t-test we ran earlier (t = -8.54, p = 4.9e-16, using <code>var.equal = TRUE</code>) — they match exactly. The <code>intercept</code> term is the mean for the reference group (<code>female</code>, since it comes first alphabetically), and <code>sexmale</code> is the estimated <em>difference</em> between the male and female group means.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Simple linear regression ≡ t-test">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Simple linear regression ≡ t-test
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a two-group comparison, <code>lm(y ~ group)</code> and <code>t.test(y ~ group, var.equal = TRUE)</code> return the same t-statistic and p value. This is why an independent t-test is sometimes described as ‘a linear model with a single binary predictor’ — they are the same underlying method, expressed two different ways.</p>
+</div>
+</div>
+</section>
+<section id="testing-differences-relative-to-0-discrete-x" class="level2">
+<h2 class="anchored" data-anchor-id="testing-differences-relative-to-0-discrete-x">Testing differences relative to 0 (discrete x)</h2>
+<p>If we use <code>lm_test(weight_lost_g ~ 0 + sex)</code> we get the mean weight lost per group as the <code>estimate</code>, and each group mean is tested against 0 rather than against the other group:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm_test</span>(weight_lost_g <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> sex)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Results for linear model: weight_lost_g ~ 0 + sex</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term      estimate std.error statistic   p.value
+  &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 sexmale       4.55    0.0563      80.7 8.39e-220
+2 sexfemale     3.86    0.0568      68.0 1.70e-196</code></pre>
+</div>
+</div>
+<p>Both p values are wildly significant (because average weight lost is nowhere near 0 g in either group). However, we cannot conclude from this model alone whether male and female mice differ <em>from each other</em> — that comparison is exactly what the <code>weight_lost_g ~ sex</code> model above already answered.</p>
+</section>
+<section id="testing-associations-between-variables-continuous-x" class="level2">
+<h2 class="anchored" data-anchor-id="testing-associations-between-variables-continuous-x">Testing associations between variables (continuous x)</h2>
+<p><code>lm_test()</code> works just as well for a continuous predictor. Earlier we used <code>cor.test()</code> to test the association between <code>drug_dose_g</code> and <code>weight_lost_g</code> (see the scatter plot with fitted line above); a simple linear regression tests the same relationship, while additionally estimating a slope and intercept:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm_test</span>(weight_lost_g <span class="sc">~</span> drug_dose_g)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Results for linear model: weight_lost_g ~ drug_dose_g</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term        estimate std.error statistic   p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 drug_dose_g  5015.     154.         32.6 3.13e-105
+2 intercept      -5.87     0.310     -18.9 1.18e- 54</code></pre>
+</div>
+</div>
+<p>The p value matches the significance we saw from <code>cor.test()</code>, and the (very large) slope tells us that weight lost increases steeply with drug dose — recall <code>drug_dose_g</code> is measured in tiny fractions of a gram, so a one-unit increase in dose is an enormous increase in practice.</p>
+</section>
+<section id="correcting-for-covariates" class="level2">
+<h2 class="anchored" data-anchor-id="correcting-for-covariates">Correcting for covariates</h2>
+<p>Thus far we have tested relationships between a single covariate and a response (y) variable.</p>
+<p>Often we want to ensure that other possible sources of variation are minimised so that we can better detect true differences in our ‘main effect of interest’. Say we want to understand whether drug dose affects weight lost <em>regardless of mouse strain</em> — that is, we want to subtract the mean effect of any strain-specific differences.</p>
+<p>We already saw, in the Kruskal-Wallis boxplot above, that <code>weight_lost_g</code> differs noticeably between strains (Black6 mice lose more weight on average). It’s worth checking whether strains also differ in the doses they received:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_dose =</span> <span class="fu">mean</span>(drug_dose_g),</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_weight_lost =</span> <span class="fu">mean</span>(weight_lost_g),</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.by =</span> mouse_strain</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  mouse_strain mean_dose mean_weight_lost
+  &lt;chr&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+1 CD1            0.00190             3.71
+2 Black6         0.00217             5.09
+3 BALBc          0.00196             3.73</code></pre>
+</div>
+</div>
+<p>Black6 mice received a slightly higher mean dose <em>and</em> lost more weight on average than the other two strains — so mouse strain is a plausible confounder of the drug dose/weight lost relationship. To test the dose effect while correcting for strain, we add <code>mouse_strain</code> to the model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lm_test</span>(weight_lost_g <span class="sc">~</span> drug_dose_g <span class="sc">+</span> mouse_strain)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Results for linear model: weight_lost_g ~ drug_dose_g + mouse_strain</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  term               estimate std.error statistic  p.value
+  &lt;chr&gt;                 &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 drug_dose_g        4061.     308.         13.2  3.64e-32
+2 intercept            -4.22     0.605      -6.98 1.68e-11
+3 mouse_strainBlack6    0.490    0.0870      5.63 3.84e- 8
+4 mouse_strainCD1       0.205    0.0576      3.57 4.14e- 4</code></pre>
+</div>
+</div>
+<p>The estimated slope for <code>drug_dose_g</code> drops from about 5015 (t ≈ 32.6) in the uncorrected model above, to about 4061 (t ≈ 13.2) once we adjust for strain — some of the raw dose/weight-lost association was indeed attributable to strain differences. Even so, the p value for <code>drug_dose_g</code> remains far below 0.05, so drug dose has a genuine effect on weight lost that is only <em>partly</em> explained by strain.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Marginal vs Conditional effects">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Marginal vs Conditional effects
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The estimate (slope) for a simple linear model with a single x variable is called the ‘marginal effect’.</p>
+<p>The estimates for a multiple linear regression model (where the effect of each covariate is calculated after setting the mean effect of all other covariates to 0) are called ‘conditional effects’.</p>
+<p>In order to create a scatter plot that displays the weight lost ~ drug dose relationship <em>corrected for mouse strain</em>, we would have to subtract the average effect of mouse strain on weight lost from each data point, depending on the strain of that animal.</p>
+<p>This is called ‘conditioning’ or ‘residualisation’ and is beyond the scope of this course. Just be aware that a multiple linear regression model that finds very low p values for a main effect of interest, may be difficult to show graphically without ‘residualising the data’.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="logistic-regression" class="level1">
+<h1>Logistic regression</h1>
+<p>Every model we have fitted so far has had a <strong>continuous</strong> outcome (y), such as weight lost. But often in biology the outcome we care about is <strong>binary</strong> — did a patient respond to treatment or not, did a tumour recur or not, did a mouse survive or not?</p>
+<p>A straight line is a poor model for a binary outcome, because it can predict probabilities below 0 or above 1. <strong>Logistic regression</strong> solves this by modelling the <em>log-odds</em> of the outcome as a linear function of the predictors:</p>
+<p><span class="math display">\[
+\log\left(\frac{p}{1-p}\right) = \hat\beta_0 + \hat\beta_1 x_1 + \hat\beta_2 x_2 + \dots
+\]</span></p>
+<p>where <span class="math inline">\(p\)</span> is the probability of the outcome occurring. This keeps the right-hand side of the equation looking just like a linear model, while guaranteeing that the predicted probability <span class="math inline">\(p\)</span> stays between 0 and 1.</p>
+<ul>
+<li>Null hypothesis (H0): the predictor has no relationship with the log-odds of the outcome (<span class="math inline">\(\hat\beta_1 = 0\)</span>)</li>
+<li>Alternate hypothesis (HA): the predictor is associated with the log-odds of the outcome (<span class="math inline">\(\hat\beta_1 \neq 0\)</span>)</li>
+</ul>
+<section id="create-a-binary-outcome" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-binary-outcome">Create a binary outcome</h2>
+<p>The mousezempic dosage data doesn’t come with a binary outcome built in, so let’s create one: we’ll define a mouse as a <strong>“responder”</strong> if it lost more weight than the median mouse in the study, and a <strong>“non-responder”</strong> otherwise.</p>
+<p>We’ll also rescale <code>drug_dose_g</code> (originally measured in tiny fractions of a gram) into a standardised z-score, so that the resulting odds ratio has a sensible interpretation (“per 1 standard deviation increase in dose”) rather than an astronomically large number per 1 g increase.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>dosage <span class="ot">&lt;-</span> dosage <span class="sc">%&gt;%</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>(weight_lost_g, drug_dose_g) <span class="sc">%&gt;%</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">responder =</span> <span class="fu">if_else</span>(weight_lost_g <span class="sc">&gt;</span> <span class="fu">median</span>(weight_lost_g), <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">drug_dose_z =</span> <span class="fu">as.numeric</span>(<span class="fu">scale</span>(drug_dose_g))</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>dosage <span class="sc">%&gt;%</span> <span class="fu">count</span>(responder)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  responder     n
+      &lt;dbl&gt; &lt;int&gt;
+1         0   172
+2         1   161</code></pre>
+</div>
+</div>
+</section>
+<section id="check-model-assumptions" class="level2">
+<h2 class="anchored" data-anchor-id="check-model-assumptions">Check model assumptions</h2>
+<p>Logistic regression shares the independence and linearity assumptions of linear regression (here, linearity applies to the log-odds rather than the raw outcome), but does <strong>not</strong> assume normally distributed or homoscedastic residuals, since the outcome is binary rather than continuous.</p>
+<p>We should also check for <strong>separation</strong> — where a predictor perfectly separates responders from non-responders, which would make the model unstable. A quick cross-tabulation is one way to eye-check this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dosage<span class="sc">$</span>mouse_strain, dosage<span class="sc">$</span>responder)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        
+           0   1
+  BALBc   57  11
+  Black6   1 118
+  CD1    114  32</code></pre>
+</div>
+</div>
+<p>Every strain contains a mix of responders and non-responders, so separation isn’t a concern here.</p>
+</section>
+<section id="fit-the-logistic-regression-model" class="level2">
+<h2 class="anchored" data-anchor-id="fit-the-logistic-regression-model">Fit the logistic regression model</h2>
+<p>Does drug dose predict the probability of responding, after accounting for mouse strain?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>logit_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  responder <span class="sc">~</span> drug_dose_z <span class="sc">+</span> mouse_strain,</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dosage,</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(logit_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = responder ~ drug_dose_z + mouse_strain, family = "binomial", 
+    data = dosage)
+
+Coefficients:
+                   Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)         -1.1809     0.3672  -3.216  0.00130 ** 
+drug_dose_z          2.5818     0.4838   5.337 9.45e-08 ***
+mouse_strainBlack6   3.5436     1.1410   3.106  0.00190 ** 
+mouse_strainCD1      1.5870     0.4962   3.198  0.00138 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 461.27  on 332  degrees of freedom
+Residual deviance: 186.49  on 329  degrees of freedom
+AIC: 194.49
+
+Number of Fisher Scoring iterations: 7</code></pre>
+</div>
+</div>
+</section>
+<section id="interpret-coefficients-as-odds-ratios" class="level2">
+<h2 class="anchored" data-anchor-id="interpret-coefficients-as-odds-ratios">Interpret coefficients as odds ratios</h2>
+<p>The raw coefficients from <code>summary()</code> are on the log-odds scale, which isn’t very intuitive. Exponentiating them converts each coefficient into an <strong>odds ratio (OR)</strong> — the multiplicative change in the odds of responding associated with a one-unit increase in that predictor (with all other predictors held constant).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(logit_model, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 7
+  term               estimate std.error statistic     p.value conf.low conf.high
+  &lt;chr&gt;                 &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)           0.307     0.367     -3.22     1.30e-3    0.143     0.611
+2 drug_dose_z          13.2       0.484      5.34     9.45e-8    5.41     36.4  
+3 mouse_strainBlack6   34.6       1.14       3.11     1.90e-3    5.19    699.   
+4 mouse_strainCD1       4.89      0.496      3.20     1.38e-3    1.94     13.7  </code></pre>
+</div>
+</div>
+<p>Both <code>drug_dose_z</code> and <code>mouse_strain</code> have p values well below 0.05, so we reject the null hypothesis for each: a one standard deviation increase in dose is associated with roughly a 13-fold increase in the odds of responding (95% CI approximately 5- to 36-fold), holding strain constant. Relative to the BALBc reference strain, Black6 and CD1 mice both have substantially higher odds of responding at the same dose.</p>
+</section>
+<section id="visualise-the-fitted-model" class="level2">
+<h2 class="anchored" data-anchor-id="visualise-the-fitted-model">Visualise the fitted model</h2>
+<p>Unlike a straight line, the fitted relationship between a continuous predictor and a binary outcome is an S-shaped (‘sigmoid’) curve representing predicted probability:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>pred_grid <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">drug_dose_z =</span> <span class="fu">seq</span>(<span class="fu">min</span>(dosage<span class="sc">$</span>drug_dose_z), <span class="fu">max</span>(dosage<span class="sc">$</span>drug_dose_z), <span class="at">length.out =</span> <span class="dv">100</span>),</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">mouse_strain =</span> <span class="fu">unique</span>(dosage<span class="sc">$</span>mouse_strain)</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>pred_grid <span class="ot">&lt;-</span> pred_grid <span class="sc">%&gt;%</span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">predicted_prob =</span> <span class="fu">predict</span>(logit_model, <span class="at">newdata =</span> pred_grid, <span class="at">type =</span> <span class="st">"response"</span>))</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>pred_grid <span class="sc">%&gt;%</span></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> drug_dose_z, <span class="at">y =</span> predicted_prob, <span class="at">colour =</span> mouse_strain)) <span class="sc">+</span></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Predicted probability of responding"</span>,</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Standardised drug dose (z-score)"</span>,</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Predicted probability of response by dose and strain"</span></span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_6_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Linear regression vs logistic regression">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Linear regression vs logistic regression
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Logistic regression is the natural extension of everything we’ve covered in this chapter to a binary outcome: we still specify a formula of the form <code>outcome ~ predictors</code>, still get a coefficient and p value per predictor, and can still add covariates to control for confounders. The two things that change are the <em>scale</em> the coefficients are estimated on (log-odds rather than raw units) and the assumptions checked (no normality/homoscedasticity of residuals required).</p>
+</div>
+</div>
+</section>
+</section>
+<section id="linear-modelling-in-bioinformatics" class="level1">
+<h1>Linear modelling in bioinformatics</h1>
+<p>The examples above illustrate a method of testing for associations in data using linear models, which works seamlessly with the same data formats required for ggplot.</p>
+<p>The linear models used in bioinformatics research are no different in principal to those we have used above, however there are several computational and ‘biotechnical’ challenges that arise in bioinformatics analysis when using linear modeling.</p>
+<p>Firstly, its not uncommon to handle hundreds of thousands to millions of datapoints in a large bioinformatics analysis. Differential expression analysis (of RNA protein or metabolite abundance), we will usually involve testing for treatment effects in 1000s of outcomes (e.g.&nbsp;individual genes), whilst correcting for multiple covariates, including batch effects.</p>
+<p>This is a computationally expensive exercise that has been extensively optimized using matrix algebra in the Bioconductor packages developed at WEHI such as limma and edgeR, that we will learn about in upcoming workshops! <!-- [Chapter 6](chapter_6.qmd) & [Chapter 7](chapter_7.qmd). --></p>
+<p>Secondly, the raw data distribution of biomolecular data is rarely normal, and requires extensive filtering, transformation, and measures to control ‘mean-variance’ relationships (heteroscedasticity) in the data.</p>
+<p>Again, years of research has been invested in optimizing the data cleaning and normalization processes, and adapting linear modelling methods to sensitively detect true biological differences whilst minimizing false positives.</p>
+<p>Lastly, to manage the computational and technical demands of linear modeling at scale, Bioconductor packages use specialized data ‘containers’ that hold expression data, sample and gene metadata, and linear model ‘designs’ together in a consistent format.</p>
+<p>This supports a workflow that, unlike the interactive plotting/modelling workflow we have used to date in tidyverse, first loads all the required data and modelling parameters into a ‘container’, before fitting all of the models and generating thousands of results with a single command.</p>
+</section>
+<section id="machine-learning" class="level1">
+<h1>Machine learning</h1>
+<p>Machine learning is an umbrella term for the use of statistics to ‘learn’ from features of a training dataset and then make predictions about a new dataset.</p>
+<p>Making such predictions is a small additional step from the linear modelling methods we introduced above.</p>
+<p>The covariate effects (aka ‘coefficients’ or ‘betas’) output in a linear model summary table, can be combined with the <code>predict()</code> function to predict the outcome of a new dataset. In other words, we could use <code>predict()</code> to solve the equation that will give us the expected gene expression (y) for a new mouse according to the drug dosage and strain of that individual.</p>
+<p>Machine learning is a huge field with many different algorithms that can learn relationships between features in training data.</p>
+<p>The key difference between machine learning and the linear model-based hypothesis testing we introduced above, is that the former is primarily concerned with making accurate predictions about new data, whereas the latter is interested in understanding relationships between variables.</p>
+<p>We will learn more about machine learning in our final workshop. <!-- [Chapter 8](chapter_8.qmd). --></p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<script src="workshop_6_files/libs/quarto-contrib/alpine-3.12/alpine@3.12.min.js"></script>
+</body></html>
