@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>workshop_8</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="workshop_8_files/libs/clipboard/clipboard.min.js"></script>
+<script src="workshop_8_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="workshop_8_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="workshop_8_files/libs/quarto-html/popper.min.js"></script>
+<script src="workshop_8_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="workshop_8_files/libs/quarto-html/anchor.min.js"></script>
+<link href="workshop_8_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="workshop_8_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="workshop_8_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="workshop_8_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="workshop_8_files/libs/bootstrap/bootstrap-138a6193a3bd40baf1e627da441a4734.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="workshop_8_files/libs/quarto-contrib/alpine-3.12/buttons.css" rel="stylesheet">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">In this session:</h2>
+   
+  <ul>
+  <li><a href="#sec-workshop08" id="toc-sec-workshop08" class="nav-link active" data-scroll-target="#sec-workshop08">Workshop 8: Machine Learning</a>
+  <ul class="collapse">
+  <li><a href="#sec-mlbackground" id="toc-sec-mlbackground" class="nav-link" data-scroll-target="#sec-mlbackground">Background</a></li>
+  <li><a href="#sec-mlcontext" id="toc-sec-mlcontext" class="nav-link" data-scroll-target="#sec-mlcontext">Biomedical Context</a></li>
+  <li><a href="#sec-mlterms" id="toc-sec-mlterms" class="nav-link" data-scroll-target="#sec-mlterms">Terminology</a></li>
+  <li><a href="#sec-mlpackages" id="toc-sec-mlpackages" class="nav-link" data-scroll-target="#sec-mlpackages">Tidymodels and tidyclust packages</a></li>
+  </ul></li>
+  <li><a href="#sec-mlsetup" id="toc-sec-mlsetup" class="nav-link" data-scroll-target="#sec-mlsetup">Setup</a>
+  <ul class="collapse">
+  <li><a href="#download-data-quarto-files" id="toc-download-data-quarto-files" class="nav-link" data-scroll-target="#download-data-quarto-files">Download data &amp; Quarto files</a></li>
+  <li><a href="#read-data" id="toc-read-data" class="nav-link" data-scroll-target="#read-data">Read data</a></li>
+  </ul></li>
+  <li><a href="#sec-w8-part1" id="toc-sec-w8-part1" class="nav-link" data-scroll-target="#sec-w8-part1">Part 1: K-Means Clustering with tidyclust</a>
+  <ul class="collapse">
+  <li><a href="#prepare-the-data" id="toc-prepare-the-data" class="nav-link" data-scroll-target="#prepare-the-data">Prepare the Data</a></li>
+  <li><a href="#explore-the-data" id="toc-explore-the-data" class="nav-link" data-scroll-target="#explore-the-data">Explore the Data</a></li>
+  <li><a href="#sec-part1-recipe" id="toc-sec-part1-recipe" class="nav-link" data-scroll-target="#sec-part1-recipe">Define a Preprocessing Recipe</a></li>
+  <li><a href="#specify-the-k-means-model" id="toc-specify-the-k-means-model" class="nav-link" data-scroll-target="#specify-the-k-means-model">Specify the K-Means Model</a></li>
+  <li><a href="#bundle-into-a-workflow" id="toc-bundle-into-a-workflow" class="nav-link" data-scroll-target="#bundle-into-a-workflow">Bundle into a Workflow</a></li>
+  <li><a href="#define-the-tuning-grid-and-tune-over-values-of-k" id="toc-define-the-tuning-grid-and-tune-over-values-of-k" class="nav-link" data-scroll-target="#define-the-tuning-grid-and-tune-over-values-of-k">Define the Tuning Grid and Tune Over Values of k</a></li>
+  <li><a href="#silhouette-plot-across-k" id="toc-silhouette-plot-across-k" class="nav-link" data-scroll-target="#silhouette-plot-across-k">Silhouette Plot Across k</a></li>
+  <li><a href="#select-k-3-based-on-biological-prior" id="toc-select-k-3-based-on-biological-prior" class="nav-link" data-scroll-target="#select-k-3-based-on-biological-prior">Select k = 3 Based on Biological Prior</a></li>
+  <li><a href="#fit-the-final-k-means-model" id="toc-fit-the-final-k-means-model" class="nav-link" data-scroll-target="#fit-the-final-k-means-model">Fit the Final K-Means Model</a></li>
+  <li><a href="#detailed-per-observation-silhouette-plot" id="toc-detailed-per-observation-silhouette-plot" class="nav-link" data-scroll-target="#detailed-per-observation-silhouette-plot">Detailed Per-Observation Silhouette Plot</a></li>
+  <li><a href="#visualise-clusters-via-pca-projection" id="toc-visualise-clusters-via-pca-projection" class="nav-link" data-scroll-target="#visualise-clusters-via-pca-projection">Visualise Clusters via PCA Projection</a></li>
+  <li><a href="#k-means-vs-hierarchical-clustering" id="toc-k-means-vs-hierarchical-clustering" class="nav-link" data-scroll-target="#k-means-vs-hierarchical-clustering">k-Means vs Hierarchical Clustering</a></li>
+  </ul></li>
+  <li><a href="#sec-w8-part2" id="toc-sec-w8-part2" class="nav-link" data-scroll-target="#sec-w8-part2">Part 2: Random Forest Classification with tidymodels</a>
+  <ul class="collapse">
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#split-data-into-training-testing-sets" id="toc-split-data-into-training-testing-sets" class="nav-link" data-scroll-target="#split-data-into-training-testing-sets">Split Data into Training &amp; Testing Sets</a></li>
+  <li><a href="#define-a-preprocessing-recipe" id="toc-define-a-preprocessing-recipe" class="nav-link" data-scroll-target="#define-a-preprocessing-recipe">Define a Preprocessing Recipe</a></li>
+  <li><a href="#specify-the-random-forest-model" id="toc-specify-the-random-forest-model" class="nav-link" data-scroll-target="#specify-the-random-forest-model">Specify the Random Forest Model</a></li>
+  <li><a href="#bundle-into-a-workflow-1" id="toc-bundle-into-a-workflow-1" class="nav-link" data-scroll-target="#bundle-into-a-workflow-1">Bundle into a Workflow</a></li>
+  <li><a href="#fit-the-model" id="toc-fit-the-model" class="nav-link" data-scroll-target="#fit-the-model">Fit the Model</a></li>
+  <li><a href="#evaluate-model-performance" id="toc-evaluate-model-performance" class="nav-link" data-scroll-target="#evaluate-model-performance">Evaluate Model Performance</a></li>
+  <li><a href="#variable-importance-plot" id="toc-variable-importance-plot" class="nav-link" data-scroll-target="#variable-importance-plot">Variable Importance Plot</a></li>
+  <li><a href="#predict-strain-for-the-synthetic-unlabelled-dataset" id="toc-predict-strain-for-the-synthetic-unlabelled-dataset" class="nav-link" data-scroll-target="#predict-strain-for-the-synthetic-unlabelled-dataset">Predict Strain for the Synthetic Unlabelled Dataset</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="sec-workshop08" class="level1">
+<h1>Workshop 8: Machine Learning</h1>
+<p>In this workshop, we will train, test and validate machine learning models.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Learning Objectives">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This workshop directly builds on today’s lecture. At the end of this session, learners should be able to:</p>
+<ol type="1">
+<li>Compare supervised and unsupervised ML domains, and explore their applications in biomedical research (Background; <a href="#sec-w8-part1">Part 1</a> &amp; <a href="#sec-w8-part2">Part 2</a>)</li>
+<li>Evaluate <a href="workshop_8_fr.html#k-means" class="tooltip-link" data-tooltip="An unsupervised clustering algorithm that partitions observations into k groups by iteratively assigning each point to its nearest centroid and updating centroids until they stabilise.">k-means clustering</a> (and, conceptually, <a href="workshop_8_fr.html#hierarchical-clustering" class="tooltip-link" data-tooltip="An unsupervised clustering approach that builds a dendrogram by repeatedly merging the two closest samples or clusters, without requiring the number of clusters to be fixed in advance.">hierarchical clustering</a>) for identifying discrete entities in unlabelled datasets (<a href="#sec-w8-part1">Part 1</a>)</li>
+<li>Explain the <a href="workshop_8_fr.html#train-test-split" class="tooltip-link" data-tooltip="Dividing a dataset into a training set (used to fit a model) and a held-out test set (used to evaluate performance on unseen data).">train/test</a> paradigm for supervised ML, and key metrics for assessing performance — <a href="workshop_8_fr.html#confusion-matrix" class="tooltip-link" data-tooltip="A table comparing predicted class labels against true labels, with diagonal cells showing correct predictions and off-diagonal cells showing misclassifications.">confusion matrix</a>, <a href="workshop_8_fr.html#auroc-auprc" class="tooltip-link" data-tooltip="Area Under the ROC Curve / Area Under the Precision-Recall Curve — summary metrics of classification performance across all thresholds; AUPRC is more sensitive to class imbalance than AUROC.">AUROC, AUPRC</a> (<a href="#sec-w8-part2">Part 2</a>)</li>
+</ol>
+</div>
+</div>
+<p>To explore additional concepts discussed in the lecture beyond this workshop, such as <a href="https://www.tidymodels.org/start/tuning/">hyperparameter tuning</a> and <a href="https://www.tidymodels.org/start/resampling/">cross-validation</a> for improving model quality, see the tidymodels tutorials linked throughout this page.</p>
+<section id="sec-mlbackground" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="sec-mlbackground">Background</h2>
+<p><a href="workshop_8_fr.html#machine-learning" class="tooltip-link" data-tooltip="A subset of AI where systems learn patterns from data to make decisions or predictions without being explicitly programmed.">Machine learning</a> (ML) is an umbrella term that encompasses classical statistical methods, linear models (both simple and generalised), and non-parametric techniques such as decision trees, support vector machines, autoencoders, and neural networks. Each of these methods are called machine learning <a href="workshop_8_fr.html#engines" class="tooltip-link" data-tooltip="A computational system or framework that executes a model or algorithm to process data and produce outputs.">engines</a> when used to train a <a href="workshop_8_fr.html#model" class="tooltip-link" data-tooltip="A mathematical representation learned from data that captures patterns and can be used to make predictions or decisions on new inputs.">model</a>.</p>
+<p>ML forms the foundation of <a href="workshop_8_fr.html#artificial-intelligence" class="tooltip-link" data-tooltip="The broad field of computer science focused on building systems that simulate human-like reasoning, learning, and decision-making.">artificial intelligence</a>. For instance, large language models such as ChatGPT are trained using deep neural networks.</p>
+<p>Machine learning refers to the use of computers (machines) to identify statistical trends in data and store those trends/relationships in a model. The process of identifying trends (<a href="workshop_8_fr.html#learning" class="tooltip-link" data-tooltip="The process by which an algorithm iteratively adjusts its internal parameters based on data to improve its performance on a task.">learning</a>) and then predicting features of newly provided data (<a href="workshop_8_fr.html#predicting" class="tooltip-link" data-tooltip="The application of a trained model to new, unseen data to produce an estimated output.">predicting</a>) is common to all ML workflows.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Does your machine need supervision?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Does your machine need supervision?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ML used to predict the status (label) of new samples is termed <a href="workshop_8_fr.html#supervised-ml" class="tooltip-link" data-tooltip="A type of ML where a model is trained on labelled data, learning to map inputs to known outputs.">supervised ML</a>.</p>
+<p>In <a href="workshop_8_fr.html#unsupervised-ml" class="tooltip-link" data-tooltip="A type of ML where a model finds hidden patterns or groupings in unlabelled data (e.g. clustering, dimensionality reduction).">unsupervised ML</a>, the model is trained on data without labels. The model tries to find patterns, groupings, or structures in the data, often by performing pair-wise sample similarity tests. This is useful when we don’t know the categories in advance, such as clustering patients based on gene expression profiles, or identifying hidden patterns in imaging data.</p>
+<p>Comparing ‘data-driven’ groupings to existing category labels can either confirm existing categories or provide evidence for revising them. <a href="workshop_8_fr.html#pca" class="tooltip-link" data-tooltip="A dimensionality reduction technique that transforms data into a smaller set of uncorrelated variables that capture the most variance.">Principal components analysis</a>, <a href="workshop_8_fr.html#mds" class="tooltip-link" data-tooltip="A technique that visualises the similarity or dissimilarity between data points by mapping them into a lower-dimensional space.">multidimensional scaling</a> and <a href="workshop_8_fr.html#tree-clustering" class="tooltip-link" data-tooltip="A hierarchical clustering approach that organises data into a tree structure, grouping similar observations at successive levels of granularity.">tree-based clustering</a> algorithms are examples of unsupervised ML.</p>
+</div>
+</div>
+</section>
+<section id="sec-mlcontext" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="sec-mlcontext">Biomedical Context</h2>
+<p>ML has many exciting applications in biomedical research. As you saw in the ML lecture, unsupervised and supervised ML workflows can be used on histological (imaging) features of tissue slices, with matched labels indicating whether the tissue is healthy/benign or malignant (cancerous) <span class="citation" data-cites="Zhu2016">@Zhu2016</span>. Another example of how ML can be used in this context is to identify whether patients infected with malaria are seropositive/seronegative based on specific anti-malaria IgG antibody levels <span class="citation" data-cites="longley2020">@longley2020</span>.</p>
+</section>
+<section id="sec-mlterms" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="sec-mlterms">Terminology</h2>
+<p>In training ML models, the machine ‘learns from the training dataset’ and ‘predicts the validation dataset’. The accuracy of the predictions on the validation data is used to update the model (known as ‘reinforcement learning’).</p>
+<p>Once the model has been trained, it is tested on a ‘hold-out’ or ‘test’ dataset, which has not been used at any point in training or validation. The accuracy of performance on the test set is the ultimate test of the ‘predictive value’ of a model — that is, how valuable it is for informing real-world decisions.</p>
+</section>
+<section id="sec-mlpackages" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="sec-mlpackages">Tidymodels and tidyclust packages</h2>
+<p><a href="https://www.tidymodels.org/">tidymodels</a> is an R package that encompasses multiple sub-packages, all of which work together with tidy data. <a href="https://tidyclust.tidymodels.org/">tidyclust</a> is an R package built upon the success of <code>tidymodels</code> that aims to provide a tidy, unified interface to unsupervised machine learning models.</p>
+<p>In the past, each ML engine was siloed in its own package, with unique functions and arguments. <code>tidymodels</code> and <code>tidyclust</code> provide a consistent user experience for data pre-processing, training, validation, model tuning and prediction, and allow us to switch between ML engines quickly and easily!</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Further reading">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Further reading
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To learn more about machine learning in R, check out the excellent book <a href="https://www.tmwr.org">Tidy Modelling with R</a></p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-mlsetup" class="level1">
+<h1>Setup</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install packages if not already installed</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(c("tidyverse", "tidymodels",</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                    "tidyclust", "cluster", "factoextra",</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                    "ranger", "vip"))</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Data manipulation and visualisation</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels) <span class="co"># Modelling framework</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyclust) <span class="co"># Clustering extension for tidymodels</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cluster) <span class="co"># Silhouette computation</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra) <span class="co"># Silhouette visualisation</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ranger) <span class="co"># Random forest engine</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vip) <span class="co"># Variable importance plots</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="download-data-quarto-files" class="level2">
+<h2 class="anchored" data-anchor-id="download-data-quarto-files">Download data &amp; Quarto files</h2>
+<p>Save into your <code>data/</code> directory.</p>
+<p>To run this workshop in quarto on your local machine:</p>
+<p>then unzip, and copy the files into your R project home directory e.g.&nbsp;<code>BIOL90042_R_Course</code>.</p>
+</section>
+<section id="read-data" class="level2">
+<h2 class="anchored" data-anchor-id="read-data">Read data</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mice_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/mousezempic_dosage_data.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 344 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (4): mouse_strain, cage_number, replicate, sex
+dbl (5): weight_lost_g, drug_dose_g, tail_length_mm, initial_weight_g, id_num
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mice_data</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 9
+   mouse_strain cage_number weight_lost_g replicate sex    drug_dose_g
+   &lt;chr&gt;        &lt;chr&gt;               &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;        &lt;dbl&gt;
+ 1 CD-1         1A                   3.75 rep1      male       0.00181
+ 2 CD-1         1A                   3.8  rep1      female     0.00186
+ 3 CD-1         1A                   3.25 rep1      female     0.00195
+ 4 CD-1         1A                  NA    rep1      &lt;NA&gt;      NA      
+ 5 CD-1         1A                   3.45 rep1      female     0.00193
+ 6 CD-1         1A                   3.65 rep1      male       0.0019 
+ 7 CD-1         1A                   3.62 rep1      female     0.00181
+ 8 CD-1         1A                   4.68 rep1      male       0.00195
+ 9 CD-1         1A                   3.48 rep1      &lt;NA&gt;       0.00193
+10 CD-1         1A                   4.25 rep1      &lt;NA&gt;       0.0019 
+# ℹ 334 more rows
+# ℹ 3 more variables: tail_length_mm &lt;dbl&gt;, initial_weight_g &lt;dbl&gt;,
+#   id_num &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-w8-part1" class="level1">
+<h1>Part 1: K-Means Clustering with tidyclust</h1>
+<div class="callout callout-style-default callout-tip callout-titled" title="Learning Objectives">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Aim:</strong> Apply an unsupervised machine learning model to cluster mouse strains based on physiological and dosage features only.</p>
+<p><strong>Methods:</strong></p>
+<ol type="1">
+<li>Exploring the data and consolidating our biological prior knowledge</li>
+<li>Identify the number of k-clusters, specify a k-means algorithm and evaluate model predictions</li>
+<li>Apply the k-means clustering algorithm on new data to predict strain</li>
+</ol>
+</div>
+</div>
+<section id="prepare-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="prepare-the-data">Prepare the Data</h2>
+<p>In this workshop we explore two fundamental machine learning techniques using the <code>mousezempic_dosage_data</code> dataset:</p>
+<ul>
+<li><strong><a href="#sec-w8-part1">Part 1: Unsupervised Learning</a>:</strong> K-means clustering with silhouette analysis using the <code>tidyclust</code> extension for <code>tidymodels</code></li>
+<li><strong><a href="#sec-w8-part2">Part 2: Supervised Learning</a>:</strong> Random forest classification using the <code>tidymodels</code> framework</li>
+</ul>
+<p>The <code>mousezempic_dosage_data</code> dataset contains measurements for <strong>344 mice</strong> across three strains (CD1, BALBc, and Black6) housed across three cages in a mouse husbandry facility. <!-- as referenced in this chapter [OTHER CHAPTER](OTHER QMD FILE.qmd). --></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mice_data <span class="ot">&lt;-</span> mice_data <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mouse_strain =</span> <span class="fu">case_when</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>      mouse_strain <span class="sc">==</span> <span class="st">"CD-1"</span> <span class="sc">~</span> <span class="st">"CD1"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      mouse_strain <span class="sc">==</span> <span class="st">"Black 6"</span> <span class="sc">~</span> <span class="st">"Black6"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      mouse_strain <span class="sc">==</span> <span class="st">"BALB C"</span> <span class="sc">~</span> <span class="st">"BALBc"</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">mouse_strain =</span> <span class="fu">as.factor</span>(mouse_strain)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(mice_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 344
+Columns: 9
+$ mouse_strain     &lt;fct&gt; CD1, CD1, CD1, CD1, CD1, CD1, CD1, CD1, CD1, CD1, CD1…
+$ cage_number      &lt;chr&gt; "1A", "1A", "1A", "1A", "1A", "1A", "1A", "1A", "1A",…
+$ weight_lost_g    &lt;dbl&gt; 3.750, 3.800, 3.250, NA, 3.450, 3.650, 3.625, 4.675, …
+$ replicate        &lt;chr&gt; "rep1", "rep1", "rep1", "rep1", "rep1", "rep1", "rep1…
+$ sex              &lt;chr&gt; "male", "female", "female", NA, "female", "male", "fe…
+$ drug_dose_g      &lt;dbl&gt; 0.00181, 0.00186, 0.00195, NA, 0.00193, 0.00190, 0.00…
+$ tail_length_mm   &lt;dbl&gt; 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.8, 19.6, 18.1, 2…
+$ initial_weight_g &lt;dbl&gt; 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.9, 39.2, 34.1, 4…
+$ id_num           &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16…</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Biological Prior: How Many Clusters Should We Expect?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Biological Prior: How Many Clusters Should We Expect?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The best results will be obtained with prior knowledge of the optimal cluster number.</p>
+<p>For the mousezempic dataset, we have a clear <strong>biological prior</strong>: there are <strong>3 known strains</strong> — CD1, BALBc, and Black6. This gives us a strong reason to expect <code>k = 3</code> to be the most biologically meaningful solution. We will use the silhouette analysis to <strong>confirm or challenge</strong> this prior, rather than selecting <code>k</code> blindly.</p>
+</div>
+</div>
+<p>We are going to explicitly keep only the numeric physiological features of our dataset and remove any missing values. Strain labels are deliberately <strong>excluded</strong> as we are aiming to use <strong>unsupervised learning</strong> - we do not want to inform the algorithm about strain identity.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mouse_clust <span class="ot">&lt;-</span> mice_data <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(initial_weight_g, tail_length_mm, drug_dose_g, weight_lost_g)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(mouse_clust)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 333
+Columns: 4
+$ initial_weight_g &lt;dbl&gt; 39.1, 39.5, 40.3, 36.7, 39.3, 38.9, 39.2, 41.1, 38.6,…
+$ tail_length_mm   &lt;dbl&gt; 18.7, 17.4, 18.0, 19.3, 20.6, 17.8, 19.6, 17.6, 21.2,…
+$ drug_dose_g      &lt;dbl&gt; 0.00181, 0.00186, 0.00195, 0.00193, 0.00190, 0.00181,…
+$ weight_lost_g    &lt;dbl&gt; 3.750, 3.800, 3.250, 3.450, 3.650, 3.625, 4.675, 3.20…</code></pre>
+</div>
+</div>
+</section>
+<section id="explore-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="explore-the-data">Explore the Data</h2>
+<p>Let’s visualise the raw data by plotting initial weight (<code>initial_weight_g</code>) against drug dose (<code>drug_dose_g</code>).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mouse_clust <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> initial_weight_g, <span class="at">y =</span> drug_dose_g)) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Mouse Initial Weight vs Drug Dose"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Initial Weight (g)"</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Drug Dose (g)"</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_8_files/figure-html/explore-data-2-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here we can see varying initial weights and drug doses across the <em>n</em> = 333 mice remaining in our dataset.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="Test Your Knowledge — Q1">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Test Your Knowledge — Q1
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="question">
+<p>1. Looking at the scatter plot above, how many natural groupings do you think you can see in the data?</p>
+<div class="choices">
+<div x-data="{ answer: '' , clear() { this.answer = '' }}">
+
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no1"> <span id="no1" x-show="answer == $el.id" class="badge">✗</span>1</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no2"> <span id="no2" x-show="answer == $el.id" class="badge">✗</span>2</p><p></p>
+</div>
+<div class="choice correct-choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="correct"> <span id="correct" x-show="answer == $el.id" class="badge">✔</span>3</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no4"> <span id="no4" x-show="answer == $el.id" class="badge">✗</span>4</p><p></p>
+</div>
+</div>
+
+</div>
+</div>
+<details>
+<summary>
+Solutions
+</summary>
+<p>
+</p><ol type="1">
+<li>There appear to be distinct clusters of points.</li>
+<li>There may be more than two groups. Look at the spread of points across both axes.</li>
+<li>Correct! There appear to be roughly three natural groupings, consistent with our biological prior of three strains.</li>
+<li>While there is some spread, three groups is the most biologically supported answer.</li>
+</ol>
+<p></p>
+</details>
+</div>
+</div>
+</section>
+<section id="sec-part1-recipe" class="level2">
+<h2 class="anchored" data-anchor-id="sec-part1-recipe">Define a Preprocessing Recipe</h2>
+<p>The <a href="workshop_8_fr.html#recipe" class="tooltip-link" data-tooltip="A tidymodels object that specifies the preprocessing steps (e.g. normalisation, dummy encoding) applied to data before a model is fit."><strong>recipe</strong></a> includes all of the variables (columns) that we want to include in our model, expressed as a statistical formula: <code>outcome variable ~ predictor variables</code>.</p>
+<p>In <strong>unsupervised learning</strong>, we have no outcome variable because we do not know the class labels. Our recipe formula is therefore <code>~ .</code> (no outcome, all predictors).</p>
+<p>As we saw in our figure above, the x- and y-axes are on markedly different scales. <strong>Normalising</strong> our data places all variables on a common scale where the mean = 0 and standard deviation = 1. This ensures that <code>weight_lost_g</code> (in grams) does not dominate <code>initial_weight_g</code> (in millimetres) simply because of its larger numeric range.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Why is normalisation essential for k-means?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Why is normalisation essential for k-means?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>K-means clustering assigns observations to clusters based on <strong>Euclidean distance</strong> — the straight-line distance between points in feature space. If one variable is measured in grams (thousands) and another in millimetres (tens), the gram-scale variable will dominate the distance calculation, regardless of its biological relevance. Normalisation removes this scale bias.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>clust_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(<span class="sc">~</span>., <span class="at">data =</span> mouse_clust) <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>())</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(clust_recipe)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 4
+  variable         type      role      source  
+  &lt;chr&gt;            &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   
+1 initial_weight_g &lt;chr [2]&gt; predictor original
+2 tail_length_mm   &lt;chr [2]&gt; predictor original
+3 drug_dose_g      &lt;chr [2]&gt; predictor original
+4 weight_lost_g    &lt;chr [2]&gt; predictor original</code></pre>
+</div>
+</div>
+</section>
+<section id="specify-the-k-means-model" class="level2">
+<h2 class="anchored" data-anchor-id="specify-the-k-means-model">Specify the K-Means Model</h2>
+<p>Now we have our recipe, we can specify our model using the <code>k_means()</code> function from <code>tidyclust</code>. We set our engine (<code>set_engine()</code>) to <code>"stats"</code>, which uses base R’s built-in <code>kmeans()</code> function.</p>
+<p>Setting <code>num_clusters = tune()</code> tells the workflow that we want to evaluate multiple values of <em>k</em> and identify the optimal one.</p>
+<p>Setting <code>nstart = 25</code> runs the algorithm 25 times with different random centroid initialisations and keeps the best result. This is important because k-means is sensitive to where the centroids start.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>kmeans_spec <span class="ot">&lt;-</span> <span class="fu">k_means</span>(<span class="at">num_clusters =</span> <span class="fu">tune</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"stats"</span>, <span class="at">nstart =</span> <span class="dv">25</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>kmeans_spec</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>K Means Cluster Specification (partition)
+
+Main Arguments:
+  num_clusters = tune()
+
+Engine-Specific Arguments:
+  nstart = 25
+
+Computational engine: stats </code></pre>
+</div>
+</div>
+</section>
+<section id="bundle-into-a-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="bundle-into-a-workflow">Bundle into a Workflow</h2>
+<p>We now combine the recipe and model into a single <a href="workshop_8_fr.html#workflow" class="tooltip-link" data-tooltip="A tidymodels object that bundles a preprocessing recipe and a model specification together so they are applied consistently during fitting and prediction."><strong>workflow</strong></a> object. Bundling them together ensures that the same preprocessing steps are always applied consistently whenever the model is fitted or used to predict — reducing the risk of errors and making the pipeline reproducible.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>kmeans_workflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(clust_recipe) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(kmeans_spec)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>kmeans_workflow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: k_means()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+1 Recipe Step
+
+• step_normalize()
+
+── Model ───────────────────────────────────────────────────────────────────────
+K Means Cluster Specification (partition)
+
+Main Arguments:
+  num_clusters = tune()
+
+Engine-Specific Arguments:
+  nstart = 25
+
+Computational engine: stats </code></pre>
+</div>
+</div>
+</section>
+<section id="define-the-tuning-grid-and-tune-over-values-of-k" class="level2">
+<h2 class="anchored" data-anchor-id="define-the-tuning-grid-and-tune-over-values-of-k">Define the Tuning Grid and Tune Over Values of k</h2>
+<p>Here we evaluate <em>k</em> from 2 to 8 clusters. We cap at 8 as there is no biological reason to expect more than a small number of morphologically distinct mouse groups. Recall that our biological prior suggests <em>k</em> = 3 (three strains).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>clust_grid <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">num_clusters =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We create 10 <strong>bootstrap resamples</strong> of the data to obtain more stable silhouette estimates. We then tune the workflow across all values of <em>k</em>, collecting the <code>silhouette_avg</code> metric — a measure of how well each observation fits its assigned cluster relative to neighbouring clusters.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>clust_resamples <span class="ot">&lt;-</span> <span class="fu">bootstraps</span>(mouse_clust, <span class="at">times =</span> <span class="dv">10</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>kmeans_tuning <span class="ot">&lt;-</span> <span class="fu">tune_cluster</span>(</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  kmeans_workflow,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">resamples =</span> clust_resamples,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">grid =</span> clust_grid,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">cluster_metric_set</span>(silhouette_avg)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>! Bootstrap01: internal: `finalize_workflow_preprocessor()` was deprecated in tune 2.1.0.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(kmeans_tuning)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 7
+  num_clusters .metric        .estimator  mean     n std_err .config            
+         &lt;int&gt; &lt;chr&gt;          &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;              
+1            2 silhouette_avg standard   0.531    10 0.00351 Preprocessor1_Mode…
+2            3 silhouette_avg standard   0.456    10 0.00436 Preprocessor1_Mode…
+3            4 silhouette_avg standard   0.415    10 0.00534 Preprocessor1_Mode…
+4            5 silhouette_avg standard   0.386    10 0.00280 Preprocessor1_Mode…
+5            6 silhouette_avg standard   0.381    10 0.00419 Preprocessor1_Mode…
+6            7 silhouette_avg standard   0.354    10 0.00470 Preprocessor1_Mode…
+7            8 silhouette_avg standard   0.326    10 0.00601 Preprocessor1_Mode…</code></pre>
+</div>
+</div>
+<p>We now have an averaged silhouette estimate for each value of <em>k</em>, where values range from -1 (misclassified) to +1 (well-clustered). A score &gt; 0.5 generally indicates reasonable cluster structure.</p>
+</section>
+<section id="silhouette-plot-across-k" class="level2">
+<h2 class="anchored" data-anchor-id="silhouette-plot-across-k">Silhouette Plot Across k</h2>
+<p>We can visualise the mean silhouette width for each value of <em>k</em> using <code>ggplot2</code>. The red dashed line marks our biological prior of <em>k</em> = 3, allowing us to assess whether the data-driven optimum agrees with our prior knowledge.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>kmeans_tuning <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(.metric <span class="sc">==</span> <span class="st">"silhouette_avg"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> num_clusters, <span class="at">y =</span> mean)) <span class="sc">+</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">colour =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">colour =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">ymin =</span> mean <span class="sc">-</span> std_err, <span class="at">ymax =</span> mean <span class="sc">+</span> std_err),</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.2</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">xintercept =</span> <span class="dv">3</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"firebrick"</span>,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.8</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">8</span>) <span class="sc">+</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Average Silhouette Width by Number of Clusters"</span>,</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Number of Clusters (k)"</span>,</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Mean Silhouette Width"</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_8_files/figure-html/silhouette-plot-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Interpreting the silhouette plot">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Interpreting the silhouette plot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <a href="workshop_8_fr.html#silhouette-score" class="tooltip-link" data-tooltip="A per-observation metric ranging from -1 to +1 that measures how similar an observation is to its own cluster compared to the nearest neighbouring cluster; higher values indicate better-separated clusters.">silhouette score</a> ranges from <strong>-1</strong> (poor, misassigned points) to <strong>+1</strong> (optimal, well-separated clusters). While the data-driven maximum may suggest a different <code>k</code>, we have a strong biological reason to select <strong>k = 3</strong> corresponding to the three known mouse strains. If <code>k = 3</code> yields a silhouette score close to the maximum, this provides quantitative support for our biological prior.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="Test Your Knowledge — Q2">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Test Your Knowledge — Q2
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="question">
+<p>2. What does a silhouette score of 0 indicate for an observation?</p>
+<div class="choices">
+<div x-data="{ answer: '' , clear() { this.answer = '' }}">
+
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no1"> <span id="no1" x-show="answer == $el.id" class="badge">✗</span>The observation is perfectly assigned to its cluster</p><p></p>
+</div>
+<div class="choice correct-choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="correct"> <span id="correct" x-show="answer == $el.id" class="badge">✔</span>The observation lies on the boundary between two clusters</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no3"> <span id="no3" x-show="answer == $el.id" class="badge">✗</span>The observation has been misassigned to the wrong cluster</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no4"> <span id="no4" x-show="answer == $el.id" class="badge">✗</span>The observation is an outlier</p><p></p>
+</div>
+</div>
+
+</div>
+</div>
+<details>
+<summary>
+Solutions
+</summary>
+<p>
+</p><ol type="1">
+<li>A score of +1 indicates perfect assignment. A score of 0 means something different.</li>
+<li>Correct! A silhouette score of 0 means the observation is equally close to its own cluster and the nearest neighbouring cluster — it sits right on the decision boundary.</li>
+<li>Misassignment is indicated by a negative silhouette score, not zero.</li>
+<li>Outliers may have low silhouette scores, but a score of 0 specifically indicates a boundary observation.</li>
+</ol>
+<p></p>
+</details>
+</div>
+</div>
+</section>
+<section id="select-k-3-based-on-biological-prior" class="level2">
+<h2 class="anchored" data-anchor-id="select-k-3-based-on-biological-prior">Select k = 3 Based on Biological Prior</h2>
+<p>Now that we have confirmed our biological prior of <em>k</em> = 3 can be supported quantitatively, we can finalise our k-means workflow.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>best_k_datadriven <span class="ot">&lt;-</span> <span class="fu">select_best</span>(kmeans_tuning, <span class="at">metric =</span> <span class="st">"silhouette_avg"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>best_k <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">num_clusters =</span> <span class="dv">3</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>sil_at_k3 <span class="ot">&lt;-</span> kmeans_tuning <span class="sc">%&gt;%</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(.metric <span class="sc">==</span> <span class="st">"silhouette_avg"</span>, num_clusters <span class="sc">==</span> <span class="dv">3</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Use finalize_workflow_tidyclust() — NOT finalize_workflow()</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co"># tidyclust model specs are not parsnip objects so the standard</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co"># tidymodels version will throw an error here</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>final_kmeans_workflow <span class="ot">&lt;-</span> <span class="fu">finalize_workflow_tidyclust</span>(</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  kmeans_workflow,</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  best_k</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>final_kmeans_workflow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: k_means()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+1 Recipe Step
+
+• step_normalize()
+
+── Model ───────────────────────────────────────────────────────────────────────
+K Means Cluster Specification (partition)
+
+Main Arguments:
+  num_clusters = 3
+
+Engine-Specific Arguments:
+  nstart = 25
+
+Computational engine: stats </code></pre>
+</div>
+</div>
+</section>
+<section id="fit-the-final-k-means-model" class="level2">
+<h2 class="anchored" data-anchor-id="fit-the-final-k-means-model">Fit the Final K-Means Model</h2>
+<p>After finalising our workflow we can fit the k-means model on our <code>mouse_clust</code> dataset.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>final_kmeans_fit <span class="ot">&lt;-</span> final_kmeans_workflow <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> mouse_clust)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Inspecting Centroids">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Inspecting Centroids
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Cluster centroids are reported in <strong>scaled units</strong> (because we applied <code>step_normalize()</code> in the recipe). Each row represents the centre of one cluster in the normalised feature space.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_centroids</span>(final_kmeans_fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  .cluster  initial_weight_g tail_length_mm drug_dose_g weight_lost_g
+  &lt;fct&gt;                &lt;dbl&gt;          &lt;dbl&gt;       &lt;dbl&gt;         &lt;dbl&gt;
+1 Cluster_1           -1.05           0.486      -0.880        -0.762
+2 Cluster_2            0.671          0.804      -0.289        -0.384
+3 Cluster_3            0.654         -1.10        1.16          1.10 </code></pre>
+</div>
+</div>
+<p>We can now predict which cluster each individual mouse belongs to. This is done on a per-row basis using <code>predict()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>mouse_predicted_clusters <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  final_kmeans_fit,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">new_data =</span> mouse_clust</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We then bind our cluster predictions back to the original (unscaled) data using <code>bind_cols()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>mouse_clustered <span class="ot">&lt;-</span> mice_data <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(mouse_predicted_clusters)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mouse_clustered, <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 10
+   mouse_strain cage_number weight_lost_g replicate sex    drug_dose_g
+   &lt;fct&gt;        &lt;chr&gt;               &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;        &lt;dbl&gt;
+ 1 CD1          1A                   3.75 rep1      male       0.00181
+ 2 CD1          1A                   3.8  rep1      female     0.00186
+ 3 CD1          1A                   3.25 rep1      female     0.00195
+ 4 CD1          1A                   3.45 rep1      female     0.00193
+ 5 CD1          1A                   3.65 rep1      male       0.0019 
+ 6 CD1          1A                   3.62 rep1      female     0.00181
+ 7 CD1          1A                   4.68 rep1      male       0.00195
+ 8 CD1          1A                   3.2  rep1      female     0.00182
+ 9 CD1          1A                   3.8  rep1      male       0.00191
+10 CD1          1A                   4.4  rep1      male       0.00198
+# ℹ 4 more variables: tail_length_mm &lt;dbl&gt;, initial_weight_g &lt;dbl&gt;,
+#   id_num &lt;dbl&gt;, .pred_cluster &lt;fct&gt;</code></pre>
+</div>
+</div>
+<p>Now let’s cross-tabulate the cluster assignments against the true strain labels. This reveals how well the unsupervised algorithm recovers the known biological groupings <strong>without ever seeing the strain labels</strong>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(mouse_clustered<span class="sc">$</span>.pred_cluster, mouse_clustered<span class="sc">$</span>mouse_strain)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           
+            BALBc Black6 CD1
+  Cluster_1     5      0 124
+  Cluster_2    63      0  22
+  Cluster_3     0    119   0</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Interpreting the final results">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Interpreting the final results
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A strong correspondence between cluster assignments and strain labels (i.e., each cluster dominated by one strain) confirms that the physiological features alone are sufficient to distinguish the three strains, supporting our biological prior.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="Test Your Knowledge — Q3">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Test Your Knowledge — Q3
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="question">
+<p>3. Looking at the cross-tabulation above, which strain appears to be the most difficult for the k-means algorithm to separate from the others?</p>
+<div class="choices">
+<div x-data="{ answer: '' , clear() { this.answer = '' }}">
+
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no1"> <span id="no1" x-show="answer == $el.id" class="badge">✗</span>CD1</p><p></p>
+</div>
+<div class="choice correct-choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="correct"> <span id="correct" x-show="answer == $el.id" class="badge">✔</span>BALBc</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no3"> <span id="no3" x-show="answer == $el.id" class="badge">✗</span>Black6</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no4"> <span id="no4" x-show="answer == $el.id" class="badge">✗</span>All three are equally well separated</p><p></p>
+</div>
+</div>
+
+</div>
+</div>
+<details>
+<summary>
+Solutions
+</summary>
+<p>
+</p><ol type="1">
+<li>CD1 mice tend to be well-separated in physiological feature space.</li>
+<li>Correct! BALBc mice share some physiological overlap with CD1 mice, particularly in tail length, making them the most likely to be misassigned.</li>
+<li>Black6 mice are typically well-separated due to their distinctly higher body weight and drug dose.</li>
+<li>Look at the off-diagonal entries in the table — some strains have more misassignments than others.</li>
+</ol>
+<p></p>
+</details>
+</div>
+</div>
+</section>
+<section id="detailed-per-observation-silhouette-plot" class="level2">
+<h2 class="anchored" data-anchor-id="detailed-per-observation-silhouette-plot">Detailed Per-Observation Silhouette Plot</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the scaled data from the fitted recipe</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We need this to compute pairwise distances for the silhouette</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>scaled_data <span class="ot">&lt;-</span> clust_recipe <span class="sc">%&gt;%</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(<span class="at">new_data =</span> mouse_clust)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute silhouette widths for each observation</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Negative values indicate observations closer to a neighbouring</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="co"># cluster than their assigned cluster — possible misassignments</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>sil <span class="ot">&lt;-</span> <span class="fu">silhouette</span>(</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">as.integer</span>(mouse_clustered<span class="sc">$</span>.pred_cluster),</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">dist =</span> <span class="fu">dist</span>(scaled_data)</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_silhouette</span>(sil) <span class="sc">+</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Silhouette Plot — K-Means, k = 3 (tidyclust)"</span>,</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Negative values suggest possible misassignment"</span></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  cluster size ave.sil.width
+1       1  129          0.43
+2       2   85          0.30
+3       3  119          0.57</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_8_files/figure-html/detailed-silhouette-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Average silhouette width at k = 3:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(sil[, <span class="dv">3</span>]), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Average silhouette width at k = 3: 0.446 </code></pre>
+</div>
+</div>
+</section>
+<section id="visualise-clusters-via-pca-projection" class="level2">
+<h2 class="anchored" data-anchor-id="visualise-clusters-via-pca-projection">Visualise Clusters via PCA Projection</h2>
+<p>We use Principal Components Analysis (PCA) to reduce our four physiological features to two dimensions for visualisation. This allows us to plot the cluster assignments in two dimensional space and compare them directly against the true strain labels.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>pca_result <span class="ot">&lt;-</span> <span class="fu">prcomp</span>(scaled_data)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>pca_plot_data <span class="ot">&lt;-</span> pca_result<span class="sc">$</span>x <span class="sc">%&gt;%</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(PC1, PC2) <span class="sc">%&gt;%</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">cluster =</span> mouse_clustered<span class="sc">$</span>.pred_cluster,</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">mouse_strain =</span> mouse_clustered<span class="sc">$</span>mouse_strain</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> pca_plot_data <span class="sc">%&gt;%</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">colour =</span> cluster)) <span class="sc">+</span></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ellipse</span>(<span class="fu">aes</span>(<span class="at">group =</span> cluster), <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"K-Means Clusters (k = 3): PCA Projection"</span>,</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Cluster assignments from unsupervised algorithm"</span>,</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"Cluster"</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> pca_plot_data <span class="sc">%&gt;%</span></span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">colour =</span> mouse_strain)) <span class="sc">+</span></span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ellipse</span>(<span class="fu">aes</span>(<span class="at">group =</span> mouse_strain), <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"True Strain Labels: PCA Projection"</span>,</span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Ground truth for comparison with cluster plot"</span>,</span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"Strain"</span></span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_8_files/figure-html/cluster-pca-plot-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="Test Your Knowledge — Q4">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Test Your Knowledge — Q4
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="question">
+<p>4. “Comparing the two PCA plots above, what does a strong visual match between the cluster assignments and the true strain labels tell us?”</p>
+<div class="choices">
+<div x-data="{ answer: '' , clear() { this.answer = '' }}">
+
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no1"> <span id="no1" x-show="answer == $el.id" class="badge">✗</span>The model has memorised the training data</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no2"> <span id="no2" x-show="answer == $el.id" class="badge">✗</span>We should increase k to get a better result</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no3"> <span id="no3" x-show="answer == $el.id" class="badge">✗</span>The silhouette score must be exactly 1.0</p><p></p>
+</div>
+<div class="choice correct-choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="correct"> <span id="correct" x-show="answer == $el.id" class="badge">✔</span>The physiological features alone contain enough information to distinguish the three strains</p><p></p>
+</div>
+</div>
+
+</div>
+</div>
+<details>
+<summary>
+Solutions
+</summary>
+<p>
+</p><ol type="1">
+<li>K-means is an unsupervised algorithm — it never sees the strain labels, so it cannot memorise them.</li>
+<li>A strong match at k = 3 supports our biological prior. Increasing k would split existing clusters unnecessarily.</li>
+<li>A strong visual match does not require a perfect silhouette score. Some overlap between strains is expected in real biological data.</li>
+<li>Correct! A strong match between unsupervised clusters and true strain labels confirms that initial weight, tail length, drug dose and weight lost are sufficient to separate the three strains — without any label information.</li>
+</ol>
+<p></p>
+</details>
+</div>
+</div>
+</section>
+<section id="k-means-vs-hierarchical-clustering" class="level2">
+<h2 class="anchored" data-anchor-id="k-means-vs-hierarchical-clustering">k-Means vs Hierarchical Clustering</h2>
+<p>The lecture also introduced <strong>hierarchical clustering</strong> as a second unsupervised approach. Rather than iterating on centroids, hierarchical clustering builds a <a href="workshop_8_fr.html#dendrogram" class="tooltip-link" data-tooltip="A tree diagram produced by hierarchical clustering that records the order in which samples or clusters are merged, allowing the number of clusters to be chosen by cutting the tree at a given height."><strong>dendrogram</strong></a> (‘clustering tree’) by repeatedly merging the two closest samples or clusters, starting with every sample as its own cluster and finishing with a single cluster containing everything.</p>
+<p>The number of clusters is not fixed in advance: instead, you <em>cut</em> the dendrogram at a chosen distance/height, and the number of branches crossed determines the number of clusters. This is different from k-means, where <code>num_clusters</code> must be specified before fitting.</p>
+<p>In R, <code>hclust()</code> (base R) or <code>step_normalize()</code> + <code>dist()</code> + <code>hclust()</code> can build this tree, and <code>tidyclust::hier_clust()</code> provides a <code>tidymodels</code>-consistent interface analogous to the <code>k_means()</code> workflow used above. We won’t run it in this core session — see the further reading below if you’d like to try it on <code>mouse_clust</code>.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="Test Your Knowledge — Q5">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Test Your Knowledge — Q5
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="question">
+<p>5. Which statement best distinguishes hierarchical clustering from k-means?</p>
+<div class="choices">
+<div x-data="{ answer: '' , clear() { this.answer = '' }}">
+
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no1"> <span id="no1" x-show="answer == $el.id" class="badge">✗</span>Hierarchical clustering requires the number of clusters to be specified before running the algorithm, just like k-means</p><p></p>
+</div>
+<div class="choice correct-choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="correct"> <span id="correct" x-show="answer == $el.id" class="badge">✔</span>Hierarchical clustering builds a tree (dendrogram) from pairwise distances, allowing you to choose the number of clusters after seeing the tree</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no3"> <span id="no3" x-show="answer == $el.id" class="badge">✗</span>Hierarchical clustering does not depend on a distance metric between samples</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no4"> <span id="no4" x-show="answer == $el.id" class="badge">✗</span>k-means always produces better clustering results than hierarchical clustering</p><p></p>
+</div>
+</div>
+
+</div>
+</div>
+<details>
+<summary>
+Solutions
+</summary>
+<p>
+</p><ol type="1">
+<li>This describes k-means, not hierarchical clustering — hierarchical clustering does not require <em>k</em> upfront.</li>
+<li>Correct! The dendrogram is built first, and the number of clusters is chosen afterwards by cutting the tree at a chosen height.</li>
+<li>Hierarchical clustering relies entirely on a distance (or similarity) metric between all pairs of samples.</li>
+<li>Neither method is universally better — the best choice depends on the structure of your data and whether you know the number of clusters in advance.</li>
+</ol>
+<p></p>
+</details>
+</div>
+</div>
+<p>Congratulations on completing Part 1!</p>
+</section>
+</section>
+<section id="sec-w8-part2" class="level1">
+<h1>Part 2: Random Forest Classification with tidymodels</h1>
+<div class="callout callout-style-default callout-tip callout-titled" title="Learning Objectives">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Learning Objectives
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Aim:</strong> Train a supervised machine learning model (classifier) to predict mouse strain based on physiological features.</p>
+<p><strong>Methods:</strong></p>
+<ol type="1">
+<li>Explore the data</li>
+<li>Train a machine learning model using pre-defined <a href="workshop_8_fr.html#hyperparameter" class="tooltip-link" data-tooltip="A model setting (e.g. mtry, k) chosen before training that controls how a model learns, as distinct from parameters estimated from the data itself.">hyperparameters</a></li>
+<li>Test the model and evaluate its performance</li>
+</ol>
+</div>
+</div>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<p>Our <code>mice</code> dataset is clean and well-separated — almost too clean. It’s a great teaching dataset, but real-world data is rarely this tidy. To give a more realistic sense of how ML performs on messier data, we use a noisy version of the dataset, <code>noisy_mice</code>, created by adding random measurement error to the physiological features.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>noisy_mice <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/noisy_mice.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 333 Columns: 7
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (3): mouse_strain, sex, cage_number
+dbl (4): weight_lost_g, drug_dose_g, tail_length_mm, initial_weight_g
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</section>
+<section id="split-data-into-training-testing-sets" class="level2">
+<h2 class="anchored" data-anchor-id="split-data-into-training-testing-sets">Split Data into Training &amp; Testing Sets</h2>
+<p>As we are now employing a <strong>supervised ML</strong> algorithm, we split our <code>noisy_mice</code> dataset into two distinct datasets: train and test. We train the model on the training set and evaluate it on the test set. The test set must <strong>never</strong> be seen during model training or tuning — this is what allows it to give an unbiased estimate of real-world performance.</p>
+<p>We use a 75/25 train/test split (<code>prop = 0.75</code>) and stratify by strain (<code>strata = mouse_strain</code>) so that each set has proportional representation of all three strain.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>mouse_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  noisy_mice,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">prop =</span> <span class="fl">0.75</span>,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">strata =</span> mouse_strain</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>mouse_train <span class="ot">&lt;-</span> <span class="fu">training</span>(mouse_split)</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>mouse_test <span class="ot">&lt;-</span> <span class="fu">testing</span>(mouse_split)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Great. Now let’s confirm that our stratification was respected by inspecting our train and test datasets for their proportion of each strain.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>train_check <span class="ot">&lt;-</span> mouse_train <span class="sc">%&gt;%</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(mouse_strain) <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">set =</span> <span class="st">"train"</span>, <span class="at">proportion =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>))</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>test_check <span class="ot">&lt;-</span> mouse_test <span class="sc">%&gt;%</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(mouse_strain) <span class="sc">%&gt;%</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">set =</span> <span class="st">"test"</span>, <span class="at">proportion =</span> <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">2</span>))</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  train_check,</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>  test_check,</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(set, mouse_strain)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  mouse_strain     n set   proportion
+  &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;      &lt;dbl&gt;
+1 BALBc           17 test        0.2 
+2 Black6          30 test        0.36
+3 CD1             37 test        0.44
+4 BALBc           51 train       0.2 
+5 Black6          89 train       0.36
+6 CD1            109 train       0.44</code></pre>
+</div>
+</div>
+<p>Now we repeat the same steps as <a href="#sec-w8-part1">Part 1</a>: define a recipe, specify a model and engine, bundle these into a workflow, and fit the model.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="An alternative to a single train/test split">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>An alternative to a single train/test split
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Instead of a single train/test split, we could train on the entire dataset and estimate performance using repeated <a href="workshop_8_fr.html#cross-validation" class="tooltip-link" data-tooltip="A resampling technique that repeatedly splits data into folds, training on some and evaluating on the rest, to obtain a more robust estimate of model performance than a single split.">cross-validation</a>, which reduces the bias introduced by any one particular split. See the tidymodels <a href="https://www.tidymodels.org/start/resampling/">cross-validation tutorial</a> for a worked example of this approach.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="Test Your Knowledge — Q6">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Test Your Knowledge — Q6
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="question">
+<p>6. Why must the test set never be used during model training or hyperparameter tuning?</p>
+<div class="choices">
+<div x-data="{ answer: '' , clear() { this.answer = '' }}">
+
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no1"> <span id="no1" x-show="answer == $el.id" class="badge">✗</span>It slows down computation too much to be practical</p><p></p>
+</div>
+<div class="choice correct-choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="correct"> <span id="correct" x-show="answer == $el.id" class="badge">✔</span>Using it during training would let information leak into the fitting process, giving an overly optimistic estimate of real-world performance</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no3"> <span id="no3" x-show="answer == $el.id" class="badge">✗</span>The test set always contains different variables to the training set</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no4"> <span id="no4" x-show="answer == $el.id" class="badge">✗</span>It is only a concern for regression models, not classification</p><p></p>
+</div>
+</div>
+
+</div>
+</div>
+<details>
+<summary>
+Solutions
+</summary>
+<p>
+</p><ol type="1">
+<li>Computation time is not the reason for the train/test split — it exists to give an honest estimate of performance.</li>
+<li>Correct! If the model (or its tuning process) ever sees the test set, performance estimates become biased (‘data leakage’) and no longer reflect how the model will perform on genuinely new data.</li>
+<li>The test set contains the same variables as the training set — only the <em>observations</em> differ.</li>
+<li>The train/test paradigm applies equally to regression and classification tasks.</li>
+</ol>
+<p></p>
+</details>
+</div>
+</div>
+</section>
+<section id="define-a-preprocessing-recipe" class="level2">
+<h2 class="anchored" data-anchor-id="define-a-preprocessing-recipe">Define a Preprocessing Recipe</h2>
+<p>As this is a <strong>supervised ML</strong> workflow, we specify <code>mouse_strain</code> as the <code>outcome variable</code> in the recipe formula, and keep all remaining columns as <code>predictor variables</code>.</p>
+<p>As in <a href="#sec-part1-recipe">Part 1</a>, we apply <code>step_normalize()</code> to scale all numeric predictors to mean = 0, sd = 1. This time we also have categorical predictors (<code>sex</code>, <code>cage_number</code>), which we convert to one-hot encoded numeric columns using <code>step_dummy()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>mouse_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(mouse_strain <span class="sc">~</span> ., <span class="at">data =</span> mouse_train) <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mouse_recipe)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 4
+  variable         type      role      source  
+  &lt;chr&gt;            &lt;list&gt;    &lt;chr&gt;     &lt;chr&gt;   
+1 weight_lost_g    &lt;chr [2]&gt; predictor original
+2 drug_dose_g      &lt;chr [2]&gt; predictor original
+3 tail_length_mm   &lt;chr [2]&gt; predictor original
+4 initial_weight_g &lt;chr [2]&gt; predictor original
+5 sex              &lt;chr [3]&gt; predictor original
+6 cage_number      &lt;chr [3]&gt; predictor original
+7 mouse_strain     &lt;chr [3]&gt; outcome   original</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Curious about redundant predictors?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Curious about redundant predictors?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We use all four physiological features here without checking whether any are redundant. See the tidymodels <a href="https://www.tidymodels.org/books/fes/">Feature Engineering and Selection</a> book for a discussion of checking for correlated predictors and reducing dimensionality.</p>
+</div>
+</div>
+</section>
+<section id="specify-the-random-forest-model" class="level2">
+<h2 class="anchored" data-anchor-id="specify-the-random-forest-model">Specify the Random Forest Model</h2>
+<p>A random forest is built from many individual <strong>decision trees</strong>. A single decision tree makes a prediction by asking a series of yes/no questions about the predictors, splitting the data at each step until it reaches a decision. For example, a bank might decide whether to approve a loan by first checking an applicant’s credit history, then their income (<a href="#fig-decision-tree" class="quarto-xref">Figure&nbsp;1</a>, left). The same logic applies in a biological context: a tree could classify a sample as disease-positive or -negative based on the expression levels of a few genes (<a href="#fig-decision-tree" class="quarto-xref">Figure&nbsp;1</a>, right).</p>
+<div id="fig-decision-tree" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-decision-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/S08F01_RF_tree_1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-decision-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A single decision tree splits on predictors in sequence to reach a decision: illustrated here for a loan approval example (left) and a gene-expression-based disease classification example (right).
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="What is a Random Forest?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>What is a Random Forest?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A single decision tree can easily overfit its training data. A <a href="workshop_8_fr.html#random-forest" class="tooltip-link" data-tooltip="An ensemble of many decision trees, each trained on a random bootstrap sample of the data and a random subset of predictors at each split; averaging their predictions reduces overfitting relative to a single tree.">random forest</a> addresses this by growing an <strong>ensemble</strong> of many decision trees, each on a random bootstrap sample of the data, considering only a random subset of predictors at each split (<code>mtry</code>). This makes the trees independent and uncorrelated with one another. Every tree “votes” on the predicted class, and the forest’s final prediction is simply the <strong>majority vote</strong> across all trees (<a href="#fig-random-forest" class="quarto-xref">Figure&nbsp;2</a>), typically giving more accurate and stable predictions than any single tree.</p>
+</div>
+</div>
+<div id="fig-random-forest" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-random-forest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/S08F02_RF_tree_2.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-random-forest-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: A random forest grows many independent, uncorrelated decision trees from the same data and takes a majority vote across trees to arrive at the final predicted class.
+</figcaption>
+</figure>
+</div>
+<p>Below we specify the random forest model. We use the default hyperparameters for <code>mtry</code> and <code>min_n</code>, and fix the number of trees at 500 (<code>trees = 500</code>). If you’d like to see how to systematically search for better hyperparameter values, see the tidymodels <a href="https://www.tidymodels.org/start/tuning/">hyperparameter tuning tutorial</a>.</p>
+<p>For the engine, we use the <a href="https://cran.r-project.org/package=ranger"><code>ranger</code></a> R package, and set <code>importance = "impurity"</code> so that we can later calculate variable importance, which is a measure of how much each predictor contributes to classification accuracy.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>rf_model <span class="ot">&lt;-</span> <span class="fu">rand_forest</span>(<span class="at">trees =</span> <span class="dv">500</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"ranger"</span>, <span class="at">importance =</span> <span class="st">"impurity"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>rf_model</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Random Forest Model Specification (classification)
+
+Main Arguments:
+  trees = 500
+
+Engine-Specific Arguments:
+  importance = impurity
+
+Computational engine: ranger </code></pre>
+</div>
+</div>
+</section>
+<section id="bundle-into-a-workflow-1" class="level2">
+<h2 class="anchored" data-anchor-id="bundle-into-a-workflow-1">Bundle into a Workflow</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine the recipe and model into a workflow</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>rf_workflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(mouse_recipe) <span class="sc">%&gt;%</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(rf_model)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>rf_workflow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: rand_forest()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+2 Recipe Steps
+
+• step_normalize()
+• step_dummy()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Random Forest Model Specification (classification)
+
+Main Arguments:
+  trees = 500
+
+Engine-Specific Arguments:
+  importance = impurity
+
+Computational engine: ranger </code></pre>
+</div>
+</div>
+</section>
+<section id="fit-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="fit-the-model">Fit the Model</h2>
+<p>We now fit the final model on the full training set and evaluate it on the test set.</p>
+<p>The <code>last_fit()</code> function fits the workflow once on the training data and generates predictions on the held-out test set in a single step. Recall that the test set has not been seen during training or tuning.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>final_fit <span class="ot">&lt;-</span> <span class="fu">last_fit</span>(rf_workflow, mouse_split)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>final_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Resampling results
+# Manual resampling 
+# A tibble: 1 × 6
+  splits           id               .metrics .notes   .predictions .workflow 
+  &lt;list&gt;           &lt;chr&gt;            &lt;list&gt;   &lt;list&gt;   &lt;list&gt;       &lt;list&gt;    
+1 &lt;split [249/84]&gt; train/test split &lt;tibble&gt; &lt;tibble&gt; &lt;tibble&gt;     &lt;workflow&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="evaluate-model-performance" class="level2">
+<h2 class="anchored" data-anchor-id="evaluate-model-performance">Evaluate Model Performance</h2>
+<p>We can collect the test set performance metrics using <code>collect_metrics()</code>. By default this reports <code>accuracy</code> (the proportion of correctly classified mice) and <code>roc_auc</code> (AUROC, the Area Under the Receiver Operating Characteristic Curve).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(final_fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  .metric     .estimator .estimate .config        
+  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
+1 accuracy    multiclass    0.917  pre0_mod0_post0
+2 roc_auc     hand_till     0.971  pre0_mod0_post0
+3 brier_class multiclass    0.0852 pre0_mod0_post0</code></pre>
+</div>
+</div>
+<p>We can also visualise performance using precision-recall (PR) and ROC curves. Since <code>mouse_strain</code> has three classes, <code>pr_curve()</code> and <code>roc_curve()</code> use a <strong>one-vs-all</strong> strategy, treating each strain in turn as the positive class against the other two.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>final_fit <span class="sc">%&gt;%</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pr_curve</span>(</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">truth =</span> mouse_strain, </span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    .pred_BALBc, </span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>    .pred_Black6, </span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>    .pred_CD1</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"PR Curves: Random Forest (Test Set)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_8_files/figure-html/aupr-curve-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>ROC curves plot the true positive rate (sensitivity) against the false positive rate (1 - specificity) as the classification threshold varies. A curve that bows toward the top-left corner indicates better discrimination between classes, and an AUC closer to 1.0 indicates better overall classification performance.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>final_fit <span class="sc">%&gt;%</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">truth =</span> mouse_strain, </span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    .pred_BALBc, </span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    .pred_Black6, </span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    .pred_CD1</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"ROC Curves: Random Forest (Test Set)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_8_files/figure-html/auroc-curve-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Because <code>mouse_strain</code> has three classes, this produces one curve per strain (each treating that strain vs.&nbsp;the other two) rather than a single combined curve.</p>
+<p>We can also evaluate the confusion matrix (<code>conf_mat()</code>), where rows are our “truth” (the strain in <code>noisy_mice</code>; <code>truth = mouse_strain</code>) and columns are the “predictions” (the predicted strain; <code>estimate = .pred_class</code>). Diagonal cells are correct predictions, while off-diagonal cells are misclassifications.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>final_fit <span class="sc">%&gt;%</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">truth =</span> mouse_strain,</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate =</span> .pred_class</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(<span class="at">type =</span> <span class="st">"heatmap"</span>) <span class="sc">+</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Confusion Matrix: Random Forest (Test Set)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_8_files/figure-html/confusion-matrix-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Try it yourself">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Try it yourself
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using <code>collect_predictions(final_fit)</code>, compute the sensitivity, specificity, positive predictive value (PPV) and negative predictive value (NPV) for each strain class (see the <code>yardstick</code> package functions: <code>sens()</code>, <code>spec()</code>, <code>ppv()</code>, <code>npv()</code>). The tidymodels <a href="https://www.tidymodels.org/start/resampling/">cross-validation tutorial</a> works through a similar calculation in detail if you’d like a worked example.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="Test Your Knowledge — Q7">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Test Your Knowledge — Q7
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="question">
+<p>7. A classifier has an AUROC of 0.90 but an AUPRC of only 0.30. What does this most likely indicate?</p>
+<div class="choices">
+<div x-data="{ answer: '' , clear() { this.answer = '' }}">
+
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no1"> <span id="no1" x-show="answer == $el.id" class="badge">✗</span>The model is performing extremely well overall, with no concerns</p><p></p>
+</div>
+<div class="choice correct-choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="correct"> <span id="correct" x-show="answer == $el.id" class="badge">✔</span>The classes in the dataset are likely imbalanced — AUPRC is more sensitive to class imbalance than AUROC</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no3"> <span id="no3" x-show="answer == $el.id" class="badge">✗</span>AUPRC and AUROC should always be equal, so this must be a coding error</p><p></p>
+</div>
+<div class="choice">
+<p></p><p><input class="form-check-input" type="radio" x-model="answer" value="no4"> <span id="no4" x-show="answer == $el.id" class="badge">✗</span>The confusion matrix is no longer needed once you have an AUROC value</p><p></p>
+</div>
+</div>
+
+</div>
+</div>
+<details>
+<summary>
+Solutions
+</summary>
+<p>
+</p><ol type="1">
+<li>A high AUROC alongside a low AUPRC is a red flag, not a sign of strong performance — it usually means the model looks good on paper but struggles with the minority class.</li>
+<li>Correct! As shown in the lecture’s imbalanced-data example, AUROC can remain high under class imbalance while AUPRC drops sharply, because AUPRC is sensitive to how rare the positive class is.</li>
+<li>These two metrics measure different trade-offs (sensitivity/specificity vs precision/recall) and are not expected to match.</li>
+<li>The confusion matrix, AUROC and AUPRC each reveal different aspects of performance and are best used together.</li>
+</ol>
+<p></p>
+</details>
+</div>
+</div>
+</section>
+<section id="variable-importance-plot" class="level2">
+<h2 class="anchored" data-anchor-id="variable-importance-plot">Variable Importance Plot</h2>
+<p>You may be interested in understanding which predictor variable was the most important in informing the final classification prediction. We can do this by extracting the fitted model (<code>extract_fit_parsnip()</code>) and plotting variable importance using the <code>vip</code> R package.</p>
+<p>Importance is measured by mean decrease in node impurity (Gini impurity), where higher values indicate a greater contribution to classification decisions. This tells us which physiological features best distinguish strains.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>final_fit <span class="sc">%&gt;%</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_parsnip</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vip</span>() <span class="sc">+</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Variable Importance: Random Forest"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="workshop_8_files/figure-html/variable-importance-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here we can see that <code>initial_weight_g</code> is the most important variable that informs our random forest, and <code>sex</code> as the least informative variable!</p>
+</section>
+<section id="predict-strain-for-the-synthetic-unlabelled-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="predict-strain-for-the-synthetic-unlabelled-dataset">Predict Strain for the Synthetic Unlabelled Dataset</h2>
+<p>Now that we have a trained and evaluated model, we can use it to predict on genuinely new data — this is often the ultimate goal of training an ML model.</p>
+<p>We load a new, unlabelled dataset, <code>mouse_new</code>, containing physiological measurements but no strain labels.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>mouse_new <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/new_mice.csv"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert character columns to factors to match the training data's</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># column types -- step_dummy() in the recipe expects factor predictors</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character), as.factor))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 26 Columns: 7
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (2): cage_number, sex
+dbl (5): mouse_id, weight_lost_g, drug_dose_g, tail_length_mm, initial_weight_g
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the final fitted model from last_fit()</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>final_model <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate class predictions and class probabilities</span></span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>new_predictions <span class="ot">&lt;-</span> mouse_new <span class="sc">%&gt;%</span></span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(final_model, <span class="at">new_data =</span> mouse_new),</span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(final_model, <span class="at">new_data =</span> mouse_new, <span class="at">type =</span> <span class="st">"prob"</span>)</span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a><span class="co"># View predictions with confidence probabilities</span></span>
+<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(new_predictions, <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 11
+   mouse_id cage_number weight_lost_g drug_dose_g tail_length_mm
+      &lt;dbl&gt; &lt;fct&gt;               &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;
+ 1        1 1A                   2.5      0.00222           17.2
+ 2        2 2B                   4.23     0.00219           17  
+ 3        3 2B                   4.39     0.00196           13.8
+ 4        4 3E                   3.06     0.00215           18.8
+ 5        5 1A                   4.57     0.00194           17.4
+ 6        6 2B                   4.19     0.0019            18.3
+ 7        7 3E                   2.88     0.00209           18.3
+ 8        8 2B                   4.84     0.00183           19.3
+ 9        9 3E                   4.56     0.00185           17.8
+10       10 2B                   5.14     0.00214           18.6
+# ℹ 6 more variables: initial_weight_g &lt;dbl&gt;, sex &lt;fct&gt;, .pred_class &lt;fct&gt;,
+#   .pred_BALBc &lt;dbl&gt;, .pred_Black6 &lt;dbl&gt;, .pred_CD1 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>It’s often useful to wrap this prediction logic into a reusable function, so you (or a collaborator) can apply the saved model to any new dataset without repeating the code above.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the fitted model so it can be reloaded without re-training</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(final_fit, <span class="st">"model/mice.rds"</span>)</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>predict_mice <span class="ot">&lt;-</span> <span class="cf">function</span>(df, <span class="at">model =</span> <span class="st">"model/mice.rds"</span>) {</span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Match the column types used during training</span></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character), as.factor))</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Load the saved model</span></span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>  final_fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(model)</span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract the fitted workflow from last_fit()</span></span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a>  final_model <span class="ot">&lt;-</span> <span class="fu">extract_workflow</span>(final_fit)</span>
+<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate class predictions and class probabilities</span></span>
+<span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span></span>
+<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_cols</span>(</span>
+<span id="cb61-17"><a href="#cb61-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">predict</span>(final_model, <span class="at">new_data =</span> df),</span>
+<span id="cb61-18"><a href="#cb61-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">predict</span>(final_model, <span class="at">new_data =</span> df, <span class="at">type =</span> <span class="st">"prob"</span>)</span>
+<span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a><span class="fu">predict_mice</span>(mouse_new)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 26 × 11
+   mouse_id cage_number weight_lost_g drug_dose_g tail_length_mm
+      &lt;dbl&gt; &lt;fct&gt;               &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;
+ 1        1 1A                   2.5      0.00222           17.2
+ 2        2 2B                   4.23     0.00219           17  
+ 3        3 2B                   4.39     0.00196           13.8
+ 4        4 3E                   3.06     0.00215           18.8
+ 5        5 1A                   4.57     0.00194           17.4
+ 6        6 2B                   4.19     0.0019            18.3
+ 7        7 3E                   2.88     0.00209           18.3
+ 8        8 2B                   4.84     0.00183           19.3
+ 9        9 3E                   4.56     0.00185           17.8
+10       10 2B                   5.14     0.00214           18.6
+# ℹ 16 more rows
+# ℹ 6 more variables: initial_weight_g &lt;dbl&gt;, sex &lt;fct&gt;, .pred_class &lt;fct&gt;,
+#   .pred_BALBc &lt;dbl&gt;, .pred_Black6 &lt;dbl&gt;, .pred_CD1 &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>Congratulations! You’ve completed the core <a href="#sec-w8-part1">Part 1</a> and <a href="#sec-w8-part2">Part 2</a> workshop content!</p>
+<!-- 
+# Session Info - see if Kathleen uses session info in previous workshops. 
+
+#| label: session-info
+
+# Record package versions for reproducibility
+sessionInfo()
+``` -->
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<script src="workshop_8_files/libs/quarto-contrib/alpine-3.12/alpine@3.12.min.js"></script>
+</body></html>
